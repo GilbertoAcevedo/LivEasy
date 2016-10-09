@@ -23,6 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Welcome" android:theme="@style/noActionBar"/>
+        <activity android:name="SignupActivity" android:theme="@style/AppTheme.Dark" />
 
     </application>
 
