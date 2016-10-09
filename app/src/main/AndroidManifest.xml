@@ -9,22 +9,28 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
-            <!--intent-filter>
+
+            <!--
+            intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter-->
+            </intent-filter
+            -->
         </activity>
-        <activity android:name=".Splash" android:theme="@style/noActionBar">
+        <activity
+            android:name=".Splash"
+            android:theme="@style/noActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Welcome" android:theme="@style/noActionBar"/>
-        <activity android:name="SignupActivity" android:theme="@style/AppTheme.Dark" />
-
+        <activity
+            android:name=".Welcome"
+            android:theme="@style/noActionBar" />
+        <activity android:name=".SignIn" android:theme="@style/noActionBar"/>
     </application>
 
 </manifest>
