@@ -20,4 +20,12 @@ public class Welcome extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void goToSignUp( View view ) {
+
+        Intent intent = new Intent(this, SignupActivity.class);
+        startActivity(intent);
+
+
+    }
+
 }

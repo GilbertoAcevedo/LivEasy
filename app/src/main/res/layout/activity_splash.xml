@@ -11,7 +11,7 @@
     tools:context="cse110.liveasy.Splash">
 
     <ImageView
-        android:src="@drawable/logo"
+        android:src="@drawable/logole"
         android:layout_width="321dp"
         android:layout_height="222dp"
         android:scaleType="fitXY"
