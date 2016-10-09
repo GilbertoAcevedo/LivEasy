@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">LivEasy</string>
     <string name="not_cahoot">Welcome Girl!</string>
+    <string name="username_placeholder">Username</string>
 </resources>
