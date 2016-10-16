@@ -1,137 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:fitsSystemWindows="true">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="0dp"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
+    >
 
-    <LinearLayout
+    <ImageView android:src="@drawable/logole"
+        android:id="@+id/logoId"
         android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="0dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:textStyle="bold">
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_marginBottom="0dp"
+        android:layout_centerHorizontal="true"/>
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fitsSystemWindows="true"
+        android:layout_below="@id/logoId">
 
-        <ImageView android:src="@drawable/logole"
-            android:layout_width="400dp"
-            android:layout_height="400dp"
-            android:layout_marginBottom="0dp"
-            android:layout_gravity="center_horizontal"/>
-
-        <!-- Name Label -->
-        <android.support.design.widget.TextInputLayout
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginRight="100dp">
-            <EditText android:id="@+id/input_name"
+            android:paddingTop="0dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp">
+
+            <!-- Name Label -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:hint="Name"/>
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="100dp">
+                <EditText android:id="@+id/input_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:hint="Name"/>
+            </android.support.design.widget.TextInputLayout>
 
-        <!-- Username Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginRight="100dp">
-            <EditText android:id="@+id/input_username"
+            <!-- Username Label -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:hint="Username"/>
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="100dp">
+                <EditText android:id="@+id/input_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:hint="Username"/>
+            </android.support.design.widget.TextInputLayout>
 
 
-        <!--  Email Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginRight="100dp">
-            <EditText android:id="@+id/input_email"
+            <!--  Email Label -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="Email"/>
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="100dp">
+                <EditText android:id="@+id/input_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:hint="Email"/>
+            </android.support.design.widget.TextInputLayout>
 
 
-        <!-- mobile number -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginRight="100dp">
-            <EditText android:id="@+id/input_mobile"
+            <!-- mobile number -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:hint="Mobile Number"/>
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="100dp">
+                <EditText android:id="@+id/input_mobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:hint="Mobile Number"/>
+            </android.support.design.widget.TextInputLayout>
 
-        <!-- Password Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginRight="100dp">
-            <EditText android:id="@+id/input_password"
+            <!-- Password Label -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="Password"
-                />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="100dp">
+                <EditText android:id="@+id/input_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:hint="Password"
+                    />
+            </android.support.design.widget.TextInputLayout>
 
-        <!-- Password Re-enter Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginRight="100dp">
-            <EditText android:id="@+id/input_reEnterPassword"
+            <!-- Password Re-enter Label -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:textStyle="bold"
-                android:hint="Re-enter Password"/>
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="100dp">
+                <EditText android:id="@+id/input_reEnterPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:textStyle="bold"
+                    android:hint="Re-enter Password"/>
+            </android.support.design.widget.TextInputLayout>
 
-        <!-- Signup Button -->
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_signup"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginRight="100dp"
-            android:padding="12dp"
-            android:text="Create Account"/>
+            <!-- Signup Button -->
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btn_signup"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="100dp"
+                android:padding="12dp"
+                android:text="Create Account"/>
 
-        <TextView android:id="@+id/link_login"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:text="Already a member? Login"
-            android:gravity="center"/>
+            <TextView android:id="@+id/link_login"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:text="Already a member? Login"
+                android:gravity="center"/>
 
-    </LinearLayout>
-</ScrollView>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

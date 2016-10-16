@@ -18,6 +18,7 @@ public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 
     @Bind(R.id.input_name) EditText _nameText;
+    @Bind(R.id.input_username) EditText _usernameText;
     @Bind(R.id.input_email) EditText _emailText;
     @Bind(R.id.input_mobile) EditText _mobileText;
     @Bind(R.id.input_password) EditText _passwordText;
@@ -48,7 +49,7 @@ public class SignupActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
                 startActivity(intent);
                 finish();
-                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
     }
