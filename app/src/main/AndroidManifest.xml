@@ -30,9 +30,11 @@
         <activity
             android:name=".Welcome"
             android:theme="@style/noActionBar" />
-        <activity android:name=".SignIn" android:theme="@style/noActionBar"/>
-        <activity android:name="SignupActivity" android:theme="@style/AppTheme.Dark" />
-
+        <activity android:name=".SignIn" android:theme="@style/noActionBar" />
+        <activity android:name=".SignupActivity" android:theme="@style/AppTheme.Dark" />
+        <activity android:name=".MainPage2"></activity>
+        <activity android:name=".MainPage3"></activity>
+        <activity android:name=".MainPage4"></activity>
     </application>
 
 </manifest>
