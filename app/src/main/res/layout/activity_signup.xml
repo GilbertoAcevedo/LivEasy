@@ -3,16 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="0dp"
-    android:paddingLeft="24dp"
-    android:paddingRight="24dp"
-    >
+    android:paddingTop="0dp">
 
     <ImageView android:src="@drawable/logole"
         android:id="@+id/logoId"
         android:orientation="vertical"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_marginBottom="0dp"
         android:layout_centerHorizontal="true"/>
     <ScrollView
@@ -26,9 +23,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="0dp"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp">
+            android:paddingTop="0dp">
 
             <!-- Name Label -->
             <android.support.design.widget.TextInputLayout
@@ -36,13 +31,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="100dp"
-                android:layout_marginRight="100dp">
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp">
                 <EditText android:id="@+id/input_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
-                    android:hint="Name"/>
+                    android:hint="Name" />
             </android.support.design.widget.TextInputLayout>
 
             <!-- Username Label -->
@@ -51,8 +46,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="100dp"
-                android:layout_marginRight="100dp">
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp">
                 <EditText android:id="@+id/input_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -67,8 +62,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="100dp"
-                android:layout_marginRight="100dp">
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp">
                 <EditText android:id="@+id/input_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -83,8 +78,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="100dp"
-                android:layout_marginRight="100dp">
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp">
                 <EditText android:id="@+id/input_mobile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -98,8 +93,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="100dp"
-                android:layout_marginRight="100dp">
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp">
                 <EditText android:id="@+id/input_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -114,8 +109,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="100dp"
-                android:layout_marginRight="100dp">
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp">
                 <EditText android:id="@+id/input_reEnterPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -131,8 +126,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
-                android:layout_marginLeft="100dp"
-                android:layout_marginRight="100dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
                 android:padding="12dp"
                 android:text="Create Account"/>
 
