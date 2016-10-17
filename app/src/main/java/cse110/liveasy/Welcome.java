@@ -16,7 +16,7 @@ public class Welcome extends AppCompatActivity {
     }
 
     public void goToSignIn(View view){
-        Intent intent = new Intent(this, SignIn.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 

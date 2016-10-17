@@ -39,8 +39,8 @@ public class CreateGroup extends AppCompatActivity {
                     "\nPlease pass on this key to your roommates so that they can join.");
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    // RETURN HOME
-                }
+                    Intent goBack = new Intent(CreateGroup.this, MainActivity.class);
+                    startActivity(goBack);                }
             });
             builder.create().show();
         }
@@ -54,5 +54,10 @@ public class CreateGroup extends AppCompatActivity {
             });
             builder.create().show();
         }
+    }
+
+    public void cancelCreateGroup(View view){
+        Intent goBack = new Intent(this, MainActivity.class);
+        startActivity(goBack);
     }
 }

@@ -12,17 +12,6 @@
     tools:context="cse110.liveasy.MainPage3">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_image"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        android:src="@drawable/woodie"
-        app:civ_border_width="2dp"
-        app:civ_border_color="#FF000000"
-        android:layout_marginTop="48dp"
-        android:layout_alignTop="@+id/profile_image2"
-        android:layout_centerHorizontal="true" />
-
-    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image2"
         android:layout_width="76dp"
         android:layout_height="76dp"
@@ -33,5 +22,16 @@
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/profile_image"
         android:layout_toStartOf="@+id/profile_image" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:src="@drawable/woodie"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FF000000"
+        android:layout_marginTop="48dp"
+        android:layout_alignTop="@+id/profile_image2"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
