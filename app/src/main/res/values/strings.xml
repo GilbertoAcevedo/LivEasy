@@ -3,4 +3,6 @@
     <string name="not_cahoot">Come in and make yourself at home.</string>
     <string name="username_placeholder">Username</string>
     <string name="auth_fail">Authorization Failed</string>
+    <string name="signup_option"><u>No account yet? Create one.</u></string>
+    <string name="login_option"><u>Already a member? Login.</u></string>
 </resources>
