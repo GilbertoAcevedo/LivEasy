@@ -172,7 +172,10 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
-        startActivity(new Intent(LoginActivity.this,MainActivity.class));
+
+        Intent intent =new Intent(LoginActivity.this,MainActivity.class);
+        intent.putExtra("username", _usernameText.getText().toString());
+        startActivity(intent);
         finish();
     }
 
@@ -187,9 +190,16 @@ public class LoginActivity extends AppCompatActivity {
 
     public boolean validate() {
         boolean valid = true;
-
+        String username = _usernameText.getText().toString();
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
+
+        if (username.isEmpty()) {
+            _emailText.setError("enter a username");
+            valid = false;
+        } else {
+            _emailText.setError(null);
+        }
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             _emailText.setError("enter a valid email address");

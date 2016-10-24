@@ -176,12 +176,14 @@ public class SignupActivity extends AppCompatActivity {
         DatabaseReference usersRef = ref.child("users");
         Map<String, Object> user_info = new HashMap<String, Object>();
 
-        user_info.put("/"+username+"/", new User(name, mobile, email));
+        user_info.put("/"+username+"/", new User(name, mobile, email, false));
         usersRef.updateChildren(user_info);
 
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
-        startActivity(new Intent(SignupActivity.this,MainActivity.class));
+        Intent intent = new Intent(SignupActivity.this,MainActivity.class);
+        intent.putExtra("username", username);
+        startActivity(intent);
         finish();
     }
 
@@ -210,6 +212,7 @@ public class SignupActivity extends AppCompatActivity {
         }
         else if(username.contains(" ")){
             _usernameText.setError("username must not contain spaces");
+            valid = false;
         }else {
             _usernameText.setError(null);
         }
