@@ -19,7 +19,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
@@ -28,6 +33,8 @@ public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference ref = database.getReference();
 
     @Bind(R.id.input_name) EditText _nameText;
     @Bind(R.id.input_username) EditText _usernameText;
@@ -37,6 +44,7 @@ public class SignupActivity extends AppCompatActivity {
     @Bind(R.id.input_reEnterPassword) EditText _reEnterPasswordText;
     @Bind(R.id.btn_signup) Button _signupButton;
     @Bind(R.id.link_login) TextView _loginLink;
+
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,13 +123,10 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.setMessage("Creating Account...");
         progressDialog.show();
 
-        String name = _nameText.getText().toString();
-        String email = _emailText.getText().toString();
-        String mobile = _mobileText.getText().toString();
-        String password = _passwordText.getText().toString();
-        String reEnterPassword = _reEnterPasswordText.getText().toString();
 
-        // TODO: Implement your own signup logic here.
+        String email = _emailText.getText().toString();
+        String password = _passwordText.getText().toString();
+
 
         // [START create_user_with_email]
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -157,13 +162,28 @@ public class SignupActivity extends AppCompatActivity {
         // [END create_user_with_email]
 
 
-}
+    }
 
 
     public void onSignupSuccess() {
+
+        String username = _usernameText.getText().toString();
+        String name = _nameText.getText().toString();
+        String email = _emailText.getText().toString();
+        String mobile = _mobileText.getText().toString();
+
+
+        DatabaseReference usersRef = ref.child("users");
+        Map<String, Object> user_info = new HashMap<String, Object>();
+
+        user_info.put("/"+username+"/", new User(name, mobile, email, false));
+        usersRef.updateChildren(user_info);
+
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
-        startActivity(new Intent(SignupActivity.this,MainActivity.class));
+        Intent intent = new Intent(SignupActivity.this,MainActivity.class);
+        intent.putExtra("username", username);
+        startActivity(intent);
         finish();
     }
 
@@ -179,11 +199,23 @@ public class SignupActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
+        String username = _usernameText.getText().toString();
         String name = _nameText.getText().toString();
         String email = _emailText.getText().toString();
         String mobile = _mobileText.getText().toString();
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
+
+        if (username.isEmpty() || username.length() < 3) {
+            _usernameText.setError("at least 3 characters");
+            valid = false;
+        }
+        else if(username.contains(" ")){
+            _usernameText.setError("username must not contain spaces");
+            valid = false;
+        }else {
+            _usernameText.setError(null);
+        }
 
         if (name.isEmpty() || name.length() < 3) {
             _nameText.setError("at least 3 characters");
@@ -223,4 +255,5 @@ public class SignupActivity extends AppCompatActivity {
 
         return valid;
     }
+
 }

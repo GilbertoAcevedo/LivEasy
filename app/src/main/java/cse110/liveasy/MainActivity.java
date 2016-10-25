@@ -15,6 +15,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToCreateGroup(View view){
         Intent goToCreateGroup = new Intent(this, CreateGroup.class);
+
+        Bundle extras = getIntent().getExtras();
+
+        if (extras != null) {
+            String value = extras.getString("username");
+            goToCreateGroup.putExtra("username", value);
+        }
+
         startActivity(goToCreateGroup);
     }
 }
