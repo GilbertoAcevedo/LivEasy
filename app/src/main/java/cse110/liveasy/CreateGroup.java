@@ -1,12 +1,16 @@
 package cse110.liveasy;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.Random;
 
@@ -33,13 +37,42 @@ public class CreateGroup extends AppCompatActivity {
             String groupKey = generateRandomNumber();
             //CHECK TO SEE THAT KEY DOES NOT EXIST
 
+            Context context = view.getContext();
+            LinearLayout layout = new LinearLayout(context);
+            layout.setOrientation(LinearLayout.VERTICAL);
+
+            TextView title = new TextView(view.getContext());
+            title.setText("\n\"" + groupName + "\"");
+            title.setTextSize(30);
+            title.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+
+
+            TextView message1 = new TextView(view.getContext());
+            message1.setText("created, this is your group's id:");
+            message1.setTextSize(20);
+            message1.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+
+
+            TextView groupKeyTextView = new TextView(view.getContext());
+            groupKeyTextView.setText(groupKey);
+            groupKeyTextView.setTextSize(80);
+            groupKeyTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+
+
+            TextView message2 = new TextView(view.getContext());
+            message2.setText("Please share this key with your rommates so that they may join.");
+            message2.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+
+            layout.addView(title);
+            layout.addView(message1);
+            layout.addView(groupKeyTextView);
+            layout.addView(message2);
+
             AlertDialog.Builder builder = new AlertDialog.Builder(CreateGroup.this);
-            builder.setTitle("\"" + groupName + "\"" + " successfully created.");
-            builder.setMessage("Your group's key is: " + groupKey +
-                    "\nPlease pass on this key to your roommates so that they can join.");
+            builder.setView(layout);
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Intent goBack = new Intent(CreateGroup.this, MainActivity.class);
+                    Intent goBack = new Intent(CreateGroup.this, NavDrawerActivity.class);
                     startActivity(goBack);                }
             });
             builder.create().show();

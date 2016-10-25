@@ -3,4 +3,10 @@
     <string name="not_cahoot">Come in and make yourself at home.</string>
     <string name="username_placeholder">Username</string>
     <string name="auth_fail">Authorization Failed</string>
+    <string name="title_activity_nav_drawer">NavDrawerActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>
