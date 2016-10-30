@@ -47,8 +47,16 @@
             android:label="Create A New Group" />
         <activity
             android:name=".NavDrawerActivity"
-            android:label="'Group Name'"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:label="&apos;Group Name&apos;"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".JoinGroup"
+            android:label="@string/title_activity_join_group"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".HomeScreen"
+            android:label="@string/title_activity_home_screen"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
