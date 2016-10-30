@@ -10,14 +10,15 @@ public class User {
     public String phone_number;
     public String email;
     public boolean group;
+    public String groupID;
 
 
     public User(String full_name, String phone_number, String email, boolean group) {
-        this.username = username;
         this.full_name = full_name;
         this.phone_number = phone_number;
         this.email = email;
         this.group = group;
+        this.groupID = "";
     }
 
     public User() {

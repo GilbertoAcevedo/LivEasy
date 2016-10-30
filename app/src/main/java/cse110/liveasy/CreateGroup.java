@@ -1,5 +1,7 @@
 package cse110.liveasy;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -57,7 +59,7 @@ public class CreateGroup extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         final String username = extras.getString("username");
-        DatabaseReference uRef = ref.child("users").child(username).child("group");
+        DatabaseReference uRef = ref.child("users").child(username);
         final View view = view1;
 
         ValueEventListener listener = new ValueEventListener() {
@@ -65,7 +67,7 @@ public class CreateGroup extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Boolean user_has_group = (Boolean) dataSnapshot.getValue();
+                Boolean user_has_group = (Boolean) dataSnapshot.child("group").getValue();
                 System.err.print("\n User contents " + user_has_group);
 
                 if (user_has_group) {
@@ -75,7 +77,7 @@ public class CreateGroup extends AppCompatActivity {
 
                     builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            Intent goBack = new Intent(CreateGroup.this, MainActivity.class);
+                            Intent goBack = new Intent(CreateGroup.this, NavDrawerActivity.class);
                             goBack.putExtra("username", username);
                             startActivity(goBack);                }
                     });
@@ -93,15 +95,11 @@ public class CreateGroup extends AppCompatActivity {
 
                 } else {
                     if (!groupName.matches("") && !groupName.matches("Group Name")) {
-                        String groupKey = generateKey();
+                        final String groupKey = generateKey();
                         //CHECK TO SEE THAT KEY DOES NOT EXIST
                         DatabaseReference groupsRef = ref.child("groups");
                         Map<String, Object> group_info = new HashMap<String, Object>();
                         Map<String, Object> members = new HashMap<String, Object>();
-
-                        members.put("user1", new String(username));
-                        group_info.put("/" + groupKey + "/", new Group(groupName, members, 1));
-                        groupsRef.updateChildren(group_info);
 
                         // Set user's group boolean to true
                         DatabaseReference usersRef = ref.child("users").child(username);
@@ -109,6 +107,16 @@ public class CreateGroup extends AppCompatActivity {
                         group_bool.put("/group/", new Boolean(true));
                         usersRef.updateChildren(group_bool);
 
+                        Map<String, Object> groupID = new HashMap<String, Object>();
+                        groupID.put("/groupID/", new String(groupKey));
+                        usersRef.updateChildren(groupID);
+
+                        Map<String, Object> user_content = (Map<String,Object>) dataSnapshot.getValue();
+                        user_content.put("groupID", groupKey);
+                        user_content.put("group", new Boolean(true));
+                        members.put(username, user_content );
+                        group_info.put("/" + groupKey + "/", new Group(groupName, members, 1));
+                        groupsRef.updateChildren(group_info);
 
                         Context context = view.getContext();
                         LinearLayout layout = new LinearLayout(context);
@@ -139,9 +147,17 @@ public class CreateGroup extends AppCompatActivity {
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(CreateGroup.this);
                         builder.setView(layout);
+                        builder.setNeutralButton("Copy key to clipboard", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("Copied", groupKey);
+                                clipboard.setPrimaryClip(clip);
+                            }
+                        });
                         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 Intent goBack = new Intent(CreateGroup.this, NavDrawerActivity.class);
+                                goBack.putExtra("username", username);
                                 startActivity(goBack);
                             }
                         });
@@ -150,7 +166,7 @@ public class CreateGroup extends AppCompatActivity {
 
                             @Override
                             public void onDismiss(DialogInterface dialog) {
-                                Intent goBack = new Intent(CreateGroup.this, MainActivity.class);
+                                Intent goBack = new Intent(CreateGroup.this, NavDrawerActivity.class);
                                 goBack.putExtra("username", username);
                                 startActivity(goBack);
                             }
@@ -225,7 +241,9 @@ public class CreateGroup extends AppCompatActivity {
 //    }
 
     public void cancelCreateGroup(View view){
-        Intent goBack = new Intent(this, MainActivity.class);
+        Intent goBack = new Intent(this, NavDrawerActivity.class);
+        Bundle extras = getIntent().getExtras();
+        goBack.putExtra("username",  extras.getString("username") );
         startActivity(goBack);
     }
 }

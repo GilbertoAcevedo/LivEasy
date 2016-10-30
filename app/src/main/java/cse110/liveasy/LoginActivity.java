@@ -23,6 +23,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import cse110.liveasy.R;
 
@@ -32,7 +40,9 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
-    @Bind(R.id.input_email) EditText _emailText;
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference ref = database.getReference();
+
     @Bind(R.id.input_username) EditText _usernameText;
     @Bind(R.id.input_password) EditText _passwordText;
     @Bind(R.id.btn_login) Button _loginButton;
@@ -107,62 +117,11 @@ public class LoginActivity extends AppCompatActivity {
 
         _loginButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
-                R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Signing In...");
-        progressDialog.show();
 
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
-
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
-
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithEmail:failed", task.getException());
-
-                            progressDialog.dismiss();
-
-                            onLoginFailed();
-
-                        }
-                        else {
-                            new android.os.Handler().postDelayed(
-                                    new Runnable() {
-                                        public void run() {
-                                            // On complete call either onLoginSuccess or onLoginFailed
-                                            onLoginSuccess();
-                                            // onLoginFailed();
-                                            progressDialog.dismiss();
-                                        }
-                                    }, 3000);
-                        }
-
-                    }
-                });
-
+        validateUser();
 
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_SIGNUP) {
-            if (resultCode == RESULT_OK) {
-
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
-                this.finish();
-            }
-        }
-    }
 
     @Override
     public void onBackPressed() {
@@ -173,7 +132,9 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
 
-        Intent intent =new Intent(LoginActivity.this,MainActivity.class);
+
+
+        Intent intent =new Intent(LoginActivity.this,NavDrawerActivity.class);
         intent.putExtra("username", _usernameText.getText().toString());
         startActivity(intent);
         finish();
@@ -188,28 +149,101 @@ public class LoginActivity extends AppCompatActivity {
         _loginButton.setEnabled(true);
     }
 
+    public void validateUser(){
+
+        final String username = _usernameText.getText().toString();
+        DatabaseReference uRef = ref.child("users");
+        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Signing In...");
+        progressDialog.show();
+
+        System.out.println("This should print");
+
+        ValueEventListener listener = new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("This should print as well " + dataSnapshot.hasChild("/"+ username + "/"));
+                if(!dataSnapshot.hasChild("/"+ username + "/")){
+
+                    Log.w(TAG, "signInWithUsername:failed", new Exception("Wrong Username"));
+                    System.out.println("In listener not have child");
+
+                    progressDialog.dismiss();
+
+                    onLoginFailed();
+
+                } else {
+
+                    System.out.println("In listener ot ot");
+
+
+                    String email = (String) dataSnapshot.child(username).child("email").getValue();
+                    String password = _passwordText.getText().toString();
+
+                    mAuth.signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+
+                                    // If sign in fails, display a message to the user. If sign in succeeds
+                                    // the auth state listener will be notified and logic to handle the
+                                    // signed in user can be handled in the listener.
+                                    if (!task.isSuccessful()) {
+                                        Log.w(TAG, "signInWithEmail:failed", task.getException());
+
+                                        progressDialog.dismiss();
+
+                                        onLoginFailed();
+
+                                    }
+                                    else {
+                                        new android.os.Handler().postDelayed(
+                                                new Runnable() {
+                                                    public void run() {
+                                                        // On complete call either onLoginSuccess or onLoginFailed
+                                                        onLoginSuccess();
+                                                        // onLoginFailed();
+                                                        progressDialog.dismiss();
+                                                    }
+                                                }, 3000);
+                                    }
+
+                                }
+                            });
+
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+
+        uRef.addListenerForSingleValueEvent(listener);
+        uRef.removeEventListener(listener);
+
+    }
+
     public boolean validate() {
         boolean valid = true;
         String username = _usernameText.getText().toString();
-        String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
         if (username.isEmpty()) {
-            _emailText.setError("enter a username");
+            _usernameText.setError("enter a username");
             valid = false;
         } else {
-            _emailText.setError(null);
+            _usernameText.setError(null);
         }
 
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
-            valid = false;
-        } else {
-            _emailText.setError(null);
-        }
-
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+        if (password.isEmpty() || password.length() < 8 || password.length() > 16) {
+            _passwordText.setError("between 8 and 16 alphanumeric characters");
             valid = false;
         } else {
             _passwordText.setError(null);

@@ -13,16 +13,10 @@
     tools:context="cse110.liveasy.NavDrawerActivity"
     tools:showIn="@layout/app_bar_nav_drawer">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_image"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        android:src="@drawable/woodie"
-        app:civ_border_width="2dp"
-        app:civ_border_color="#FF000000"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="33dp" />
+<FrameLayout
+    android:id="@+id/content_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
 
 
 </RelativeLayout>

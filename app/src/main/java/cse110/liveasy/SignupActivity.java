@@ -181,7 +181,7 @@ public class SignupActivity extends AppCompatActivity {
 
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
-        Intent intent = new Intent(SignupActivity.this,MainActivity.class);
+        Intent intent = new Intent(SignupActivity.this,NavDrawerActivity.class);
         intent.putExtra("username", username);
         startActivity(intent);
         finish();
@@ -239,14 +239,14 @@ public class SignupActivity extends AppCompatActivity {
             _mobileText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+        if (password.isEmpty() || password.length() < 8 || password.length() > 16) {
+            _passwordText.setError("between 8 and 16 alphanumeric characters");
             valid = false;
         } else {
             _passwordText.setError(null);
         }
 
-        if (reEnterPassword.isEmpty() || reEnterPassword.length() < 4 || reEnterPassword.length() > 10 || !(reEnterPassword.equals(password))) {
+        if (reEnterPassword.isEmpty() || reEnterPassword.length() < 8 || reEnterPassword.length() > 16 || !(reEnterPassword.equals(password))) {
             _reEnterPasswordText.setError("Password Do not match");
             valid = false;
         } else {
