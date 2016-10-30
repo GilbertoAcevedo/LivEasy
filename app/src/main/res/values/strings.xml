@@ -11,4 +11,6 @@
     <string name="action_settings">Settings</string>
     <string name="signup_option"><u>No account yet? Create one.</u></string>
     <string name="login_option"><u>Already a member? Login.</u></string>
+    <string name="title_activity_join_group">JoinGroup</string>
+    <string name="title_activity_home_screen">HomeScreen</string>
 </resources>
