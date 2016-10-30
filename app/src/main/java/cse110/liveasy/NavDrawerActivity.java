@@ -49,9 +49,6 @@ public class NavDrawerActivity extends AppCompatActivity
         Bundle extras = getIntent().getExtras();
         username = extras.getString("username");
 
-
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -240,11 +237,11 @@ public class NavDrawerActivity extends AppCompatActivity
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Map<String, Object> group_content =  (Map<String, Object>)dataSnapshot.child("members").getValue();
-                    ArrayList<String> pending =  (ArrayList<String>) dataSnapshot.child("pending").getValue();
+                    //ArrayList<String> pending =  (ArrayList<String>) dataSnapshot.child("pending").getValue();
 
                     // Update each user's info
                     group.members = group_content;
-                    group.pending = new ArrayList<String>();
+                    //group.pending = new ArrayList<String>();
 
                 }
 

@@ -35,8 +35,8 @@ public class ManageRequests extends AppCompatActivity {
             System.out.println(key + " = \"" + extras.get(key) + "\"");
         }
 
-        ArrayList<String> temp = (ArrayList<String>)extras.get("pending");
-        System.out.println("list..: " + extras.get("pending"));
+        ArrayList<String> temp = extras.getStringArrayList("pending");
+        System.out.println("list..: " + extras.getStringArrayList("pending"));
         listItems = extras.getStringArrayList("pending");
 
         adapter = new ArrayAdapter<String>(this,

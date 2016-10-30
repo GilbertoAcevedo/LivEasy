@@ -15,6 +15,8 @@ public class Group {
     public ArrayList<String> pending;
 
     public Group(){
+        this.pending = new ArrayList<String>();
+        num_users = 1;
     }
 
     public Group(String name, Map<String, Object> members, int num_users){
