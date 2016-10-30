@@ -36,7 +36,7 @@ public class ManageRequests extends AppCompatActivity {
         }
 
         ArrayList<String> temp = extras.getStringArrayList("pending");
-        System.out.println("list..: " + extras.getStringArrayList("pending"));
+        System.out.println("list..: " + extras.getStringArrayList("pending").get(0));
         listItems = extras.getStringArrayList("pending");
 
         adapter = new ArrayAdapter<String>(this,
@@ -52,6 +52,7 @@ public class ManageRequests extends AppCompatActivity {
         else{
             System.out.println("notnul");
             pendingList.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
         }
 
     }

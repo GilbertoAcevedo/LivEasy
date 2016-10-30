@@ -63,7 +63,7 @@ public class NavDrawerActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         displayScreen();
-        updateGroup();
+        System.out.println("In Oncreate user has group "+user.group);
     }
 
     @Override
@@ -143,7 +143,6 @@ public class NavDrawerActivity extends AppCompatActivity
     private void displayScreen(){
 
         DatabaseReference uRef = ref.child("users").child(username);
-        System.out.println("Username: " + username);
 
 
         ValueEventListener listener = new ValueEventListener() {
@@ -156,11 +155,14 @@ public class NavDrawerActivity extends AppCompatActivity
                 String user_email = (String) dataSnapshot.child("email").getValue();
                 String user_phone_number = (String) dataSnapshot.child("phone_number").getValue();
                 String user_full_name = (String) dataSnapshot.child("full_name").getValue();
+                System.out.println("From database user has group "+user_has_group.booleanValue());
                 user.groupID = user_group_id;
-                user.group = user_has_group;
+                user.group = user_has_group.booleanValue();
                 user.email = user_email;
                 user.phone_number = user_phone_number;
                 user.full_name= user_full_name;
+
+                updateGroup();
 
                 System.err.print("\n User contents " + user_has_group);
 
@@ -230,6 +232,7 @@ public class NavDrawerActivity extends AppCompatActivity
     }
 
     public void updateGroup(){
+        System.out.println("USER HAS GROUP "+user.group);
         if(user.group) {
             DatabaseReference gRef = ref.child("groups").child(user.groupID);
             ValueEventListener listener = new ValueEventListener() {
@@ -237,11 +240,11 @@ public class NavDrawerActivity extends AppCompatActivity
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Map<String, Object> group_content =  (Map<String, Object>)dataSnapshot.child("members").getValue();
-                    //ArrayList<String> pending =  (ArrayList<String>) dataSnapshot.child("pending").getValue();
+                    ArrayList<String> pending =  (ArrayList<String>) dataSnapshot.child("pending").getValue();
 
                     // Update each user's info
                     group.members = group_content;
-                    //group.pending = new ArrayList<String>();
+                    group.pending = pending;
 
                 }
 

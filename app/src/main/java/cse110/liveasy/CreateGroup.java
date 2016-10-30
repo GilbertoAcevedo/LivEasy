@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -101,6 +102,7 @@ public class CreateGroup extends AppCompatActivity {
                         Map<String, Object> group_info = new HashMap<String, Object>();
                         Map<String, Object> members = new HashMap<String, Object>();
 
+
                         // Set user's group boolean to true
                         DatabaseReference usersRef = ref.child("users").child(username);
                         Map<String, Object> group_bool = new HashMap<String, Object>();
@@ -117,6 +119,12 @@ public class CreateGroup extends AppCompatActivity {
                         members.put(username, user_content );
                         group_info.put("/" + groupKey + "/", new Group(groupName, members, 1));
                         groupsRef.updateChildren(group_info);
+
+                        ArrayList<String> pending = new ArrayList<String>();
+                        Map<String, Object> pending_folder = new HashMap<String, Object>();
+                        pending.add("sluna");
+                        pending_folder.put("/pending/", pending);
+                        groupsRef.child(groupKey).updateChildren(pending_folder);
 
                         Context context = view.getContext();
                         LinearLayout layout = new LinearLayout(context);
