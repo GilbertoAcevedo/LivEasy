@@ -256,4 +256,9 @@ public class SignupActivity extends AppCompatActivity {
         return valid;
     }
 
+    public void toMainPage(View view) {
+        Intent intent = new Intent(this, MainPage2.class);
+        startActivity(intent);
+    }
+
 }
