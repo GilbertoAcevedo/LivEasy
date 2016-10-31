@@ -54,12 +54,6 @@
             android:label="@string/title_activity_join_group"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".HomeScreen"
-            android:label="@string/title_activity_home_screen"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-            android:label="&apos;Group Name&apos;"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".ManageRequests"
             android:label="Manage Requests"/>
     </application>

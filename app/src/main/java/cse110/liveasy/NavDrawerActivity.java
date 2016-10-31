@@ -235,6 +235,15 @@ public class NavDrawerActivity extends AppCompatActivity
         startActivity(goToCreateGroup);
     }
 
+    public void goToJoinGroup(View view){
+        System.out.println("****************************");
+        Bundle extras = this.getIntent().getExtras();
+        Intent goToJoinGroup = new Intent(this, JoinGroup.class);
+        goToJoinGroup.putExtra("username", (String)extras.getString("username"));
+        startActivity(goToJoinGroup);
+
+    }
+
     public void updateGroup(){
         System.out.println("USER HAS GROUP "+user.group);
         if(user.group) {

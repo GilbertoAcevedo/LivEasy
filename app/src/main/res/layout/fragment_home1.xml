@@ -36,6 +36,21 @@
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:onClick="goToCreateGroup"/>
+
+        <Button
+            android:text="Join Group"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/JoinGroup"
+            android:layout_below="@+id/button_creategroup"
+            android:layout_alignLeft="@+id/button_creategroup"
+            android:layout_alignStart="@+id/button_creategroup"
+            android:layout_alignRight="@+id/button_creategroup"
+            android:layout_alignEnd="@+id/button_creategroup"
+            android:onClick="goToJoinGroup"/>
+
+
     </RelativeLayout>
 
 </FrameLayout>
