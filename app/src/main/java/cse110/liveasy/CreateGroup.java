@@ -122,7 +122,7 @@ public class CreateGroup extends AppCompatActivity {
 
                         ArrayList<String> pending = new ArrayList<String>();
                         Map<String, Object> pending_folder = new HashMap<String, Object>();
-                        pending.add("sluna");
+                        pending.add("");
                         pending_folder.put("/pending/", pending);
                         groupsRef.child(groupKey).updateChildren(pending_folder);
 

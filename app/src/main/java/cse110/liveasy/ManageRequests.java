@@ -56,7 +56,7 @@ public class ManageRequests extends AppCompatActivity {
 
         layout.addView(title);
 
-        for( int index = 0; index < listItems.size(); index++ ) {
+        for( int index = 1; index < listItems.size(); index++ ) {
 
             LinearLayout inner_layout = new LinearLayout(this);
 
