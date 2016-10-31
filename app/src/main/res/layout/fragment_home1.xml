@@ -26,7 +26,8 @@
             app:civ_border_color="#FF000000"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="33dp" />
+            android:layout_marginTop="33dp"
+            android:onClick="toProfilePopup"/>
 
         <Button
             android:text="Create Group"

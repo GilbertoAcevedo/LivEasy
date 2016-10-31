@@ -54,6 +54,7 @@ public class NavDrawerActivity extends AppCompatActivity
         setContentView(R.layout.activity_nav_drawer);
         Bundle extras = getIntent().getExtras();
         username = extras.getString("username");
+        System.out.println("asdfsadfasdf " + username);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -195,6 +196,9 @@ public class NavDrawerActivity extends AppCompatActivity
                                 case 3:
                                     fragment = new Home3();
                                     break;
+                                case 4:
+                                    fragment = new Home4();
+                                    break;
                             }
 
                             if(fragment != null){
@@ -300,11 +304,17 @@ public class NavDrawerActivity extends AppCompatActivity
 //    }
     public void toProfilePopup(View view) {
 
+        //get info for which photo was clicked on
+
+
+
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = (this).getLayoutInflater();
+
         View dialog_view = inflater.inflate(R.layout.activity_popup_profile, null);
-        TextView name = (TextView)findViewById(R.id.textView2);
-        name.setText(username);
+        TextView users_name = (TextView)dialog_view.findViewById(R.id.textView2);
+
+        users_name.setText(username);
         builder.setPositiveButton(R.string.go_back, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
 
@@ -321,6 +331,37 @@ public class NavDrawerActivity extends AppCompatActivity
 
         builder.setView(dialog_view);
         builder.create().show();
+
+    }
+
+    public void toGroupProfilePopup(View view) {
+
+
+        final AlertDialog.Builder group_builder = new AlertDialog.Builder(this);
+        LayoutInflater group_inflater = (this).getLayoutInflater();
+        View group_dialog_view = group_inflater.inflate(R.layout.activity_popup_group_profile, null);
+
+        TextView groups_name = (TextView) group_dialog_view.findViewById(R.id.textView2);
+        groups_name.setText(group.name);
+
+        group_builder.setPositiveButton(R.string.go_back, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+            }
+        });
+
+        group_builder.setNegativeButton(R.string.go_profile, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Intent goProfile = new Intent(NavDrawerActivity.this, GroupProfileActivity.class);
+                goProfile.putExtra("username", username);
+                goProfile.putExtra("groupName", group.name);
+                startActivity(goProfile);
+            }
+        });
+
+        group_builder.setView(group_dialog_view);
+        group_builder.create().show();
+
 
     }
 

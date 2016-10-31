@@ -7,12 +7,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
+import cse110.liveasy.R;
 
 
-public class Home2 extends Fragment {
+public class Home4 extends Fragment {
 
-    public Home2() {
+    public Home4() {
         // Required empty public constructor
     }
 
@@ -20,8 +21,8 @@ public class Home2 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        return inflater.inflate(R.layout.fragment_home2, container, false);
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_home4, container, false);
     }
 
 }

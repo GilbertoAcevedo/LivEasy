@@ -20,11 +20,11 @@ public class GroupProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_profile);
 
+        extras = getIntent().getExtras();
 
-        getSupportActionBar().setTitle("Group Name");
+        getSupportActionBar().setTitle((String)extras.get("groupName"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        extras = getIntent().getExtras();
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
