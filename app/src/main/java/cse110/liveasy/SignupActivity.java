@@ -19,8 +19,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 import java.util.HashMap;
@@ -110,60 +113,87 @@ public class SignupActivity extends AppCompatActivity {
     public void signup() {
         Log.d(TAG, "Signup");
 
-        if (!validate()) {
-            onSignupFailed();
-            return;
-        }
-
-        _signupButton.setEnabled(false);
-
         final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Creating Account...");
-        progressDialog.show();
+
+        if (!validate()) {
+            return;
+        } else {
+
+            progressDialog.show();
+
+        }
+
+        _signupButton.setEnabled(false);
 
 
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        final String email = _emailText.getText().toString();
+        final String password = _passwordText.getText().toString();
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference uref = database.getReference().child("users");
+
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                boolean user_exists = dataSnapshot.hasChild(_usernameText.getText().toString());
+
+                if(!user_exists) {
+
+                    // [START create_user_with_email]
+                    mAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+
+                                    // If sign in fails, display a message to the user. If sign in succeeds
+                                    // the auth state listener will be notified and logic to handle the
+                                    // signed in user can be handled in the listener.
+                                    if (!task.isSuccessful()) {
+                                        progressDialog.dismiss();
+
+                                        onSignupFailed("Email is already associated with an account");
+                                    }
+                                    else{
+                                        new android.os.Handler().postDelayed(
+                                                new Runnable() {
+                                                    public void run() {
+                                                        // On complete call either onSignupSuccess or onSignupFailed
+                                                        // depending on success
+                                                        onSignupSuccess();
+                                                        // onSignupFailed();
+                                                        progressDialog.dismiss();
+                                                    }
+                                                }, 3000);
+                                    }
 
 
-        // [START create_user_with_email]
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            progressDialog.dismiss();
-
-                            onSignupFailed();
-                        }
-                        else{
-                            new android.os.Handler().postDelayed(
-                                    new Runnable() {
-                                        public void run() {
-                                            // On complete call either onSignupSuccess or onSignupFailed
-                                            // depending on success
-                                            onSignupSuccess();
-                                            // onSignupFailed();
-                                            progressDialog.dismiss();
-                                        }
-                                    }, 3000);
-                        }
+                                }
+                            });
+                    // [END create_user_with_email]
 
 
-                    }
-                });
-        // [END create_user_with_email]
+                } else {
+
+                    onSignupFailed("User name already exists. Please enter another.");
+                    progressDialog.dismiss();
+                }
 
 
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        uref.addListenerForSingleValueEvent(listener);
+        uref.removeEventListener(listener);
     }
-
 
     public void onSignupSuccess() {
 
@@ -187,8 +217,8 @@ public class SignupActivity extends AppCompatActivity {
         finish();
     }
 
-    public void onSignupFailed() {
-        Toast toast = Toast.makeText(SignupActivity.this, "Sign Up Failed. Please try again.",
+    public void onSignupFailed(String message) {
+        Toast toast = Toast.makeText(SignupActivity.this, message,
                 Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER,0,0);
         toast.show();
@@ -208,10 +238,12 @@ public class SignupActivity extends AppCompatActivity {
 
         if (username.isEmpty() || username.length() < 3) {
             _usernameText.setError("at least 3 characters");
+            onSignupFailed("User name must be least 3 characters");
             valid = false;
         }
         else if(username.contains(" ")){
             _usernameText.setError("username must not contain spaces");
+            onSignupFailed("User name must not contain spaces");
             valid = false;
         }else {
             _usernameText.setError(null);
@@ -219,6 +251,7 @@ public class SignupActivity extends AppCompatActivity {
 
         if (name.isEmpty() || name.length() < 3) {
             _nameText.setError("at least 3 characters");
+            onSignupFailed("Name must be at least 3 characters");
             valid = false;
         } else {
             _nameText.setError(null);
@@ -227,6 +260,7 @@ public class SignupActivity extends AppCompatActivity {
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             _emailText.setError("enter a valid email address");
+            onSignupFailed("Please enter a valid email address");
             valid = false;
         } else {
             _emailText.setError(null);
@@ -234,20 +268,24 @@ public class SignupActivity extends AppCompatActivity {
 
         if (mobile.isEmpty() || mobile.length()!=10) {
             _mobileText.setError("Enter Valid Mobile Number");
+            onSignupFailed("Please enter a phone number in the format 0123456789");
             valid = false;
         } else {
             _mobileText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 8 || password.length() > 16) {
-            _passwordText.setError("between 8 and 16 alphanumeric characters");
+            _passwordText.setError("between 8 and 16 characters");
+            onSignupFailed("Password must be between 8 and 16 characters");
             valid = false;
         } else {
             _passwordText.setError(null);
         }
 
         if (reEnterPassword.isEmpty() || reEnterPassword.length() < 8 || reEnterPassword.length() > 16 || !(reEnterPassword.equals(password))) {
-            _reEnterPasswordText.setError("Password Do not match");
+            _reEnterPasswordText.setError("Passwords Do not match");
+            onSignupFailed("Passwords must match");
+
             valid = false;
         } else {
             _reEnterPasswordText.setError(null);

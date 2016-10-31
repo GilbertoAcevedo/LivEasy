@@ -63,6 +63,9 @@ public class NavDrawerActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         displayScreen();
+
+        getSupportActionBar().setTitle(username);
+
         System.out.println("In Oncreate user has group "+user.group);
     }
 
@@ -241,10 +244,18 @@ public class NavDrawerActivity extends AppCompatActivity
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Map<String, Object> group_content =  (Map<String, Object>)dataSnapshot.child("members").getValue();
                     ArrayList<String> pending =  (ArrayList<String>) dataSnapshot.child("pending").getValue();
+                    String gname = (String) dataSnapshot.child("name").getValue();
+                    Long gnum = (Long) dataSnapshot.child("num_users").getValue();
 
                     // Update each user's info
                     group.members = group_content;
                     group.pending = pending;
+                    group.name = gname;
+                    group.num_users = gnum.intValue();
+
+                    if( user.group ) {
+                        getSupportActionBar().setTitle(group.name);
+                    }
 
                 }
 
