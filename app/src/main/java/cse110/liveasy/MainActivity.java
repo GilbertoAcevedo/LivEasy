@@ -25,4 +25,11 @@ public class MainActivity extends AppCompatActivity {
 
         startActivity(goToCreateGroup);
     }
+
+    public void goToJoinGroup(View view){
+
+        Intent goToJoinGroup = new Intent(this, JoinGroup.class);
+
+        startActivity(goToJoinGroup);
+    }
 }
