@@ -27,7 +27,7 @@ public class Home1 extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home1, container, false);
 
         if( ((NavDrawerActivity)getActivity()).user.group ) {
-            Button button = (Button) view.findViewById(R.id.button3);
+            Button button = (Button) view.findViewById(R.id.button_creategroup);
             button.setVisibility(View.GONE);
         }
 
