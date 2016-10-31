@@ -10,6 +10,7 @@ public class User {
     public String phone_number;
     public String email;
     public boolean group;
+    public boolean isPending;
     public String groupID;
 
 
@@ -19,6 +20,7 @@ public class User {
         this.email = email;
         this.group = group;
         this.groupID = "";
+        this.isPending = false;
     }
 
     public User() {

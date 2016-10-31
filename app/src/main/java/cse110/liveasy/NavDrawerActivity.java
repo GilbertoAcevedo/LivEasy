@@ -165,12 +165,14 @@ public class NavDrawerActivity extends AppCompatActivity
                 String user_email = (String) dataSnapshot.child("email").getValue();
                 String user_phone_number = (String) dataSnapshot.child("phone_number").getValue();
                 String user_full_name = (String) dataSnapshot.child("full_name").getValue();
+                Boolean user_isPending = (Boolean) dataSnapshot.child("isPending").getValue();
                 System.out.println("From database user has group "+user_has_group.booleanValue());
                 user.groupID = user_group_id;
                 user.group = user_has_group.booleanValue();
                 user.email = user_email;
                 user.phone_number = user_phone_number;
                 user.full_name= user_full_name;
+                user.isPending = user_isPending;
 
                 updateGroup();
 
@@ -204,7 +206,7 @@ public class NavDrawerActivity extends AppCompatActivity
                             if(fragment != null){
                                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                                 ft.replace(R.id.content_frame, fragment);
-                                ft.commit();
+                                ft.commitAllowingStateLoss();
                             }
 
                             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -222,7 +224,7 @@ public class NavDrawerActivity extends AppCompatActivity
                     Fragment fragment = new Home1();
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     ft.replace(R.id.content_frame, fragment);
-                    ft.commit();
+                    ft.commitAllowingStateLoss();
                 }
             }
 

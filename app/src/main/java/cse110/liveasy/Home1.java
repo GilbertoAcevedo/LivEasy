@@ -26,11 +26,12 @@ public class Home1 extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_home1, container, false);
 
-        if( ((NavDrawerActivity)getActivity()).user.group ) {
+        if( ((NavDrawerActivity)getActivity()).user.group || ((NavDrawerActivity)getActivity()).user.isPending ) {
             Button createButton = (Button) view.findViewById(R.id.button_creategroup);
             createButton.setVisibility(View.GONE);
             Button joinButton = (Button) view.findViewById(R.id.JoinGroup);
             joinButton.setVisibility(View.GONE);
+
         }
 
         // Inflate the layout for this fragment
