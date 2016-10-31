@@ -46,6 +46,9 @@ public class JoinGroup extends AppCompatActivity {
 
         FirebaseDatabase ref = FirebaseDatabase.getInstance();
         final DatabaseReference gRef = ref.getReference().child("groups");
+
+        final DatabaseReference uRef = ref.getReference().child("users").child(username);
+
         final View tempView = view;
 
         ValueEventListener listener = new ValueEventListener() {
@@ -59,8 +62,11 @@ public class JoinGroup extends AppCompatActivity {
                     ArrayList<String> current = (ArrayList<String>) dataSnapshot.child(groupKey).child("pending").getValue();
                     System.out.println("after getting current: " + current.toString());
                     current.add(username);
-                    System.out.println("after adding: "+ current.toString() + " \n username: "
-                    + username);
+
+                    Map<String, Object> user_pending = new HashMap<String, Object>();
+
+                    user_pending.put("/isPending/", new Boolean(true));
+                    uRef.updateChildren(user_pending);
 
                     Map<String,Object> map = new HashMap<String,Object>();
                     map.put("pending", current);
