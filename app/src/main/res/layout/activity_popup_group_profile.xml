@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <include layout="@layout/content_profile" />
-
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
@@ -28,26 +26,29 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_image"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:paddingTop="10dp"
-                android:src="@drawable/woodie"
+                android:layout_height="165dp"
+                android:src="@drawable/mansion"
                 app:civ_border_width="2dp"
                 app:civ_border_color="#FF000000"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7" />
 
-            <!--<TextView
-                android:text="Name"
+            <TextView
+                android:text="Group Name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/textView2"
                 android:gravity="bottom|center"
                 android:paddingBottom="10dp"
                 android:textAppearance="@android:style/TextAppearance.Material.Large"
-                tools:targetApi="lollipop" />-->
+                tools:targetApi="lollipop" />
 
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_group_profile" />
+
+
 
 </android.support.design.widget.CoordinatorLayout>

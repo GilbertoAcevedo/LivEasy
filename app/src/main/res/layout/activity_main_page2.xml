@@ -36,7 +36,21 @@
         android:layout_toStartOf="@+id/profile_image"
         android:onClick="toProfilePopup"/>
 
-    <ListView
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/circleImageView3"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/mansion"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FF000000"
+        android:layout_below="@+id/profile_image"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="22dp"
+        android:layout_marginEnd="22dp"
+        android:onClick="toGroupProfilePopup"/>
+
+    <!--<ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -44,7 +58,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
-    </ListView>
+    </ListView>-->
 
 
 </RelativeLayout>

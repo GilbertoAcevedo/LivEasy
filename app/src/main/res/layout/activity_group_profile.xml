@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <include layout="@layout/content_profile" />
+    <include layout="@layout/content_group_profile" />
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -30,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:paddingTop="10dp"
-                android:src="@drawable/woodie"
+                android:src="@drawable/mansion"
                 app:civ_border_width="2dp"
                 app:civ_border_color="#FF000000"
                 app:layout_collapseMode="parallax"

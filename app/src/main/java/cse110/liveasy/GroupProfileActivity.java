@@ -11,17 +11,17 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class ProfileActivity extends AppCompatActivity {
+public class GroupProfileActivity extends AppCompatActivity {
 
     Bundle extras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_group_profile);
 
 
-        getSupportActionBar().setTitle("Name");
+        getSupportActionBar().setTitle("Group Name");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         extras = getIntent().getExtras();

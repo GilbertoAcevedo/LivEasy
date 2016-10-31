@@ -15,7 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 
-public class MainPage2 extends ListActivity {
+public class MainPage2 extends AppCompatActivity {
 
 
 
@@ -24,14 +24,13 @@ public class MainPage2 extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page2);
 
-        String[] activities = {"Duke added Gerardo", "Gerardo added Sergio"};
+        /*String[] activities = {"Duke added Gerardo", "Gerardo added Sergio"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getListView().getContext(), android.R.layout.simple_expandable_list_item_1, activities);
-        getListView().setAdapter(adapter);
+        getListView().setAdapter(adapter);*/
     }
 
     public void toProfilePopup(View view) {
-        /*Intent intent = new Intent(this, MainPage3.class);
-        startActivity(intent);*/
+
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(MainPage2.this);
         LayoutInflater inflater = (MainPage2.this).getLayoutInflater();
@@ -39,8 +38,7 @@ public class MainPage2 extends ListActivity {
 
         builder.setPositiveButton(R.string.go_back, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                Intent goBack = new Intent(MainPage2.this, MainPage2.class);
-                startActivity(goBack);
+
             }
         });
 
@@ -53,8 +51,31 @@ public class MainPage2 extends ListActivity {
 
         builder.setView(dialog_view);
         builder.create().show();
-//        builder.setView(findViewById(R.id.activity_splash));
-//        builder.create().show();
+
+    }
+
+    public void toGroupProfilePopup(View view) {
+
+        final AlertDialog.Builder group_builder = new AlertDialog.Builder(MainPage2.this);
+        LayoutInflater group_inflater = (MainPage2.this).getLayoutInflater();
+        View group_dialog_view = group_inflater.inflate(R.layout.activity_popup_group_profile, null);
+
+        group_builder.setPositiveButton(R.string.go_back, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+            }
+        });
+
+        group_builder.setNegativeButton(R.string.go_profile, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Intent goProfile = new Intent(MainPage2.this, GroupProfileActivity.class);
+                startActivity(goProfile);
+            }
+        });
+
+        group_builder.setView(group_dialog_view);
+        group_builder.create().show();
+
 
     }
 

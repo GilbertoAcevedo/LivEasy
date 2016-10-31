@@ -10,7 +10,7 @@ import android.view.View;
  * Created by Duke Lin on 10/30/2016.
  */
 
-public class PopupProfile extends AppCompatActivity {
+public class GroupPopupProfile extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
