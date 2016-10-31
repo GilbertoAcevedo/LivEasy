@@ -13,4 +13,6 @@
     <string name="login_option"><u>Already a member? Login.</u></string>
     <string name="title_activity_join_group">JoinGroup</string>
     <string name="title_activity_home_screen">HomeScreen</string>
+    <string name="go_back">OK</string>
+    <string name="go_profile">PROFILE</string>
 </resources>

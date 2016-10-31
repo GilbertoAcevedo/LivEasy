@@ -21,7 +21,8 @@
         android:layout_marginTop="22dp"
         android:layout_alignTop="@+id/profile_image3"
         android:layout_toLeftOf="@+id/profile_image"
-        android:layout_toStartOf="@+id/profile_image" />
+        android:layout_toStartOf="@+id/profile_image"
+        android:onClick="toProfilePopup"/>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image"
@@ -33,7 +34,7 @@
         android:layout_marginTop="41dp"
         android:layout_alignTop="@+id/profile_image2"
         android:layout_centerHorizontal="true"
-        android:clickable='true'/>
+        android:onClick="toProfilePopup"/>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image3"
@@ -47,6 +48,20 @@
         android:layout_marginTop="17dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:onClick="toProfilePopup"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/circleImageView2"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/mansion"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FF000000"
+        android:onClick="toProfilePopup"
+        android:layout_marginTop="19dp"
+        android:layout_below="@+id/profile_image"
+        android:layout_alignLeft="@+id/profile_image"
+        android:layout_alignStart="@+id/profile_image" />
 
 </RelativeLayout>

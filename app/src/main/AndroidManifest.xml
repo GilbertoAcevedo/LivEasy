@@ -56,6 +56,19 @@
         <activity
             android:name=".ManageRequests"
             android:label="Manage Requests"/>
+
+        <!-- Profile Activity -->
+        <activity
+            android:name=".ProfileActivity"
+            android:label="@string/app_name">
+        </activity>
+
+        <!-- Group Profile Activity -->
+        <activity
+            android:name=".GroupProfileActivity"
+            android:label="@string/app_name">
+        </activity>
+
     </application>
 
 </manifest>
