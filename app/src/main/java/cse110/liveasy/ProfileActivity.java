@@ -20,11 +20,11 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        extras = getIntent().getExtras();
 
-        getSupportActionBar().setTitle("Name");
+        getSupportActionBar().setTitle((String)extras.get("username"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        extras = getIntent().getExtras();
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item)

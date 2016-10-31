@@ -53,7 +53,7 @@ public class JoinGroup extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //if key is valid
                 System.out.println("before if statement");
-                if((Boolean)dataSnapshot.hasChild(groupKey)){
+                if(!groupKey.equals("") && (Boolean)dataSnapshot.hasChild(groupKey)){
                     //add to pending in group
                     System.out.println("in if statement");
                     ArrayList<String> current = (ArrayList<String>) dataSnapshot.child(groupKey).child("pending").getValue();

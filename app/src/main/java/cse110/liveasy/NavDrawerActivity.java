@@ -1,9 +1,12 @@
 package cse110.liveasy;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -26,6 +29,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -184,6 +189,12 @@ public class NavDrawerActivity extends AppCompatActivity
                                 case 1:
                                     fragment = new Home1();
                                     break;
+                                case 2:
+                                    fragment = new Home2();
+                                    break;
+                                case 3:
+                                    fragment = new Home3();
+                                    break;
                             }
 
                             if(fragment != null){
@@ -277,6 +288,40 @@ public class NavDrawerActivity extends AppCompatActivity
             gRef.addValueEventListener(listener);
 
         }
+    }
+
+
+    /***********************************************************/
+//    public void clickGoToProfile(View view) {
+//        Bundle extras = getIntent().getExtras();
+//        Intent goToProfile = new Intent(this, ProfileActivity.class);
+//        goToProfile.putExtra("username", (String)extras.get("username"));
+//        startActivity(goToProfile);
+//    }
+    public void toProfilePopup(View view) {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = (this).getLayoutInflater();
+        View dialog_view = inflater.inflate(R.layout.activity_popup_profile, null);
+        TextView name = (TextView)findViewById(R.id.textView2);
+        name.setText(username);
+        builder.setPositiveButton(R.string.go_back, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+            }
+        });
+
+        builder.setNegativeButton(R.string.go_profile, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Intent goProfile = new Intent(NavDrawerActivity.this, ProfileActivity.class);
+                goProfile.putExtra("username", username);
+                startActivity(goProfile);
+            }
+        });
+
+        builder.setView(dialog_view);
+        builder.create().show();
+
     }
 
 }
