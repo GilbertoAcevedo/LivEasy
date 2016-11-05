@@ -4,6 +4,8 @@ import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.sip.SipAudioCall;
+import android.renderscript.Sampler;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,9 +20,18 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ManageRequests extends AppCompatActivity {
     ArrayList<String> listItems = new ArrayList<String>();
@@ -32,6 +43,7 @@ public class ManageRequests extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_requests);
+
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -58,7 +70,7 @@ public class ManageRequests extends AppCompatActivity {
 
         for( int index = 1; index < listItems.size(); index++ ) {
 
-            LinearLayout inner_layout = new LinearLayout(this);
+            final LinearLayout inner_layout = new LinearLayout(this);
 
             TextView user = new TextView(this);
             user.setText(listItems.get(index));
@@ -74,13 +86,140 @@ public class ManageRequests extends AppCompatActivity {
 
             user.setLayoutParams(user_param);
 
+            final String currentUsername = listItems.get(index);
+
             Button accept = new Button(this);
             accept.setText("Accept");
             accept.setLayoutParams(button_param);
+            accept.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //find user
+                    final FirebaseDatabase ref = FirebaseDatabase.getInstance();
+                    final DatabaseReference uRef = ref.getReference().child("users").child(currentUsername);
+
+                    ValueEventListener userListener = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            final Map<String, Object> currentUserMap = (HashMap<String, Object>) dataSnapshot.getValue();
+
+                            if((boolean)currentUserMap.get("isPending")){
+                                Map<String, Object> updateUser = new HashMap<String, Object>();
+                                //set group to true
+                                updateUser.put("/group/", new Boolean(true));
+                                //set groupID to this group
+                                updateUser.put("/groupID/", extras.getString("groupKey"));
+                                //set pending to false
+                                updateUser.put("/isPending/", new Boolean(false));
+                                uRef.updateChildren(updateUser);
+
+                                final DatabaseReference gRef = ref.getReference().child("groups").child((String) extras.getString("groupKey"));
+                                ValueEventListener groupListener = new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot1) {
+                                        Map<String, Object> group = (HashMap<String, Object>) dataSnapshot1.getValue();
+
+                                        Map<String, Object> members = (HashMap<String, Object>) group.get("members");
+                                        members.put(currentUsername, currentUserMap);
+                                        group.put("members", members);
+
+                                        int currentCount = ((Long) (group.get("num_users"))).intValue();
+                                        currentCount++;
+                                        group.put("num_users", currentCount);
+
+                                        ArrayList<String> pending = (ArrayList<String>) dataSnapshot1.child("pending").getValue();
+                                        pending.remove(currentUsername);
+                                        group.put("pending", pending);
+                                        gRef.updateChildren(group);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                };
+                                gRef.addListenerForSingleValueEvent(groupListener);
+                                gRef.removeEventListener(groupListener);
+                            }
+                            else{
+                                Toast toast = Toast.makeText(ManageRequests.this, currentUsername+" is no longer pending",
+                                        Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.CENTER,0,0);
+                                toast.show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    };
+                    uRef.addListenerForSingleValueEvent(userListener);
+                    uRef.removeEventListener(userListener);
+
+                    inner_layout.setVisibility(LinearLayout.GONE);
+                }
+            });
 
             Button reject =  new Button(this);
             reject.setText("Reject");
             reject.setLayoutParams(button_param);
+            reject.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //find user
+                    final FirebaseDatabase ref = FirebaseDatabase.getInstance();
+                    final DatabaseReference uRef = ref.getReference().child("users").child(currentUsername);
+
+                    ValueEventListener userListener = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            final Map<String, Object> currentUserMap = (HashMap<String, Object>) dataSnapshot.getValue();
+
+                            if((boolean)currentUserMap.get("isPending")){
+                                Map<String, Object> updateUser = new HashMap<String, Object>();
+                                updateUser.put("/isPending/", new Boolean(false));
+                                uRef.updateChildren(updateUser);
+
+                                final DatabaseReference gRef = ref.getReference().child("groups").child((String) extras.getString("groupKey"));
+                                ValueEventListener groupListener = new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot1) {
+                                        Map<String, Object> group = (HashMap<String, Object>) dataSnapshot1.getValue();
+
+                                        ArrayList<String> pending = (ArrayList<String>) dataSnapshot1.child("pending").getValue();
+                                        pending.remove(currentUsername);
+                                        group.put("pending", pending);
+                                        gRef.updateChildren(group);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                };
+                                gRef.addListenerForSingleValueEvent(groupListener);
+                                gRef.removeEventListener(groupListener);
+                            }
+                            else{
+                                Toast toast = Toast.makeText(ManageRequests.this, currentUsername+" is no longer pending",
+                                        Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.CENTER,0,0);
+                                toast.show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    };
+                    uRef.addListenerForSingleValueEvent(userListener);
+                    uRef.removeEventListener(userListener);
+
+                    inner_layout.setVisibility(LinearLayout.GONE);
+                }
+            });
 
             inner_layout.addView(user, LinearLayout.LayoutParams.WRAP_CONTENT);
             inner_layout.addView(accept);
@@ -108,8 +247,31 @@ public class ManageRequests extends AppCompatActivity {
 
     }
 
+    public static void accept(String groupKey, String username){
 
+    }
 
+//    public static void getGroupKey(String username){
+//        FirebaseDatabase ref = FirebaseDatabase.getInstance();
+//        DatabaseReference uRef = ref.getReference().child("users").child(username);
+//
+//        final User user = new User();
+//        ValueEventListener listener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                groupKey = (String)dataSnapshot.child("groupID").getValue();
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        };
+//        uRef.addListenerForSingleValueEvent(listener);
+//        uRef.removeEventListener(listener);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)

@@ -137,6 +137,7 @@ public class NavDrawerActivity extends AppCompatActivity
             Intent goToRequests = new Intent(this, ManageRequests.class);
             goToRequests.putStringArrayListExtra("pending", group.pending);
             goToRequests.putExtra("username", getIntent().getExtras().getString("username"));
+            goToRequests.putExtra("groupKey", user.groupID);
             startActivity(goToRequests);
         }
         else if (id == R.id.logout){
