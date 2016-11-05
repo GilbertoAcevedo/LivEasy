@@ -140,9 +140,14 @@ public class ManageRequests extends AppCompatActivity {
                                 };
                                 gRef.addListenerForSingleValueEvent(groupListener);
                                 gRef.removeEventListener(groupListener);
+
+                                Toast toast = Toast.makeText(ManageRequests.this, currentUsername+" has been accepted",
+                                        Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.CENTER,0,0);
+                                toast.show();
                             }
                             else{
-                                Toast toast = Toast.makeText(ManageRequests.this, currentUsername+" is no longer pending",
+                                Toast toast = Toast.makeText(ManageRequests.this, currentUsername + " has previously been accepted or rejected",
                                         Toast.LENGTH_SHORT);
                                 toast.setGravity(Gravity.CENTER,0,0);
                                 toast.show();
@@ -200,9 +205,14 @@ public class ManageRequests extends AppCompatActivity {
                                 };
                                 gRef.addListenerForSingleValueEvent(groupListener);
                                 gRef.removeEventListener(groupListener);
+
+                                Toast toast = Toast.makeText(ManageRequests.this, currentUsername+" has been rejected",
+                                        Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.CENTER,0,0);
+                                toast.show();
                             }
                             else{
-                                Toast toast = Toast.makeText(ManageRequests.this, currentUsername+" is no longer pending",
+                                Toast toast = Toast.makeText(ManageRequests.this, currentUsername+" has previously been accepted or rejected",
                                         Toast.LENGTH_SHORT);
                                 toast.setGravity(Gravity.CENTER,0,0);
                                 toast.show();
