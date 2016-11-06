@@ -20,7 +20,8 @@
 
     <item android:title="Manage Group">
         <menu>
-            <item android:title="Manage Requests"
+            <item
+                android:title="Manage Requests"
                 android:id="@+id/manage_requests"
                 android:icon="@drawable/ic_menu_manage" />
             <item

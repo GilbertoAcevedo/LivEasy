@@ -3,9 +3,12 @@ package cse110.liveasy;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.renderscript.Sampler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.v4.app.Fragment;
@@ -21,6 +24,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,6 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +52,9 @@ public class NavDrawerActivity extends AppCompatActivity
     String username = "";
     final User user = new User();
     final Group group = new Group();
+    int pendingSize;
+    int memberCount;
+    int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,15 +188,20 @@ public class NavDrawerActivity extends AppCompatActivity
                 System.err.print("\n User contents " + user_has_group);
 
                 if (user_has_group) {
+                    System.out.println("ooooooooo");
+                    //notificationUp();
+
                     //This is the second listener for getting the number of members in the group
                     DatabaseReference gRef = ref.child("groups").child(user_group_id);
                     ValueEventListener listener2 = new ValueEventListener() {
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+
                             Fragment fragment = null;
                             Long num_users = (Long) dataSnapshot.child("num_users").getValue();
                             System.out.println("Number of Users: " + num_users);
+                            memberCount = num_users.intValue();
                             switch(num_users.intValue()) {
                                 case 1:
                                     fragment = new Home1();
@@ -283,7 +296,8 @@ public class NavDrawerActivity extends AppCompatActivity
 
                     if( user.group ) {
                         getSupportActionBar().setTitle(group.name);
-
+                        notificationUp();
+                        changeFragment();
                     }
 
                 }
@@ -366,6 +380,101 @@ public class NavDrawerActivity extends AppCompatActivity
         group_builder.create().show();
 
 
+    }
+
+    public void notificationUp() {
+        if (user.group) {
+            DatabaseReference pRef = ref.child("groups").child(user.groupID).child("pending");
+
+            ValueEventListener listener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    System.out.println("*************************" + (++count));
+                    ArrayList<String> list = (ArrayList<String>) dataSnapshot.getValue();
+                    NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                    Menu menu = navigationView.getMenu();
+                    MenuItem requestItem = menu.findItem(R.id.manage_requests);
+                    if(list.size() > 1) {
+                        requestItem.setTitle("Manage Requests (" + (list.size() - 1) + ")");
+
+                    }else{
+                        requestItem.setTitle("Manage Requests");
+                    }
+                    if (list.size() != pendingSize) {
+
+                        if(list.size() > 1) {
+                            System.out.println("before list size: " + list.size() + "\nbefore pendingSize: " + pendingSize);
+                            Toast toast = Toast.makeText(NavDrawerActivity.this, "You have " + (list.size() - 1) + " pending request(s)",
+                                    Toast.LENGTH_SHORT);
+                            toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
+                            toast.show();
+                        }
+                        pendingSize = list.size();
+                        System.out.println("after list size: " + list.size() + "\nafter pendingSize: " + pendingSize);
+                    }
+
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            pRef.addListenerForSingleValueEvent(listener);
+            pRef.removeEventListener(listener);
+        }
+    }
+
+
+    public void changeFragment() {
+        if (user.group) {
+            DatabaseReference pRef = ref.child("groups").child(user.groupID).child("num_users");
+
+            ValueEventListener listener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    int num = ((Long) dataSnapshot.getValue()).intValue();
+
+                    if (memberCount != num) {
+                        Fragment fragment = null;
+                        switch (num) {
+                            case 1:
+                                fragment = new Home1();
+                                break;
+                            case 2:
+                                fragment = new Home2();
+                                break;
+                            case 3:
+                                fragment = new Home3();
+                                break;
+                            case 4:
+                                fragment = new Home4();
+                                break;
+                        }
+                        memberCount = num;
+
+
+                        if (fragment != null) {
+                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                            ft.replace(R.id.content_frame, fragment);
+                            ft.commitAllowingStateLoss();
+                        }
+
+                        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                        drawer.closeDrawer(GravityCompat.START);
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            pRef.addListenerForSingleValueEvent(listener);
+            pRef.removeEventListener(listener);
+        }
     }
 
 }
