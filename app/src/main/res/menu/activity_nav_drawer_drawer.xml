@@ -32,6 +32,8 @@
     </item>
     <item android:title="Manage Account" >
         <menu >
+            <item android:title="Leave Group"
+                android:id="@+id/leave_group" />
             <item
                 android:id="@+id/logout"
                 android:title="Log Out" />

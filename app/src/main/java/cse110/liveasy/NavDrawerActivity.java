@@ -2,6 +2,8 @@ package cse110.liveasy;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.renderscript.Sampler;
@@ -22,6 +24,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,13 +59,14 @@ public class NavDrawerActivity extends AppCompatActivity
     int memberCount;
     int count = 0;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav_drawer);
         Bundle extras = getIntent().getExtras();
         username = extras.getString("username");
-        System.out.println("asdfsadfasdf " + username);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -84,6 +88,8 @@ public class NavDrawerActivity extends AppCompatActivity
         System.out.println("In Oncreate user has group "+user.group);
     }
 
+
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -95,12 +101,16 @@ public class NavDrawerActivity extends AppCompatActivity
         }
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.nav_drawer, menu);
         return true;
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -116,6 +126,8 @@ public class NavDrawerActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -140,6 +152,9 @@ public class NavDrawerActivity extends AppCompatActivity
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_send) {
+            Intent goToShareCode = new Intent(this, Questionaire.class);
+            startActivity(goToShareCode);
+
 
         } else if (id == R.id.manage_requests){
             Intent goToRequests = new Intent(this, ManageRequests.class);
@@ -148,21 +163,44 @@ public class NavDrawerActivity extends AppCompatActivity
             goToRequests.putExtra("groupKey", user.groupID);
             startActivity(goToRequests);
         }
+        else if (id == R.id.leave_group){
+            View v = findViewById(R.id.content_nav_drawer);
+            AlertDialog.Builder displayConfirmation  = new AlertDialog.Builder(v.getContext());
+            displayConfirmation.setMessage("Are you sure you want to leave this group?" +
+                    "\nIf you are the last member, the group will be deleted");
+            displayConfirmation.setTitle("Leave group");
+            displayConfirmation.setPositiveButton("Yes", null);
+            displayConfirmation.setNegativeButton("No", null);
+            displayConfirmation.setCancelable(false);
+
+            displayConfirmation.setPositiveButton("Yes",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            removeUserFromGroup(username);
+                        }
+                    });
+            displayConfirmation.setNegativeButton("No",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            //do nothing
+                        }
+                    });
+            displayConfirmation.create().show();
+        }
         else if (id == R.id.logout){
             FirebaseAuth.getInstance().signOut();
             Intent goToLogin = new Intent(this, LoginActivity.class);
             startActivity(goToLogin);
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
+
+
     private void displayScreen(){
-
         DatabaseReference uRef = ref.child("users").child(username);
-
 
         ValueEventListener listener = new ValueEventListener() {
 
@@ -177,13 +215,23 @@ public class NavDrawerActivity extends AppCompatActivity
                 Boolean user_isPending = (Boolean) dataSnapshot.child("isPending").getValue();
                 System.out.println("From database user has group "+user_has_group.booleanValue());
                 user.groupID = user_group_id;
-                user.group = user_has_group.booleanValue();
                 user.email = user_email;
                 user.phone_number = user_phone_number;
                 user.full_name= user_full_name;
                 user.isPending = user_isPending;
+                user.group = user_has_group.booleanValue();
+
+                NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                View hView =  navigationView.getHeaderView(0);
+                TextView nav_email = (TextView)hView.findViewById(R.id.textView);
+                nav_email.setText(user.email);
+                TextView nav_user = (TextView)hView.findViewById(R.id.textView3);
+                nav_user.setText(user.full_name);
+                ImageView nav_pic = (ImageView)hView.findViewById(R.id.imageView);
+                nav_pic.setImageResource(R.drawable.woodie);
 
                 updateGroup();
+                updateUser();
 
                 System.err.print("\n User contents " + user_has_group);
 
@@ -218,9 +266,12 @@ public class NavDrawerActivity extends AppCompatActivity
                             }
 
                             if(fragment != null){
-                                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                                ft.replace(R.id.content_frame, fragment);
-                                ft.commitAllowingStateLoss();
+                                //if(!isFinishing()) {
+                                    System.out.println("infinite loop");
+                                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                                    ft.replace(R.id.content_frame, fragment);
+                                    ft.commitAllowingStateLoss();
+                                //}
                             }
 
                             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -248,10 +299,9 @@ public class NavDrawerActivity extends AppCompatActivity
         };
         uRef.addListenerForSingleValueEvent(listener);
         uRef.removeEventListener(listener);
-
-
-
     }
+
+
 
     public void goToCreateGroup(View view){
         Intent goToCreateGroup = new Intent(this, CreateGroup.class);
@@ -266,6 +316,8 @@ public class NavDrawerActivity extends AppCompatActivity
         startActivity(goToCreateGroup);
     }
 
+
+
     public void goToJoinGroup(View view){
         System.out.println("****************************");
         Bundle extras = this.getIntent().getExtras();
@@ -274,6 +326,8 @@ public class NavDrawerActivity extends AppCompatActivity
         startActivity(goToJoinGroup);
 
     }
+
+
 
     public void updateGroup(){
         System.out.println("USER HAS GROUP "+user.group);
@@ -297,7 +351,6 @@ public class NavDrawerActivity extends AppCompatActivity
                     if( user.group ) {
                         getSupportActionBar().setTitle(group.name);
                         notificationUp();
-                        changeFragment();
                     }
 
                 }
@@ -312,19 +365,8 @@ public class NavDrawerActivity extends AppCompatActivity
     }
 
 
-    /***********************************************************/
-//    public void clickGoToProfile(View view) {
-//        Bundle extras = getIntent().getExtras();
-//        Intent goToProfile = new Intent(this, ProfileActivity.class);
-//        goToProfile.putExtra("username", (String)extras.get("username"));
-//        startActivity(goToProfile);
-//    }
     public void toProfilePopup(View view) {
-
         //get info for which photo was clicked on
-
-
-
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = (this).getLayoutInflater();
 
@@ -352,8 +394,6 @@ public class NavDrawerActivity extends AppCompatActivity
     }
 
     public void toGroupProfilePopup(View view) {
-
-
         final AlertDialog.Builder group_builder = new AlertDialog.Builder(this);
         LayoutInflater group_inflater = (this).getLayoutInflater();
         View group_dialog_view = group_inflater.inflate(R.layout.activity_popup_group_profile, null);
@@ -378,11 +418,11 @@ public class NavDrawerActivity extends AppCompatActivity
 
         group_builder.setView(group_dialog_view);
         group_builder.create().show();
-
-
     }
 
+
     public void notificationUp() {
+        System.out.println("in notifications up has group: " + user.groupID);
         if (user.group) {
             DatabaseReference pRef = ref.child("groups").child(user.groupID).child("pending");
 
@@ -412,8 +452,6 @@ public class NavDrawerActivity extends AppCompatActivity
                         pendingSize = list.size();
                         System.out.println("after list size: " + list.size() + "\nafter pendingSize: " + pendingSize);
                     }
-
-
                 }
 
                 @Override
@@ -427,54 +465,75 @@ public class NavDrawerActivity extends AppCompatActivity
     }
 
 
-    public void changeFragment() {
-        if (user.group) {
-            DatabaseReference pRef = ref.child("groups").child(user.groupID).child("num_users");
 
-            ValueEventListener listener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    int num = ((Long) dataSnapshot.getValue()).intValue();
+    public void removeUserFromGroup(final String userName){
+        final DatabaseReference gRef = ref.child("groups").child(user.groupID);
 
-                    if (memberCount != num) {
-                        Fragment fragment = null;
-                        switch (num) {
-                            case 1:
-                                fragment = new Home1();
-                                break;
-                            case 2:
-                                fragment = new Home2();
-                                break;
-                            case 3:
-                                fragment = new Home3();
-                                break;
-                            case 4:
-                                fragment = new Home4();
-                                break;
-                        }
-                        memberCount = num;
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> group = (HashMap<String,Object>)dataSnapshot.getValue();
 
+                Map<String,Object> members = (HashMap<String,Object>)dataSnapshot.child("members").getValue();
+                members.remove(userName);
 
-                        if (fragment != null) {
-                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                            ft.replace(R.id.content_frame, fragment);
-                            ft.commitAllowingStateLoss();
-                        }
-
-                        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                        drawer.closeDrawer(GravityCompat.START);
-                    }
-
+                int currentMembers = ((Long)dataSnapshot.child("num_users").getValue()).intValue();
+                if(currentMembers > 1) {
+                    group.put("members", members);
+                    group.put("num_users", currentMembers - 1);
+                    gRef.updateChildren(group);
+                }else{
+                    gRef.removeValue();
                 }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+                DatabaseReference uRef = ref.child("users").child(username);
+                Map<String,Object> userContents = new HashMap<String,Object>();
+                userContents.put("group", new Boolean(false));
+                userContents.put("groupID", "");
+                uRef.updateChildren(userContents);
+                user.group = false;
+                user.groupID = "";
+            }
 
-                }
-            };
-            pRef.addListenerForSingleValueEvent(listener);
-            pRef.removeEventListener(listener);
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        gRef.addListenerForSingleValueEvent(listener);
+        gRef.removeEventListener(listener);
+
     }
 
+
+
+    public void updateUser(){
+        DatabaseReference uRef = ref.child("users").child(username);
+
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Boolean user_has_group = (Boolean) dataSnapshot.child("group").getValue();
+                String user_group_id = (String) dataSnapshot.child("groupID").getValue();
+                String user_email = (String) dataSnapshot.child("email").getValue();
+                String user_phone_number = (String) dataSnapshot.child("phone_number").getValue();
+                String user_full_name = (String) dataSnapshot.child("full_name").getValue();
+                Boolean user_isPending = (Boolean) dataSnapshot.child("isPending").getValue();
+                System.out.println("From database user has group "+ user_has_group.booleanValue());
+                user.groupID = user_group_id;
+                user.group = user_has_group.booleanValue();
+                user.email = user_email;
+                user.phone_number = user_phone_number;
+                user.full_name= user_full_name;
+                user.isPending = user_isPending;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        uRef.addValueEventListener(listener);
+    }
 }

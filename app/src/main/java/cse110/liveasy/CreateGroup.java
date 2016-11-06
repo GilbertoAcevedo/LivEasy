@@ -142,7 +142,7 @@ public class CreateGroup extends AppCompatActivity {
 
                         TextView groupKeyTextView = new TextView(view.getContext());
                         groupKeyTextView.setText(groupKey);
-                        groupKeyTextView.setTextSize(80);
+                        groupKeyTextView.setTextSize(40);
                         groupKeyTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
 
                         TextView message2 = new TextView(view.getContext());
