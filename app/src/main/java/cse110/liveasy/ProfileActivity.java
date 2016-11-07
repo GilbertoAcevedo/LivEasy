@@ -22,6 +22,8 @@ public class ProfileActivity extends AppCompatActivity {
     String changedPhoneNumber;
     String originalEmail;
     String changedEmail;
+    //String originalAboutMe;
+    //String changedAboutMe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +42,14 @@ public class ProfileActivity extends AppCompatActivity {
         final TextView email  = (TextView) findViewById(tvNumber3);
         final EditText editEmail = (EditText) findViewById(R.id.email_edit);
 
+        /*)
+        final TextView aboutMe  = (TextView) findViewById(aboutMe);
+        final EditText editAboutMe= (EditText) findViewById(R.id.email_edit);
+
         originalPhoneNumber = phoneNumber.getText().toString();
         originalEmail = email.getText().toString();
+        originalAboutMe =
+        */
 
 
         phoneNumber.setOnLongClickListener(new View.OnLongClickListener() {
