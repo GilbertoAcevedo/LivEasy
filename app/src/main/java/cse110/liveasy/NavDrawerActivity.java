@@ -1,7 +1,9 @@
 package cse110.liveasy;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -141,6 +143,12 @@ public class NavDrawerActivity extends AppCompatActivity
             startActivity(goToRequests);
         }
         else if (id == R.id.logout){
+
+            SharedPreferences sharedpreferences = getSharedPreferences(LoginActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.clear();
+            editor.commit();
+
             FirebaseAuth.getInstance().signOut();
             Intent goToLogin = new Intent(this, LoginActivity.class);
             startActivity(goToLogin);
