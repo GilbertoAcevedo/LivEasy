@@ -22,8 +22,10 @@ public class ProfileActivity extends AppCompatActivity {
     String changedPhoneNumber;
     String originalEmail;
     String changedEmail;
-    //String originalAboutMe;
-    //String changedAboutMe;
+    String originalbio;
+    String changedbio;
+    
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +44,14 @@ public class ProfileActivity extends AppCompatActivity {
         final TextView email  = (TextView) findViewById(tvNumber3);
         final EditText editEmail = (EditText) findViewById(R.id.email_edit);
 
-        /*)
-        final TextView aboutMe  = (TextView) findViewById(aboutMe);
-        final EditText editAboutMe= (EditText) findViewById(R.id.email_edit);
+
+        final TextView bio  = (TextView) findViewById(R.id.og_bio);
+        final EditText editbio = (EditText) findViewById(R.id.edit_bio);
 
         originalPhoneNumber = phoneNumber.getText().toString();
         originalEmail = email.getText().toString();
-        originalAboutMe =
-        */
+        originalbio = bio.getText().toString();
+
 
 
         phoneNumber.setOnLongClickListener(new View.OnLongClickListener() {
@@ -151,6 +153,46 @@ public class ProfileActivity extends AppCompatActivity {
 
                     }
                 });
+                return false;
+            }
+        });
+
+
+        bio.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                bio.setVisibility(View.GONE);
+                editbio.setVisibility(View.VISIBLE);
+                editbio.setText("");
+
+
+                //onbackpressed, go to prev number that existed
+
+                editbio.setOnKeyListener(new View.OnKeyListener() {
+
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        changedbio = editbio.getText().toString();
+
+
+                        // If the event is a key-down event on the "enter" button
+                        if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                                (keyCode == KeyEvent.KEYCODE_ENTER)) {
+
+
+                                bio.setText(changedbio);
+
+                                bio.setVisibility(View.VISIBLE);
+                                editbio.setVisibility(View.GONE);
+                                originalbio = changedbio;
+
+                            return false;
+
+                        }
+                        return false;
+                    }
+                });
+
                 return false;
             }
         });
