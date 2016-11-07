@@ -15,6 +15,9 @@
     <string name="title_activity_home_screen">HomeScreen</string>
     <string name="go_back">OK</string>
     <string name="go_profile">PROFILE</string>
+    <string name="phone_hint">(555) 555-5555</string>
+
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
