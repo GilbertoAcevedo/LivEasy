@@ -61,6 +61,9 @@ public class NavDrawerActivity extends AppCompatActivity
     int memberCount;
     int count = 0;
 
+    ValueEventListener groupListener;
+    ValueEventListener userListener;
+
 
 
     @Override
@@ -69,6 +72,8 @@ public class NavDrawerActivity extends AppCompatActivity
         setContentView(R.layout.activity_nav_drawer);
         Bundle extras = getIntent().getExtras();
         username = extras.getString("username");
+
+        System.out.println("Username in NAV Drawer .... "+username);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -141,6 +146,7 @@ public class NavDrawerActivity extends AppCompatActivity
             }
 
             startActivity(goToCreateGroup);
+            finish();
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
@@ -148,6 +154,7 @@ public class NavDrawerActivity extends AppCompatActivity
         } else if (id == R.id.nav_send) {
             Intent goToShareCode = new Intent(this, Questionaire.class);
             startActivity(goToShareCode);
+            finish();
 
 
         } else if (id == R.id.manage_requests){
@@ -156,6 +163,7 @@ public class NavDrawerActivity extends AppCompatActivity
             goToRequests.putExtra("username", getIntent().getExtras().getString("username"));
             goToRequests.putExtra("groupKey", user.groupID);
             startActivity(goToRequests);
+            finish();
         }
         else if ( id == R.id.leave_group ){
             View v = findViewById(R.id.content_nav_drawer);
@@ -170,7 +178,21 @@ public class NavDrawerActivity extends AppCompatActivity
             displayConfirmation.setPositiveButton("Yes",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            removeUserFromGroup(username);
+
+                            if( user.group ) {
+                                removeUserFromGroup(username);
+                                Toast toast = Toast.makeText(NavDrawerActivity.this, "You have been removed" +
+                                                " from the group.",
+                                        Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
+                                toast.show();
+                            }
+                            else {
+                                Toast toast = Toast.makeText(NavDrawerActivity.this, "You do not have a group.",
+                                        Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
+                                toast.show();
+                            }
                         }
                     });
             displayConfirmation.setNegativeButton("No",
@@ -189,13 +211,25 @@ public class NavDrawerActivity extends AppCompatActivity
             editor.commit();
 
             FirebaseAuth.getInstance().signOut();
+
+            DatabaseReference uRef = ref.child("users").child(username);
+            uRef.removeEventListener(userListener);
+            if( user.group) {
+                DatabaseReference gRef = ref.child("groups").child(user.groupID);
+                gRef.removeEventListener(groupListener);
+            }
+
+
+
             Intent goToLogin = new Intent(this, LoginActivity.class);
             startActivity(goToLogin);
+            finish();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 
     private void displayScreen(){
         DatabaseReference uRef = ref.child("users").child(username);
@@ -310,6 +344,7 @@ public class NavDrawerActivity extends AppCompatActivity
         }
 
         startActivity(goToCreateGroup);
+        finish();
     }
 
     public void goToJoinGroup(View view){
@@ -318,6 +353,7 @@ public class NavDrawerActivity extends AppCompatActivity
         Intent goToJoinGroup = new Intent(this, JoinGroup.class);
         goToJoinGroup.putExtra("username", (String)extras.getString("username"));
         startActivity(goToJoinGroup);
+        finish();
 
     }
 
@@ -325,7 +361,7 @@ public class NavDrawerActivity extends AppCompatActivity
         System.out.println("USER HAS GROUP "+user.group);
         if(user.group) {
             DatabaseReference gRef = ref.child("groups").child(user.groupID);
-            ValueEventListener listener = new ValueEventListener() {
+            groupListener = new ValueEventListener() {
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -340,6 +376,8 @@ public class NavDrawerActivity extends AppCompatActivity
                         group.members = group_content;
                         group.pending = pending;
                         group.name = gname;
+
+                        if( gnum != null )
                         group.num_users = gnum.intValue();
 
                         if (user.group) {
@@ -354,7 +392,7 @@ public class NavDrawerActivity extends AppCompatActivity
                 public void onCancelled(DatabaseError databaseError) {
                 }
             };
-            gRef.addValueEventListener(listener);
+            gRef.addValueEventListener(groupListener);
 
         }
     }
@@ -390,6 +428,7 @@ public class NavDrawerActivity extends AppCompatActivity
                 Intent goProfile = new Intent(NavDrawerActivity.this, ProfileActivity.class);
                 goProfile.putExtra("username", username);
                 startActivity(goProfile);
+                finish();
             }
         });
 
@@ -418,6 +457,7 @@ public class NavDrawerActivity extends AppCompatActivity
                 goProfile.putExtra("username", username);
                 goProfile.putExtra("groupName", group.name);
                 startActivity(goProfile);
+                finish();
             }
         });
 
@@ -434,28 +474,31 @@ public class NavDrawerActivity extends AppCompatActivity
             ValueEventListener listener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    System.out.println("*************************" + (++count));
-                    ArrayList<String> list = (ArrayList<String>) dataSnapshot.getValue();
-                    NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-                    Menu menu = navigationView.getMenu();
-                    MenuItem requestItem = menu.findItem(R.id.manage_requests);
-                    if(list.size() > 1) {
-                        requestItem.setTitle("Manage Requests (" + (list.size() - 1) + ")");
 
-                    }else{
-                        requestItem.setTitle("Manage Requests");
-                    }
-                    if (list.size() != pendingSize) {
+                    if( user.group ) {
+                        System.out.println(username + " " + (++count));
+                        ArrayList<String> list = (ArrayList<String>) dataSnapshot.getValue();
+                        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                        Menu menu = navigationView.getMenu();
+                        MenuItem requestItem = menu.findItem(R.id.manage_requests);
+                        if (list.size() > 1) {
+                            requestItem.setTitle("Manage Requests (" + (list.size() - 1) + ")");
 
-                        if(list.size() > 1) {
-                            System.out.println("before list size: " + list.size() + "\nbefore pendingSize: " + pendingSize);
-                            Toast toast = Toast.makeText(NavDrawerActivity.this, "You have " + (list.size() - 1) + " pending request(s)",
-                                    Toast.LENGTH_SHORT);
-                            toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
-                            toast.show();
+                        } else {
+                            requestItem.setTitle("Manage Requests");
                         }
-                        pendingSize = list.size();
-                        System.out.println("after list size: " + list.size() + "\nafter pendingSize: " + pendingSize);
+                        if (list.size() != pendingSize) {
+
+                            if (list.size() > 1) {
+                                System.out.println("before list size: " + list.size() + "\nbefore pendingSize: " + pendingSize);
+                                Toast toast = Toast.makeText(NavDrawerActivity.this, "You have " + (list.size() - 1) + " pending request(s)",
+                                        Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
+                                toast.show();
+                            }
+                            pendingSize = list.size();
+                            System.out.println("after list size: " + list.size() + "\nafter pendingSize: " + pendingSize);
+                        }
                     }
                 }
 
@@ -476,6 +519,8 @@ public class NavDrawerActivity extends AppCompatActivity
 
         user.group = false;
         user.groupID = "";
+        gRef.removeEventListener(groupListener);
+        groupListener = null;
 
         ValueEventListener listener = new ValueEventListener() {
             @Override
@@ -519,7 +564,7 @@ public class NavDrawerActivity extends AppCompatActivity
     public void updateUser(){
         DatabaseReference uRef = ref.child("users").child(username);
 
-        ValueEventListener listener = new ValueEventListener() {
+         userListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -536,6 +581,10 @@ public class NavDrawerActivity extends AppCompatActivity
                 user.phone_number = user_phone_number;
                 user.full_name= user_full_name;
                 user.isPending = user_isPending;
+
+                if( user.group && groupListener == null) {
+                    updateGroup();
+                }
             }
 
             @Override
@@ -543,6 +592,6 @@ public class NavDrawerActivity extends AppCompatActivity
 
             }
         };
-        uRef.addValueEventListener(listener);
+        uRef.addValueEventListener(userListener);
     }
 }

@@ -290,7 +290,9 @@ public class ManageRequests extends AppCompatActivity {
             case android.R.id.home:
                 Intent goBack = new Intent(this, NavDrawerActivity.class);
                 goBack.putExtra("username", (String)extras.get("username"));
-                NavUtils.navigateUpTo(this, goBack);
+                startActivity(goBack);
+                finish();
+                //NavUtils.navigateUpTo(this, goBack);
                 return true;
         }
         return super.onOptionsItemSelected(item);

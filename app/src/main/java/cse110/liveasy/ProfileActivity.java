@@ -31,9 +31,10 @@ public class ProfileActivity extends AppCompatActivity {
     {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent goBack = new Intent(this, MainPage2.class);
+                Intent goBack = new Intent(this, NavDrawerActivity.class);
                 goBack.putExtra("username", (String)extras.get("username"));
-                NavUtils.navigateUpTo(this, goBack);
+                finish();
+                //NavUtils.navigateUpTo(this, goBack);
                 return true;
         }
         return super.onOptionsItemSelected(item);

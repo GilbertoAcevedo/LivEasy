@@ -80,7 +80,9 @@ public class CreateGroup extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             Intent goBack = new Intent(CreateGroup.this, NavDrawerActivity.class);
                             goBack.putExtra("username", username);
-                            startActivity(goBack);                }
+                            startActivity(goBack);
+                            finish();
+                        }
                     });
                     builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
@@ -89,6 +91,7 @@ public class CreateGroup extends AppCompatActivity {
                             Intent goBack = new Intent(CreateGroup.this, NavDrawerActivity.class);
                             goBack.putExtra("username", username);
                             startActivity(goBack);
+                            finish();
                         }
                     });
 
@@ -167,6 +170,7 @@ public class CreateGroup extends AppCompatActivity {
                                 Intent goBack = new Intent(CreateGroup.this, NavDrawerActivity.class);
                                 goBack.putExtra("username", username);
                                 startActivity(goBack);
+                                finish();
                             }
                         });
 
@@ -177,6 +181,7 @@ public class CreateGroup extends AppCompatActivity {
                                 Intent goBack = new Intent(CreateGroup.this, NavDrawerActivity.class);
                                 goBack.putExtra("username", username);
                                 startActivity(goBack);
+                                finish();
                             }
                         });
 
@@ -209,5 +214,6 @@ public class CreateGroup extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         goBack.putExtra("username",  extras.getString("username") );
         startActivity(goBack);
+        finish();
     }
 }

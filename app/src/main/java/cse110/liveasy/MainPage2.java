@@ -70,6 +70,7 @@ public class MainPage2 extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int id) {
                 Intent goProfile = new Intent(MainPage2.this, GroupProfileActivity.class);
                 startActivity(goProfile);
+                finish();
             }
         });
 
