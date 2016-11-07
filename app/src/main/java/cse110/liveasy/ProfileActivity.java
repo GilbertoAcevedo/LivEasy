@@ -21,6 +21,7 @@ public class ProfileActivity extends AppCompatActivity {
     String originalPhoneNumber;
     String changedPhoneNumber;
     String originalEmail;
+    String changedEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +44,6 @@ public class ProfileActivity extends AppCompatActivity {
         originalEmail = email.getText().toString();
 
 
-
-
         phoneNumber.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -60,6 +59,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     public boolean onKey(View v, int keyCode, KeyEvent event) {
                         changedPhoneNumber = editphoneNumber.getText().toString();
+
 
                         // If the event is a key-down event on the "enter" button
                         if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
@@ -82,6 +82,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                                 phoneNumber.setVisibility(View.VISIBLE);
                                 editphoneNumber.setVisibility(View.GONE);
+                                originalPhoneNumber = changedPhoneNumber;
 
                             }
                             return false;
@@ -94,6 +95,57 @@ public class ProfileActivity extends AppCompatActivity {
                 return false;
             }
     });
+
+        email.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                email.setVisibility(View.GONE);
+                editEmail.setVisibility(View.VISIBLE);
+                editEmail.setText("");
+
+
+                //onbackpressed, go to prev number that existed
+
+                editEmail.setOnKeyListener(new View.OnKeyListener() {
+
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        changedEmail = editEmail.getText().toString();
+
+                        // If the event is a key-down event on the "enter" button
+                        if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                                (keyCode == KeyEvent.KEYCODE_ENTER)) {
+
+                            if (changedEmail.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(changedEmail).matches()){
+
+                                //check if digits
+
+
+                                email.setText(originalEmail);
+
+                                email.setVisibility(View.VISIBLE);
+                                editEmail.setVisibility(View.GONE);
+
+
+                            }
+                            else{
+                                email.setText(changedEmail);
+
+                                email.setVisibility(View.VISIBLE);
+                                editEmail.setVisibility(View.GONE);
+                                originalEmail = changedEmail;
+
+                            }
+                            return false;
+
+                        }
+                        return false;
+
+                    }
+                });
+                return false;
+            }
+        });
 
 
     }
