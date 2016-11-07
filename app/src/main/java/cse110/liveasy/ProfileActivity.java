@@ -9,9 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import static cse110.liveasy.R.id.allergies2;
 import static cse110.liveasy.R.id.tvNumber1;
 import static cse110.liveasy.R.id.tvNumber3;
 
@@ -24,7 +27,12 @@ public class ProfileActivity extends AppCompatActivity {
     String changedEmail;
     String originalbio;
     String changedbio;
-    
+    String changedPetPeeves;
+    String originalPetPeeves;
+    String originalAllergies;
+    String changedAllergies;
+    boolean changeFlag = false;
+
 
 
     @Override
@@ -48,10 +56,48 @@ public class ProfileActivity extends AppCompatActivity {
         final TextView bio  = (TextView) findViewById(R.id.og_bio);
         final EditText editbio = (EditText) findViewById(R.id.edit_bio);
 
+        final TextView petPeeves  = (TextView) findViewById(R.id.petPeeves2);
+        final EditText editPetPeeves = (EditText) findViewById(R.id.edit_petPeeves);
+
+        final TextView allergies = (TextView) findViewById(allergies2);
+        final EditText edit_allergies  = (EditText) findViewById(R.id.edit_allergies);
+
+        final Spinner smokingspinner = (Spinner) findViewById(R.id.smoking_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.Options, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        smokingspinner.setAdapter(adapter);
+
+        final Spinner drinkingspinner = (Spinner) findViewById(R.id.drinking_spinner);
+        ArrayAdapter<CharSequence> drinkingadapter = ArrayAdapter.createFromResource(this,
+                R.array.Options, android.R.layout.simple_spinner_item);
+        drinkingadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        drinkingspinner.setAdapter(drinkingadapter);
+
+        final Spinner petspinner = (Spinner) findViewById(R.id.pets_spinner);
+        ArrayAdapter<CharSequence> petsadapter = ArrayAdapter.createFromResource(this,
+                R.array.Options, android.R.layout.simple_spinner_item);
+        petsadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        petspinner.setAdapter(petsadapter);
+
+        final Spinner carspinner = (Spinner) findViewById(R.id.car_spinner);
+        ArrayAdapter<CharSequence> caradapter = ArrayAdapter.createFromResource(this,
+                R.array.Options, android.R.layout.simple_spinner_item);
+        caradapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        carspinner.setAdapter(caradapter);
+
+        final Spinner guestspinner = (Spinner) findViewById(R.id.guest_spinner);
+        ArrayAdapter<CharSequence> guestadapter = ArrayAdapter.createFromResource(this,
+                R.array.Options, android.R.layout.simple_spinner_item);
+        guestadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        guestspinner.setAdapter(guestadapter);
+
+
         originalPhoneNumber = phoneNumber.getText().toString();
         originalEmail = email.getText().toString();
         originalbio = bio.getText().toString();
-
+        originalPetPeeves = petPeeves.getText().toString();
+        originalAllergies = allergies.getText().toString();
 
 
         phoneNumber.setOnLongClickListener(new View.OnLongClickListener() {
@@ -89,7 +135,7 @@ public class ProfileActivity extends AppCompatActivity {
                             }
                             else{
                                 phoneNumber.setText(changedPhoneNumber);
-
+                                changeFlag = true;
                                 phoneNumber.setVisibility(View.VISIBLE);
                                 editphoneNumber.setVisibility(View.GONE);
                                 originalPhoneNumber = changedPhoneNumber;
@@ -144,6 +190,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 email.setVisibility(View.VISIBLE);
                                 editEmail.setVisibility(View.GONE);
                                 originalEmail = changedEmail;
+                                changeFlag = true;
 
                             }
                             return false;
@@ -185,6 +232,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 bio.setVisibility(View.VISIBLE);
                                 editbio.setVisibility(View.GONE);
                                 originalbio = changedbio;
+                            changeFlag = true;
 
                             return false;
 
@@ -197,7 +245,136 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        petPeeves.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
 
+                petPeeves.setVisibility(View.GONE);
+                editPetPeeves.setVisibility(View.VISIBLE);
+                editPetPeeves.setText("");
+
+
+                //onbackpressed, go to prev number that existed
+
+                editPetPeeves.setOnKeyListener(new View.OnKeyListener() {
+
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        changedPetPeeves = editPetPeeves.getText().toString();
+
+
+                        // If the event is a key-down event on the "enter" button
+                        if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                                (keyCode == KeyEvent.KEYCODE_ENTER)) {
+
+                                petPeeves.setText(changedPetPeeves);
+
+                                petPeeves.setVisibility(View.VISIBLE);
+                                editPetPeeves.setVisibility(View.GONE);
+                                originalPetPeeves = changedPetPeeves;
+                            changeFlag = true;
+                               return false;
+
+                        }
+                        return false;
+
+                    }
+                });
+                return false;
+            }
+        });
+
+        allergies.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                allergies.setVisibility(View.GONE);
+                edit_allergies.setVisibility(View.VISIBLE);
+                edit_allergies.setText("");
+
+
+                //onbackpressed, go to prev number that existed
+
+                edit_allergies.setOnKeyListener(new View.OnKeyListener() {
+
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        changedAllergies = edit_allergies.getText().toString();
+
+
+                        // If the event is a key-down event on the "enter" button
+                        if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                                (keyCode == KeyEvent.KEYCODE_ENTER)) {
+
+                            allergies.setText(changedAllergies);
+
+                            allergies.setVisibility(View.VISIBLE);
+                            edit_allergies.setVisibility(View.GONE);
+                            changeFlag = true;
+                            originalAllergies = changedAllergies;
+                            return false;
+
+                        }
+                        return false;
+
+                    }
+                });
+                return false;
+            }
+        });
+
+        smokingspinner.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                smokingspinner.performClick();
+                changeFlag = true;
+
+                return false;
+            }
+        });
+
+        drinkingspinner.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                drinkingspinner.performClick();
+                changeFlag = true;
+
+                return false;
+            }
+        });
+
+        petspinner.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                petspinner.performClick();
+                changeFlag = true;
+
+                return false;
+            }
+        });
+
+        carspinner.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                carspinner.performClick();
+                changeFlag = true;
+
+                return false;
+            }
+        });
+
+        guestspinner.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                guestspinner.performClick();
+                changeFlag = true;
+
+                return false;
+            }
+        });
     }
 
     @Override
@@ -217,21 +394,28 @@ public class ProfileActivity extends AppCompatActivity {
     //check top left back button as well
     @Override
     public void onBackPressed() {
+        if(changeFlag == true) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Would you like to save changes made?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            //
+                            finish();
+
                         }
                     })
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            //go to nav drawer
+                            finish();
                         }
                     });
 
-        AlertDialog alert = builder.create();
-        alert.show();
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+        else{
+            finish();
+        }
+
 
     }
 

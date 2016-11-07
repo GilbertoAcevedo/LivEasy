@@ -17,6 +17,11 @@
     <string name="go_profile">PROFILE</string>
     <string name="phone_hint">(555) 555-5555</string>
 
+    <string-array name="Options">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+
 
 
     <!-- TODO: Remove or change this placeholder text -->

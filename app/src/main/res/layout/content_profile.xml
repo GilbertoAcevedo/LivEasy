@@ -186,6 +186,19 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#727272" />
 
+            <EditText
+                android:id="@+id/edit_allergies"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/allergies"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                android:inputType="text"
+                android:text="Yes"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#727272" />
+
         </RelativeLayout>
 
         <include layout="@layout/item_divider" />
@@ -204,23 +217,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
-
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="Smoking"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="#212121" />
 
-            <TextView
-                android:id="@+id/smoking2"
+
+            <Spinner
+                android:id="@+id/smoking_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/smoking"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
-                android:text="No"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="#727272" />
+
+
+                />
+
+
 
         </RelativeLayout>
 
@@ -240,23 +255,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
-
                 android:ellipsize="end"
-                android:maxLines="1"
                 android:text="Drinking"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="#212121" />
 
-            <TextView
-                android:id="@+id/drinking2"
+            <Spinner
+                android:id="@+id/drinking_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/drinking"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:text="Yes ;)"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="#727272" />
+
+
+                />
+
 
         </RelativeLayout>
 
@@ -283,16 +297,16 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="#212121" />
 
-            <TextView
-                android:id="@+id/pets2"
+            <Spinner
+                android:id="@+id/pets_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/pets"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:text="Yes!!!"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="#727272" />
+                />
+
+
 
         </RelativeLayout>
 
@@ -319,16 +333,15 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="#212121" />
 
-            <TextView
-                android:id="@+id/car2"
+            <Spinner
+                android:id="@+id/car_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/car"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:text="No :("
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="#727272" />
+                />
+
 
         </RelativeLayout>
 
@@ -348,7 +361,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
-
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="Pet Peeves"
@@ -356,12 +368,24 @@
                 android:textColor="#212121" />
 
             <TextView
-                android:id="@+id/petPeeves2"
+            android:id="@+id/petPeeves2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/petPeeves"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="8dp"
+            android:text="I dislike..."
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#212121" />
+
+            <EditText
+                android:id="@+id/edit_petPeeves"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/petPeeves"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
+                android:visibility="gone"
                 android:text="I dislike..."
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="#212121" />
@@ -391,16 +415,15 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="#212121" />
 
-            <TextView
-                android:id="@+id/guests2"
+            <Spinner
+                android:id="@+id/guest_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/guests"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:text="Yes"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="#727272" />
+                />
+
 
         </RelativeLayout>
 
