@@ -163,7 +163,7 @@ public class NavDrawerActivity extends AppCompatActivity
             goToRequests.putExtra("groupKey", user.groupID);
             startActivity(goToRequests);
         }
-        else if (id == R.id.leave_group){
+        else if ( id == R.id.leave_group ){
             View v = findViewById(R.id.content_nav_drawer);
             AlertDialog.Builder displayConfirmation  = new AlertDialog.Builder(v.getContext());
             displayConfirmation.setMessage("Are you sure you want to leave this group?" +
