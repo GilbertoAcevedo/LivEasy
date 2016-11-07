@@ -115,7 +115,7 @@
 
 
             <TextView
-                android:id="@+id/aboutMe"
+                android:id="@+id/about_Me"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
@@ -125,11 +125,25 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="#212121" />
 
+
             <TextView
-                android:id="@+id/aboutMe2"
+                android:id="@+id/og_bio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/aboutMe"
+                android:layout_below="@id/about_Me"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="8dp"
+                android:text="Hi! I'm Woodie!"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="#212121" />
+
+            <EditText
+                android:id="@+id/edit_bio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/about_Me"
+                android:visibility="gone"
+                android:inputType="text"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
                 android:text="Hi! I'm Woodie!"
