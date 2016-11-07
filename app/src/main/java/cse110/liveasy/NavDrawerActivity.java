@@ -299,9 +299,6 @@ public class NavDrawerActivity extends AppCompatActivity
     }
 
 
-
-    }
-
     public void goToCreateGroup(View view){
         Intent goToCreateGroup = new Intent(this, CreateGroup.class);
 
@@ -332,20 +329,23 @@ public class NavDrawerActivity extends AppCompatActivity
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Map<String, Object> group_content =  (Map<String, Object>)dataSnapshot.child("members").getValue();
-                    ArrayList<String> pending =  (ArrayList<String>) dataSnapshot.child("pending").getValue();
-                    String gname = (String) dataSnapshot.child("name").getValue();
-                    Long gnum = (Long) dataSnapshot.child("num_users").getValue();
-
-                    // Update each user's info
-                    group.members = group_content;
-                    group.pending = pending;
-                    group.name = gname;
-                    group.num_users = gnum.intValue();
 
                     if( user.group ) {
-                        getSupportActionBar().setTitle(group.name);
-                        notificationUp();
+                        Map<String, Object> group_content = (Map<String, Object>) dataSnapshot.child("members").getValue();
+                        ArrayList<String> pending = (ArrayList<String>) dataSnapshot.child("pending").getValue();
+                        String gname = (String) dataSnapshot.child("name").getValue();
+                        Long gnum = (Long) dataSnapshot.child("num_users").getValue();
+
+                        // Update each user's info
+                        group.members = group_content;
+                        group.pending = pending;
+                        group.name = gname;
+                        group.num_users = gnum.intValue();
+
+                        if (user.group) {
+                            getSupportActionBar().setTitle(group.name);
+                            notificationUp();
+                        }
                     }
 
                 }
@@ -474,9 +474,20 @@ public class NavDrawerActivity extends AppCompatActivity
     public void removeUserFromGroup(final String userName){
         final DatabaseReference gRef = ref.child("groups").child(user.groupID);
 
+        user.group = false;
+        user.groupID = "";
+
         ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                DatabaseReference uRef = ref.child("users").child(username);
+                Map<String,Object> userContents = new HashMap<String,Object>();
+                userContents.put("group", new Boolean(false));
+                userContents.put("groupID", "");
+                uRef.updateChildren(userContents);
+
+
                 Map<String, Object> group = (HashMap<String,Object>)dataSnapshot.getValue();
 
                 Map<String,Object> members = (HashMap<String,Object>)dataSnapshot.child("members").getValue();
@@ -491,13 +502,6 @@ public class NavDrawerActivity extends AppCompatActivity
                     gRef.removeValue();
                 }
 
-                DatabaseReference uRef = ref.child("users").child(username);
-                Map<String,Object> userContents = new HashMap<String,Object>();
-                userContents.put("group", new Boolean(false));
-                userContents.put("groupID", "");
-                uRef.updateChildren(userContents);
-                user.group = false;
-                user.groupID = "";
             }
 
             @Override
