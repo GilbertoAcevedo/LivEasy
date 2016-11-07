@@ -1,6 +1,8 @@
 package cse110.liveasy;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -40,6 +42,9 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+    public static final String MyPREFERENCES = "MyPrefs";
+    SharedPreferences sharedPreferences;
+
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference ref = database.getReference();
 
@@ -54,6 +59,11 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         ButterKnife.bind(this);
+
+
+
+        sharedPreferences = getApplicationContext().getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -117,7 +127,6 @@ public class LoginActivity extends AppCompatActivity {
 
         _loginButton.setEnabled(false);
 
-
         validateUser();
 
     }
@@ -131,8 +140,6 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
-
-
 
         Intent intent =new Intent(LoginActivity.this,NavDrawerActivity.class);
         intent.putExtra("username", _usernameText.getText().toString());
@@ -183,6 +190,15 @@ public class LoginActivity extends AppCompatActivity {
                     String email = (String) dataSnapshot.child(username).child("email").getValue();
                     String password = _passwordText.getText().toString();
 
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("username", username);
+                    editor.putString("email", email);
+                    editor.putString("password", password);
+                    editor.commit();
+
+                    SharedPreferences sharedpreferences = getSharedPreferences(LoginActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+                    System.out.println("In LoginActivity, sharedPreferences... " + sharedpreferences.getString("username", ""));
+
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -208,6 +224,7 @@ public class LoginActivity extends AppCompatActivity {
                                                         onLoginSuccess();
                                                         // onLoginFailed();
                                                         progressDialog.dismiss();
+
                                                     }
                                                 }, 3000);
                                     }

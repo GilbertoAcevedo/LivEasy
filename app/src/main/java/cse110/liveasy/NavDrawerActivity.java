@@ -1,7 +1,9 @@
 package cse110.liveasy;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
@@ -88,8 +90,6 @@ public class NavDrawerActivity extends AppCompatActivity
         System.out.println("In Oncreate user has group "+user.group);
     }
 
-
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -101,16 +101,12 @@ public class NavDrawerActivity extends AppCompatActivity
         }
     }
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.nav_drawer, menu);
         return true;
     }
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -126,8 +122,6 @@ public class NavDrawerActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
-
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -188,6 +182,12 @@ public class NavDrawerActivity extends AppCompatActivity
             displayConfirmation.create().show();
         }
         else if (id == R.id.logout){
+
+            SharedPreferences sharedpreferences = getSharedPreferences(LoginActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.clear();
+            editor.commit();
+
             FirebaseAuth.getInstance().signOut();
             Intent goToLogin = new Intent(this, LoginActivity.class);
             startActivity(goToLogin);
@@ -196,8 +196,6 @@ public class NavDrawerActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-
 
     private void displayScreen(){
         DatabaseReference uRef = ref.child("users").child(username);
@@ -245,7 +243,6 @@ public class NavDrawerActivity extends AppCompatActivity
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-
                             Fragment fragment = null;
                             Long num_users = (Long) dataSnapshot.child("num_users").getValue();
                             System.out.println("Number of Users: " + num_users);
@@ -303,6 +300,8 @@ public class NavDrawerActivity extends AppCompatActivity
 
 
 
+    }
+
     public void goToCreateGroup(View view){
         Intent goToCreateGroup = new Intent(this, CreateGroup.class);
 
@@ -316,8 +315,6 @@ public class NavDrawerActivity extends AppCompatActivity
         startActivity(goToCreateGroup);
     }
 
-
-
     public void goToJoinGroup(View view){
         System.out.println("****************************");
         Bundle extras = this.getIntent().getExtras();
@@ -326,8 +323,6 @@ public class NavDrawerActivity extends AppCompatActivity
         startActivity(goToJoinGroup);
 
     }
-
-
 
     public void updateGroup(){
         System.out.println("USER HAS GROUP "+user.group);
@@ -365,8 +360,18 @@ public class NavDrawerActivity extends AppCompatActivity
     }
 
 
+    /***********************************************************/
+//    public void clickGoToProfile(View view) {
+//        Bundle extras = getIntent().getExtras();
+//        Intent goToProfile = new Intent(this, ProfileActivity.class);
+//        goToProfile.putExtra("username", (String)extras.get("username"));
+//        startActivity(goToProfile);
+//    }
     public void toProfilePopup(View view) {
         //get info for which photo was clicked on
+
+
+
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = (this).getLayoutInflater();
 
