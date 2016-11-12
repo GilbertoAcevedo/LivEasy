@@ -104,14 +104,14 @@ public class ManageRequests extends AppCompatActivity {
                             final Map<String, Object> currentUserMap = (HashMap<String, Object>) dataSnapshot.getValue();
 
                             if((boolean)currentUserMap.get("isPending")){
-                                Map<String, Object> updateUser = new HashMap<String, Object>();
+                                final Map<String, Object> updateUser = new HashMap<String, Object>();
                                 //set group to true
                                 updateUser.put("/group/", new Boolean(true));
                                 //set groupID to this group
                                 updateUser.put("/groupID/", extras.getString("groupKey"));
                                 //set pending to false
                                 updateUser.put("/isPending/", new Boolean(false));
-                                uRef.updateChildren(updateUser);
+                                //uRef.updateChildren(updateUser);
 
                                 final DatabaseReference gRef = ref.getReference().child("groups").child((String) extras.getString("groupKey"));
                                 ValueEventListener groupListener = new ValueEventListener() {
@@ -131,6 +131,8 @@ public class ManageRequests extends AppCompatActivity {
                                         pending.remove(currentUsername);
                                         group.put("pending", pending);
                                         gRef.updateChildren(group);
+
+                                        uRef.updateChildren(updateUser);
                                     }
 
                                     @Override
