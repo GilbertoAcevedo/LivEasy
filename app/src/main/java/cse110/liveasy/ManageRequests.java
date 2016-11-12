@@ -244,44 +244,7 @@ public class ManageRequests extends AppCompatActivity {
         setContentView(layout);
 
 
-//        adapter = new ArrayAdapter<String>(this,
-//                android.R.layout.simple_list_item_1,
-//                listItems);
-//
-//        ListView pendingList = (ListView) findViewById(R.id.pending_list);
-//
-//
-//        pendingList.setAdapter(adapter);
-//        adapter.notifyDataSetChanged();
-
-
     }
-
-    public static void accept(String groupKey, String username){
-
-    }
-
-//    public static void getGroupKey(String username){
-//        FirebaseDatabase ref = FirebaseDatabase.getInstance();
-//        DatabaseReference uRef = ref.getReference().child("users").child(username);
-//
-//        final User user = new User();
-//        ValueEventListener listener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                groupKey = (String)dataSnapshot.child("groupID").getValue();
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        };
-//        uRef.addListenerForSingleValueEvent(listener);
-//        uRef.removeEventListener(listener);
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)

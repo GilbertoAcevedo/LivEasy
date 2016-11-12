@@ -97,8 +97,8 @@ public class LoginActivity extends AppCompatActivity {
                 // Start the Signup activity
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivityForResult(intent, REQUEST_SIGNUP);
-                finish();
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                finish();
             }
         });
     }
@@ -112,6 +112,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
+
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }

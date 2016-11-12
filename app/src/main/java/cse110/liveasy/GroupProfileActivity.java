@@ -33,6 +33,7 @@ public class GroupProfileActivity extends AppCompatActivity {
             case android.R.id.home:
                 Intent goBack = new Intent(this, NavDrawerActivity.class);
                 goBack.putExtra("username", (String)extras.get("username"));
+                startActivity(goBack);
                 finish();
                 //NavUtils.navigateUpTo(this, goBack);
                 return true;
