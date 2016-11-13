@@ -171,8 +171,12 @@ public class NavDrawerActivity extends AppCompatActivity
                                 case 4:
                                     fragment = new Home4();
                                     break;
+                                case 5:
+                                    fragment = new Home5();
+                                    break;
                                 default:
-                                    fragment = new Home1();
+                                    fragment = new Home5();
+                                    break;
                             }
 
                             if(fragment != null){
