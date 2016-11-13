@@ -284,7 +284,9 @@ public class NavDrawerActivity extends AppCompatActivity
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_send) {
-            Intent goToShareCode = new Intent(this, Questionaire.class);
+            Intent goToShareCode = new Intent(this, ShareGroupCode.class);
+            goToShareCode.putExtra("username", username);
+            goToShareCode.putExtra("group_id", user.groupID);
             removeAllListeners();
             startActivity(goToShareCode);
             finish();

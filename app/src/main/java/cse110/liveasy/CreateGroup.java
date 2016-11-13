@@ -38,6 +38,11 @@ public class CreateGroup extends AppCompatActivity {
         setContentView(R.layout.activity_create_group);
     }
 
+    @Override
+    public void onBackPressed(){
+
+    }
+
     public String generateRandomNumber() {
         Random randVal = new Random();
         int number = 100000 + randVal.nextInt(900000);

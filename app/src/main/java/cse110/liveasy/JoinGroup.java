@@ -39,6 +39,11 @@ public class JoinGroup extends AppCompatActivity {
         username = extras.get("username").toString();
         }
 
+    @Override
+    public void onBackPressed(){
+
+    }
+
     public void joinGroup(View view) {
 
         EditText editText = (EditText) findViewById(R.id.editText6);
