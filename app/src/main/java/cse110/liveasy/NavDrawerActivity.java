@@ -6,12 +6,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.renderscript.Sampler;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.telephony.PhoneNumberUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +49,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class NavDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -436,18 +442,30 @@ public class NavDrawerActivity extends AppCompatActivity
 //        goToProfile.putExtra("username", (String)extras.get("username"));
 //        startActivity(goToProfile);
 //    }
-    public void toProfilePopup(View view) {
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void toProfilePopup(View view, Profile memberContent, final String memberName) {
         //get info for which photo was clicked on
-
-
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = (this).getLayoutInflater();
 
         View dialog_view = inflater.inflate(R.layout.activity_popup_profile, null);
-        TextView users_name = (TextView)dialog_view.findViewById(R.id.textView2);
+        TextView users_name = (TextView)dialog_view.findViewById(R.id.username);
+        users_name.setText(memberName);
+//TODO IMAGES
+        /*CircleImageView selfie = (CircleImageView)dialog_view.findViewById(R.id.profile_image);
+        selfie.setImageResource();*/
 
-        users_name.setText(username);
+        //View dialog_view2 = inflater.inflate(R.layout.activity_content_popup_profile, null);
+
+        TextView email = (TextView)dialog_view.findViewById(R.id.email);
+        email.setText(memberContent.email);
+
+        TextView phoneNum = (TextView)dialog_view.findViewById(R.id.phone_number);
+        String formattedNumber = PhoneNumberUtils.formatNumber(memberContent.phoneNum, "US");
+        phoneNum.setText(formattedNumber);
+
+
         builder.setPositiveButton(R.string.go_back, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
 
@@ -458,13 +476,16 @@ public class NavDrawerActivity extends AppCompatActivity
             public void onClick(DialogInterface dialog, int id) {
                 Intent goProfile = new Intent(NavDrawerActivity.this, ProfileActivity.class);
                 goProfile.putExtra("username", username);
+                goProfile.putExtra("memberName", memberName);
                 removeAllListeners();
                 startActivity(goProfile);
                 finish();
             }
         });
 
+        //builder.setView(dialog_view2);
         builder.setView(dialog_view);
+
         builder.create().show();
 
     }
@@ -645,5 +666,18 @@ public class NavDrawerActivity extends AppCompatActivity
             gRef.removeEventListener(groupListener);
         }
 
+    }
+
+    public String[] getMembers() {
+
+        String[] mems = new String[group.num_users];
+        int i = 0;
+        for (Map.Entry<String, Object> entry : group.members.entrySet()) {
+
+            mems[i] = entry.getKey();
+            i++;
+        }
+
+        return mems;
     }
 }

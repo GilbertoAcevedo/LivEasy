@@ -31,7 +31,7 @@ public class Home5 extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_home5more, container, false);
         String[] user = new String[((NavDrawerActivity)getActivity()).group.num_users];
-        String[] allMembers = ((NavDrawerActivity)getActivity()).group.getMembers();
+        String[] allMembers = ((NavDrawerActivity)getActivity()).getMembers();
         user[0] = ((NavDrawerActivity)getActivity()).username;
         int j = 1;
         for (int i = 0; i < ((NavDrawerActivity)getActivity()).group.num_users; i++) {
