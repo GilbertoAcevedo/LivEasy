@@ -1,16 +1,18 @@
 package cse110.liveasy;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 /**
  * Created by Duke Lin on 10/30/2016.
  */
 
+
 public class GroupPopupProfile extends AppCompatActivity {
+
+    /*
+     * sets the layout for the groupPopUpProfile activity
+    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

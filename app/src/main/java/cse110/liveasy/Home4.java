@@ -1,14 +1,10 @@
 package cse110.liveasy;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import cse110.liveasy.R;
 
 
 public class Home4 extends Fragment {
@@ -17,7 +13,9 @@ public class Home4 extends Fragment {
         // Required empty public constructor
     }
 
-
+    /*
+     * Sets view for if five people are in group
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

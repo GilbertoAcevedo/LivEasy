@@ -1,34 +1,31 @@
 package cse110.liveasy;
 
-import android.app.Dialog;
-import android.app.Fragment;
-import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
 
 public class MainPage2 extends AppCompatActivity {
 
 
-
+    /*
+     * sets the layout for the mainPage2 activity
+    */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_page2);
+        setContentView(R.layout.fragment_home1);
 
-        /*String[] activities = {"Duke added Gerardo", "Gerardo added Sergio"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getListView().getContext(), android.R.layout.simple_expandable_list_item_1, activities);
-        getListView().setAdapter(adapter);*/
     }
 
+    /*
+     * Goes to popup profile when picture is clicked
+     * This brings up a screen on top of the other screen
+     * This screen has option of going to main profile or going back to navdrawer
+     */
     public void toProfilePopup(View view) {
 
 
@@ -54,6 +51,10 @@ public class MainPage2 extends AppCompatActivity {
 
     }
 
+
+    /*
+     * Goes to Group Profile popup
+     */
     public void toGroupProfilePopup(View view) {
 
         final AlertDialog.Builder group_builder = new AlertDialog.Builder(MainPage2.this);
@@ -70,6 +71,7 @@ public class MainPage2 extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int id) {
                 Intent goProfile = new Intent(MainPage2.this, GroupProfileActivity.class);
                 startActivity(goProfile);
+                finish();
             }
         });
 

@@ -5,17 +5,15 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Handler;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,12 +30,18 @@ public class CreateGroup extends AppCompatActivity {
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference ref = database.getReference();
 
+    /*
+     * sets the layout for the CreateGroup activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
     }
 
+    /*
+     * generates random number for group number
+    */
     public String generateRandomNumber() {
         Random randVal = new Random();
         int number = 100000 + randVal.nextInt(900000);
@@ -45,6 +49,9 @@ public class CreateGroup extends AppCompatActivity {
         return myString;
     }
 
+    /*
+     * generates key for group
+    */
     private String generateKey() {
 
         DatabaseReference groupsRef = ref.child("groups");
@@ -52,8 +59,11 @@ public class CreateGroup extends AppCompatActivity {
         return groupsRef.push().getKey();
     }
 
-
+    /*
+     * creates functionality to create group
+    */
     public void createGroup(View view1) {
+
 
         EditText editText = (EditText) findViewById(R.id.editText5);
         final String groupName = editText.getText().toString();
@@ -71,6 +81,7 @@ public class CreateGroup extends AppCompatActivity {
                 Boolean user_has_group = (Boolean) dataSnapshot.child("group").getValue();
                 System.err.print("\n User contents " + user_has_group);
 
+                //checks if user has a group and if so it will display that group cant be created
                 if (user_has_group) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(CreateGroup.this);
                     builder.setTitle("\"" + groupName + "\"" + " cannot be created.");
@@ -80,8 +91,11 @@ public class CreateGroup extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             Intent goBack = new Intent(CreateGroup.this, NavDrawerActivity.class);
                             goBack.putExtra("username", username);
-                            startActivity(goBack);                }
+                            startActivity(goBack);
+                            finish();
+                        }
                     });
+
                     builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
                         @Override
@@ -89,12 +103,16 @@ public class CreateGroup extends AppCompatActivity {
                             Intent goBack = new Intent(CreateGroup.this, NavDrawerActivity.class);
                             goBack.putExtra("username", username);
                             startActivity(goBack);
+                            finish();
                         }
                     });
 
                     builder.create().show();
 
                 } else {
+
+                    //creates group in database by saving key
+                    //displays group key on page and gives ability to save group key to send
                     if (!groupName.matches("") && !groupName.matches("Group Name")) {
                         final String groupKey = generateKey();
                         //CHECK TO SEE THAT KEY DOES NOT EXIST
@@ -142,7 +160,7 @@ public class CreateGroup extends AppCompatActivity {
 
                         TextView groupKeyTextView = new TextView(view.getContext());
                         groupKeyTextView.setText(groupKey);
-                        groupKeyTextView.setTextSize(80);
+                        groupKeyTextView.setTextSize(40);
                         groupKeyTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
 
                         TextView message2 = new TextView(view.getContext());
@@ -155,6 +173,8 @@ public class CreateGroup extends AppCompatActivity {
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(CreateGroup.this);
                         builder.setView(layout);
+
+                        //gives option to save key to clipboard
                         builder.setNeutralButton("Copy key to clipboard", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -162,11 +182,13 @@ public class CreateGroup extends AppCompatActivity {
                                 clipboard.setPrimaryClip(clip);
                             }
                         });
+                        //button to go back
                         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 Intent goBack = new Intent(CreateGroup.this, NavDrawerActivity.class);
                                 goBack.putExtra("username", username);
                                 startActivity(goBack);
+                                finish();
                             }
                         });
 
@@ -177,11 +199,14 @@ public class CreateGroup extends AppCompatActivity {
                                 Intent goBack = new Intent(CreateGroup.this, NavDrawerActivity.class);
                                 goBack.putExtra("username", username);
                                 startActivity(goBack);
+                                finish();
                             }
                         });
 
                         builder.create().show();
                     } else {
+
+                        //if nothing typed, it will prompt to type a group name
                         AlertDialog.Builder builder = new AlertDialog.Builder(CreateGroup.this);
                         builder.setMessage("Please type in a group name");
                         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -203,55 +228,14 @@ public class CreateGroup extends AppCompatActivity {
 
     }
 
-
-
-
-//        if(!groupName.matches("") && !groupName.matches("Group Name")) {
-//            String groupKey = generateKey();
-//            //CHECK TO SEE THAT KEY DOES NOT EXIST
-//            DatabaseReference groupsRef = ref.child("groups");
-//            Map<String, Object> group_info = new HashMap<String, Object>();
-//            Map<String, Object> members = new HashMap<String, Object>();
-//
-//            members.put("user1", new String(username));
-//            group_info.put("/"+groupKey+"/", new Group(groupName, members, 1));
-//            groupsRef.updateChildren(group_info);
-//
-//            // Set user's group boolean to true
-//            DatabaseReference usersRef = ref.child("users").child(username);
-//            Map<String, Object> group_bool = new HashMap<String, Object>();
-//            group_bool.put("/group/", new Boolean(true));
-//            usersRef.updateChildren(group_bool);
-//
-//            AlertDialog.Builder builder = new AlertDialog.Builder(CreateGroup.this);
-//            builder.setTitle("\"" + groupName + "\"" + " successfully created.");
-//            builder.setMessage("Your group's key is: " + groupKey +
-//                    "\nPlease pass on this key to your roommates so that they can join.");
-//            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//                public void onClick(DialogInterface dialog, int id) {
-//                    Intent goBack = new Intent(CreateGroup.this, MainPage2.class);
-//                    goBack.putExtra("username", username);
-//
-//                    startActivity(goBack);                }
-//            });
-//            builder.create().show();
-//        }
-//        else{
-//            AlertDialog.Builder builder = new AlertDialog.Builder(CreateGroup.this);
-//            builder.setMessage("Please type in a group name");
-//            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//                public void onClick(DialogInterface dialog, int id) {
-//                    // Do nothing
-//                }
-//            });
-//            builder.create().show();
-//        }
-//    }
-
+    /*
+     * goes back to previous screen (navdrawer activity)
+     */
     public void cancelCreateGroup(View view){
         Intent goBack = new Intent(this, NavDrawerActivity.class);
         Bundle extras = getIntent().getExtras();
         goBack.putExtra("username",  extras.getString("username") );
         startActivity(goBack);
+        finish();
     }
 }

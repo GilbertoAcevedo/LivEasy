@@ -2,16 +2,13 @@ package cse110.liveasy;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
-import android.content.Intent;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,12 +22,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class JoinGroup extends AppCompatActivity {
 
     String username;
 
+    /*
+     * sets the layout for the JoinGroup activity
+    */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +38,13 @@ public class JoinGroup extends AppCompatActivity {
         username = extras.get("username").toString();
         }
 
+    @Override
+    public void onBackPressed(){
+
+    }
+    /*
+     * Sets functionality for joining a group thats already
+     */
     public void joinGroup(View view) {
 
         EditText editText = (EditText) findViewById(R.id.editText6);
@@ -52,6 +58,9 @@ public class JoinGroup extends AppCompatActivity {
         final View tempView = view;
 
         ValueEventListener listener = new ValueEventListener() {
+            /*
+             * function for joining group when correct key is put in
+             */
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //if key is valid
@@ -92,6 +101,7 @@ public class JoinGroup extends AppCompatActivity {
                             Intent goBack = new Intent(JoinGroup.this, NavDrawerActivity.class);
                             goBack.putExtra("username", username);
                             startActivity(goBack);
+                            finish();
                         }
                     });
                     builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -100,6 +110,7 @@ public class JoinGroup extends AppCompatActivity {
                             Intent goBack = new Intent(JoinGroup.this, NavDrawerActivity.class);
                             goBack.putExtra("username", username);
                             startActivity(goBack);
+                            finish();
                         }
                     });
                     builder.create().show();
@@ -123,10 +134,15 @@ public class JoinGroup extends AppCompatActivity {
 
     }
 
+    /*
+     * goes back to previous screen (navdrawer activity)
+     */
+
     public void cancelJoinGroup(View view){
         Intent goBacktoMain = new Intent(this, NavDrawerActivity.class);
         goBacktoMain.putExtra("username", username);
         startActivity(goBacktoMain);
+        finish();
     }
     }
 

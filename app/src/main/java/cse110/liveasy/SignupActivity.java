@@ -1,7 +1,9 @@
 package cse110.liveasy;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -39,6 +41,9 @@ public class SignupActivity extends AppCompatActivity {
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference ref = database.getReference();
 
+    public static final String MyPREFERENCES = "MyPrefs";
+    SharedPreferences sharedPreferences;
+
     @Bind(R.id.input_name) EditText _nameText;
     @Bind(R.id.input_username) EditText _usernameText;
     @Bind(R.id.input_email) EditText _emailText;
@@ -48,7 +53,9 @@ public class SignupActivity extends AppCompatActivity {
     @Bind(R.id.btn_signup) Button _signupButton;
     @Bind(R.id.link_login) TextView _loginLink;
 
-    
+    /*
+     * Sets up interface for the SignUp activity
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +63,9 @@ public class SignupActivity extends AppCompatActivity {
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         Intent intent = getIntent();
+
+        sharedPreferences = getApplicationContext().getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
 
         ButterKnife.bind(this);
 
@@ -89,18 +99,24 @@ public class SignupActivity extends AppCompatActivity {
                 //Finish the registration screen and return to the Login activity
                 Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
                 startActivity(intent);
-                finish();
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                finish();
             }
         });
     }
 
+    /*
+     * Wait to set up dataabse
+     */
     @Override
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
     }
 
+    /*
+     * Stop setting up database, remove listener
+     */
     @Override
     public void onStop() {
         super.onStop();
@@ -131,6 +147,13 @@ public class SignupActivity extends AppCompatActivity {
 
         final String email = _emailText.getText().toString();
         final String password = _passwordText.getText().toString();
+        final String username = _usernameText.getText().toString();
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("username", username);
+        editor.putString("email", email);
+        editor.putString("password", password);
+        editor.commit();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference uref = database.getReference().child("users");
@@ -211,7 +234,7 @@ public class SignupActivity extends AppCompatActivity {
 
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
-        Intent intent = new Intent(SignupActivity.this,NavDrawerActivity.class);
+        Intent intent = new Intent(SignupActivity.this, Questionaire.class);
         intent.putExtra("username", username);
         startActivity(intent);
         finish();
