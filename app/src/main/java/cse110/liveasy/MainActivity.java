@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
         //Toast.makeText(this, "Show some text on the screen.", Toast.LENGTH_LONG).show();
         Intent goToProfile = new Intent(this, ProfileActivity.class);
         startActivity(goToProfile);
+        finish();
     }
 
     public void goToCreateGroup(View view){
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         startActivity(goToCreateGroup);
+        finish();
     }
 
     public void goToJoinGroup(View view){
@@ -38,5 +40,6 @@ public class MainActivity extends AppCompatActivity {
         Intent goToJoinGroup = new Intent(this, JoinGroup.class);
 
         startActivity(goToJoinGroup);
+        finish();
     }
 }

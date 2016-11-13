@@ -92,6 +92,7 @@ public class JoinGroup extends AppCompatActivity {
                             Intent goBack = new Intent(JoinGroup.this, NavDrawerActivity.class);
                             goBack.putExtra("username", username);
                             startActivity(goBack);
+                            finish();
                         }
                     });
                     builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -100,6 +101,7 @@ public class JoinGroup extends AppCompatActivity {
                             Intent goBack = new Intent(JoinGroup.this, NavDrawerActivity.class);
                             goBack.putExtra("username", username);
                             startActivity(goBack);
+                            finish();
                         }
                     });
                     builder.create().show();
@@ -127,6 +129,7 @@ public class JoinGroup extends AppCompatActivity {
         Intent goBacktoMain = new Intent(this, NavDrawerActivity.class);
         goBacktoMain.putExtra("username", username);
         startActivity(goBacktoMain);
+        finish();
     }
     }
 

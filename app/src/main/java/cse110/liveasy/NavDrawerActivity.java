@@ -1,11 +1,18 @@
 package cse110.liveasy;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.renderscript.Sampler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.v4.app.Fragment;
@@ -19,8 +26,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,6 +41,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,14 +57,24 @@ public class NavDrawerActivity extends AppCompatActivity
     String username = "";
     final User user = new User();
     final Group group = new Group();
+    int pendingSize;
+    int memberCount;
+    int count = 0;
+
+    ValueEventListener groupListener;
+    ValueEventListener userListener;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_nav_drawer);
         Bundle extras = getIntent().getExtras();
         username = extras.getString("username");
-        System.out.println("asdfsadfasdf " + username);
+
+        System.out.println("Username in NAV Drawer .... "+username);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -69,11 +89,136 @@ public class NavDrawerActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        displayScreen();
+        /***************************/
+
+        DatabaseReference uRef = ref.child("users").child(username);
+
+        ValueEventListener listener = new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Boolean user_has_group = (Boolean) dataSnapshot.child("group").getValue();
+                String user_group_id = (String) dataSnapshot.child("groupID").getValue();
+                String user_email = (String) dataSnapshot.child("email").getValue();
+                String user_phone_number = (String) dataSnapshot.child("phone_number").getValue();
+                String user_full_name = (String) dataSnapshot.child("full_name").getValue();
+                Boolean user_isPending = (Boolean) dataSnapshot.child("isPending").getValue();
+                System.out.println("From database user has group "+user_has_group.booleanValue());
+                user.groupID = user_group_id;
+                user.email = user_email;
+                user.phone_number = user_phone_number;
+                user.full_name= user_full_name;
+                user.isPending = user_isPending;
+                user.group = user_has_group.booleanValue();
+
+                NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                View hView =  navigationView.getHeaderView(0);
+                TextView nav_email = (TextView)hView.findViewById(R.id.textView);
+                nav_email.setText(user.email);
+                TextView nav_user = (TextView)hView.findViewById(R.id.textView3);
+                nav_user.setText(user.full_name);
+                ImageView nav_pic = (ImageView)hView.findViewById(R.id.imageView);
+                nav_pic.setImageResource(R.drawable.woodie);
+
+                //updateGroup();
+                updateUser();
+
+                if (user_has_group) {
+
+                    //This is the second listener for getting the number of members in the group
+                    DatabaseReference gRef = ref.child("groups").child(user_group_id);
+                    ValueEventListener listener2 = new ValueEventListener() {
+
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            if( user.group ) {
+                                Map<String, Object> group_content = (Map<String, Object>) dataSnapshot.child("members").getValue();
+                                ArrayList<String> pending = (ArrayList<String>) dataSnapshot.child("pending").getValue();
+                                String gname = (String) dataSnapshot.child("name").getValue();
+                                Long gnum = (Long) dataSnapshot.child("num_users").getValue();
+
+                                // Update each user's info
+                                group.members = group_content;
+                                group.pending = pending;
+                                group.name = gname;
+
+                                if( gnum != null ) {
+                                    group.num_users = gnum.intValue();
+                                }
+
+                                if (user.group) {
+                                    getSupportActionBar().setTitle(group.name);
+                                    notificationUp();
+                                }
+                            }
+
+                            Fragment fragment = null;
+                            Long num_users = (Long) dataSnapshot.child("num_users").getValue();
+                            System.out.println("Number of Users: " + num_users);
+                            memberCount = num_users.intValue();
+                            switch(num_users.intValue()) {
+                                case 1:
+                                    fragment = new Home1();
+                                    break;
+                                case 2:
+                                    fragment = new Home2();
+                                    break;
+                                case 3:
+                                    fragment = new Home3();
+                                    break;
+                                case 4:
+                                    fragment = new Home4();
+                                    break;
+                                case 5:
+                                    fragment = new Home5();
+                                    break;
+                                default:
+                                    fragment = new Home5();
+                                    break;
+                            }
+
+                            if(fragment != null){
+                                //if(!isFinishing()) {
+                                System.out.println("infinite loop");
+                                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                                ft.replace(R.id.content_frame, fragment);
+                                ft.commitAllowingStateLoss();
+                                //}
+                            }
+
+                            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                            drawer.closeDrawer(GravityCompat.START);
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    };
+                    gRef.addListenerForSingleValueEvent(listener2);
+                    gRef.removeEventListener(listener2);
+
+
+                } else{
+                    Fragment fragment = new Home1();
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.replace(R.id.content_frame, fragment);
+                    ft.commitAllowingStateLoss();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+        uRef.addListenerForSingleValueEvent(listener);
+        uRef.removeEventListener(listener);
+
+
+        /***************************/
 
         getSupportActionBar().setTitle(username);
 
-        System.out.println("In Oncreate user has group "+user.group);
     }
 
     @Override
@@ -125,126 +270,86 @@ public class NavDrawerActivity extends AppCompatActivity
                 String value = extras.getString("username");
                 goToCreateGroup.putExtra("username", value);
             }
-
+            removeAllListeners();
             startActivity(goToCreateGroup);
+            finish();
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_send) {
+            Intent goToShareCode = new Intent(this, Questionaire.class);
+            removeAllListeners();
+            startActivity(goToShareCode);
+            finish();
+
 
         } else if (id == R.id.manage_requests){
             Intent goToRequests = new Intent(this, ManageRequests.class);
             goToRequests.putStringArrayListExtra("pending", group.pending);
             goToRequests.putExtra("username", getIntent().getExtras().getString("username"));
             goToRequests.putExtra("groupKey", user.groupID);
+            removeAllListeners();
             startActivity(goToRequests);
+            finish();
+        }
+        else if ( id == R.id.leave_group ){
+            View v = findViewById(R.id.content_nav_drawer);
+            AlertDialog.Builder displayConfirmation  = new AlertDialog.Builder(v.getContext());
+            displayConfirmation.setMessage("Are you sure you want to leave this group?" +
+                    "\nIf you are the last member, the group will be deleted");
+            displayConfirmation.setTitle("Leave group");
+            displayConfirmation.setPositiveButton("Yes", null);
+            displayConfirmation.setNegativeButton("No", null);
+            displayConfirmation.setCancelable(false);
+
+            displayConfirmation.setPositiveButton("Yes",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            if( user.group ) {
+                                removeUserFromGroup(username);
+                                Toast toast = Toast.makeText(NavDrawerActivity.this, "You have been removed" +
+                                                " from the group.",
+                                        Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
+                                toast.show();
+                            }
+                            else {
+                                Toast toast = Toast.makeText(NavDrawerActivity.this, "You do not have a group.",
+                                        Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
+                                toast.show();
+                            }
+                        }
+                    });
+            displayConfirmation.setNegativeButton("No",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            //do nothing
+                        }
+                    });
+            displayConfirmation.create().show();
         }
         else if (id == R.id.logout){
-            FirebaseAuth.getInstance().signOut();
-            Intent goToLogin = new Intent(this, LoginActivity.class);
-            startActivity(goToLogin);
-        }
 
+            SharedPreferences sharedpreferences = getSharedPreferences(LoginActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.clear();
+            editor.commit();
+
+            FirebaseAuth.getInstance().signOut();
+
+            Intent goToLogin = new Intent(this, LoginActivity.class);
+            removeAllListeners();
+            startActivity(goToLogin);
+            finish();
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    private void displayScreen(){
-
-        DatabaseReference uRef = ref.child("users").child(username);
-
-
-        ValueEventListener listener = new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                Boolean user_has_group = (Boolean) dataSnapshot.child("group").getValue();
-                String user_group_id = (String) dataSnapshot.child("groupID").getValue();
-                String user_email = (String) dataSnapshot.child("email").getValue();
-                String user_phone_number = (String) dataSnapshot.child("phone_number").getValue();
-                String user_full_name = (String) dataSnapshot.child("full_name").getValue();
-                Boolean user_isPending = (Boolean) dataSnapshot.child("isPending").getValue();
-                System.out.println("From database user has group "+user_has_group.booleanValue());
-                user.groupID = user_group_id;
-                user.group = user_has_group.booleanValue();
-                user.email = user_email;
-                user.phone_number = user_phone_number;
-                user.full_name= user_full_name;
-                user.isPending = user_isPending;
-
-                updateGroup();
-
-                System.err.print("\n User contents " + user_has_group);
-
-                if (user_has_group) {
-                    //This is the second listener for getting the number of members in the group
-                    DatabaseReference gRef = ref.child("groups").child(user_group_id);
-                    ValueEventListener listener2 = new ValueEventListener() {
-
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Fragment fragment = null;
-                            Long num_users = (Long) dataSnapshot.child("num_users").getValue();
-                            System.out.println("Number of Users: " + num_users);
-                            switch(num_users.intValue()) {
-                                case 1:
-                                    fragment = new Home1();
-                                    break;
-                                case 2:
-                                    fragment = new Home2();
-                                    break;
-                                case 3:
-                                    fragment = new Home3();
-                                    break;
-                                case 4:
-                                    fragment = new Home4();
-                                    break;
-                                case 5:
-                                    fragment = new Home5();
-                                    break;
-                                default:
-                                    fragment = new Home5();
-                                    break;
-                            }
-
-                            if(fragment != null){
-                                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                                ft.replace(R.id.content_frame, fragment);
-                                ft.commitAllowingStateLoss();
-                            }
-
-                            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                            drawer.closeDrawer(GravityCompat.START);
-                        }
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    };
-                    gRef.addListenerForSingleValueEvent(listener2);
-                    gRef.removeEventListener(listener2);
-
-
-                } else{
-                    Fragment fragment = new Home1();
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ft.replace(R.id.content_frame, fragment);
-                    ft.commitAllowingStateLoss();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        };
-        uRef.addListenerForSingleValueEvent(listener);
-        uRef.removeEventListener(listener);
-
-
-
-    }
 
     public void goToCreateGroup(View view){
         Intent goToCreateGroup = new Intent(this, CreateGroup.class);
@@ -256,7 +361,10 @@ public class NavDrawerActivity extends AppCompatActivity
             goToCreateGroup.putExtra("username", value);
         }
 
+        removeAllListeners();
+
         startActivity(goToCreateGroup);
+        finish();
     }
 
     public void goToJoinGroup(View view){
@@ -264,32 +372,49 @@ public class NavDrawerActivity extends AppCompatActivity
         Bundle extras = this.getIntent().getExtras();
         Intent goToJoinGroup = new Intent(this, JoinGroup.class);
         goToJoinGroup.putExtra("username", (String)extras.getString("username"));
+        removeAllListeners();
         startActivity(goToJoinGroup);
+        finish();
 
     }
 
     public void updateGroup(){
         System.out.println("USER HAS GROUP "+user.group);
+
         if(user.group) {
             DatabaseReference gRef = ref.child("groups").child(user.groupID);
-            ValueEventListener listener = new ValueEventListener() {
+            groupListener = new ValueEventListener() {
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Map<String, Object> group_content =  (Map<String, Object>)dataSnapshot.child("members").getValue();
-                    ArrayList<String> pending =  (ArrayList<String>) dataSnapshot.child("pending").getValue();
-                    String gname = (String) dataSnapshot.child("name").getValue();
-                    Long gnum = (Long) dataSnapshot.child("num_users").getValue();
-
-                    // Update each user's info
-                    group.members = group_content;
-                    group.pending = pending;
-                    group.name = gname;
-                    group.num_users = gnum.intValue();
 
                     if( user.group ) {
-                        getSupportActionBar().setTitle(group.name);
+                        Map<String, Object> group_content = (Map<String, Object>) dataSnapshot.child("members").getValue();
+                        ArrayList<String> pending = (ArrayList<String>) dataSnapshot.child("pending").getValue();
+                        String gname = (String) dataSnapshot.child("name").getValue();
+                        Long gnum = (Long) dataSnapshot.child("num_users").getValue();
 
+                        // Update each user's info
+                        group.members = group_content;
+                        group.pending = pending;
+                        group.name = gname;
+
+                        if( gnum != null ) {
+                            if ( group.num_users != gnum.intValue() ) {
+
+                                System.out.println("Changing intents when gnum = "+gnum.intValue()+" group.num_users = "+group.num_users);
+                                Intent restartActivity = new Intent(NavDrawerActivity.this, NavDrawerActivity.class);
+                                restartActivity.putExtra("username", username);
+                                startActivity(restartActivity);
+                                removeAllListeners();
+                                finish();
+                            }
+                        }
+
+                        if (user.group) {
+                            getSupportActionBar().setTitle(group.name);
+                            notificationUp();
+                        }
                     }
 
                 }
@@ -298,7 +423,7 @@ public class NavDrawerActivity extends AppCompatActivity
                 public void onCancelled(DatabaseError databaseError) {
                 }
             };
-            gRef.addValueEventListener(listener);
+            gRef.addValueEventListener(groupListener);
 
         }
     }
@@ -312,7 +437,6 @@ public class NavDrawerActivity extends AppCompatActivity
 //        startActivity(goToProfile);
 //    }
     public void toProfilePopup(View view) {
-
         //get info for which photo was clicked on
 
 
@@ -334,7 +458,9 @@ public class NavDrawerActivity extends AppCompatActivity
             public void onClick(DialogInterface dialog, int id) {
                 Intent goProfile = new Intent(NavDrawerActivity.this, ProfileActivity.class);
                 goProfile.putExtra("username", username);
+                removeAllListeners();
                 startActivity(goProfile);
+                finish();
             }
         });
 
@@ -344,8 +470,6 @@ public class NavDrawerActivity extends AppCompatActivity
     }
 
     public void toGroupProfilePopup(View view) {
-
-
         final AlertDialog.Builder group_builder = new AlertDialog.Builder(this);
         LayoutInflater group_inflater = (this).getLayoutInflater();
         View group_dialog_view = group_inflater.inflate(R.layout.activity_popup_group_profile, null);
@@ -364,14 +488,162 @@ public class NavDrawerActivity extends AppCompatActivity
                 Intent goProfile = new Intent(NavDrawerActivity.this, GroupProfileActivity.class);
                 goProfile.putExtra("username", username);
                 goProfile.putExtra("groupName", group.name);
+                removeAllListeners();
                 startActivity(goProfile);
+                finish();
             }
         });
 
         group_builder.setView(group_dialog_view);
         group_builder.create().show();
+    }
 
+
+    public void notificationUp() {
+        System.out.println("in notifications up has group: " + user.groupID);
+        if (user.group) {
+            DatabaseReference pRef = ref.child("groups").child(user.groupID).child("pending");
+
+            ValueEventListener listener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    if( user.group ) {
+                        System.out.println(username + " " + (++count));
+                        ArrayList<String> list = (ArrayList<String>) dataSnapshot.getValue();
+                        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                        Menu menu = navigationView.getMenu();
+                        MenuItem requestItem = menu.findItem(R.id.manage_requests);
+                        if (list.size() > 1) {
+                            requestItem.setTitle("Manage Requests (" + (list.size() - 1) + ")");
+
+                        } else {
+                            requestItem.setTitle("Manage Requests");
+                        }
+                        if (list.size() != pendingSize) {
+
+                            if (list.size() > 1) {
+                                System.out.println("before list size: " + list.size() + "\nbefore pendingSize: " + pendingSize);
+                                Toast toast = Toast.makeText(NavDrawerActivity.this, "You have " + (list.size() - 1) + " pending request(s)",
+                                        Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
+                                toast.show();
+                            }
+                            pendingSize = list.size();
+                            System.out.println("after list size: " + list.size() + "\nafter pendingSize: " + pendingSize);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            pRef.addListenerForSingleValueEvent(listener);
+            pRef.removeEventListener(listener);
+        }
+    }
+
+
+
+    public void removeUserFromGroup(final String userName){
+
+
+        final DatabaseReference gRef = ref.child("groups").child(user.groupID);
+        gRef.removeEventListener(groupListener);
+        user.group = false;
+        user.groupID = "";
+
+        groupListener = null;
+
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                DatabaseReference uRef = ref.child("users").child(username);
+                Map<String,Object> userContents = new HashMap<String,Object>();
+                userContents.put("group", new Boolean(false));
+                userContents.put("groupID", "");
+                uRef.updateChildren(userContents);
+
+
+                Map<String, Object> group = (HashMap<String,Object>)dataSnapshot.getValue();
+
+                Map<String,Object> members = (HashMap<String,Object>)dataSnapshot.child("members").getValue();
+                members.remove(userName);
+
+                int currentMembers = ((Long)dataSnapshot.child("num_users").getValue()).intValue();
+                if(currentMembers > 1) {
+                    group.put("members", members);
+                    group.put("num_users", currentMembers - 1);
+                    gRef.updateChildren(group);
+                }else{
+                    gRef.removeValue();
+                }
+
+                Intent restartActivity = new Intent(NavDrawerActivity.this, NavDrawerActivity.class);
+                restartActivity.putExtra("username", username);
+                startActivity(restartActivity);
+                removeAllListeners();
+                finish();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        gRef.addListenerForSingleValueEvent(listener);
+        gRef.removeEventListener(listener);
 
     }
 
+
+
+    public void updateUser(){
+        DatabaseReference uRef = ref.child("users").child(username);
+
+         userListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Boolean user_has_group = (Boolean) dataSnapshot.child("group").getValue();
+                String user_group_id = (String) dataSnapshot.child("groupID").getValue();
+                String user_email = (String) dataSnapshot.child("email").getValue();
+                String user_phone_number = (String) dataSnapshot.child("phone_number").getValue();
+                String user_full_name = (String) dataSnapshot.child("full_name").getValue();
+                Boolean user_isPending = (Boolean) dataSnapshot.child("isPending").getValue();
+                System.out.println("From database user has group "+ user_has_group.booleanValue());
+                user.groupID = user_group_id;
+                user.group = user_has_group.booleanValue();
+                user.email = user_email;
+                user.phone_number = user_phone_number;
+                user.full_name= user_full_name;
+                user.isPending = user_isPending;
+
+                if( user.group && groupListener == null) {
+                    updateGroup();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        uRef.addValueEventListener(userListener);
+    }
+
+    public void removeAllListeners() {
+
+        DatabaseReference uRef = ref.child("users").child(username);
+        uRef.removeEventListener(userListener);
+        if( user.group ) {
+            DatabaseReference gRef = ref.child("groups").child(user.groupID);
+            gRef.removeEventListener(groupListener);
+        }
+
+    }
 }

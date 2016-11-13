@@ -80,7 +80,9 @@ public class CreateGroup extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             Intent goBack = new Intent(CreateGroup.this, NavDrawerActivity.class);
                             goBack.putExtra("username", username);
-                            startActivity(goBack);                }
+                            startActivity(goBack);
+                            finish();
+                        }
                     });
                     builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
@@ -89,6 +91,7 @@ public class CreateGroup extends AppCompatActivity {
                             Intent goBack = new Intent(CreateGroup.this, NavDrawerActivity.class);
                             goBack.putExtra("username", username);
                             startActivity(goBack);
+                            finish();
                         }
                     });
 
@@ -142,7 +145,7 @@ public class CreateGroup extends AppCompatActivity {
 
                         TextView groupKeyTextView = new TextView(view.getContext());
                         groupKeyTextView.setText(groupKey);
-                        groupKeyTextView.setTextSize(80);
+                        groupKeyTextView.setTextSize(40);
                         groupKeyTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
 
                         TextView message2 = new TextView(view.getContext());
@@ -167,6 +170,7 @@ public class CreateGroup extends AppCompatActivity {
                                 Intent goBack = new Intent(CreateGroup.this, NavDrawerActivity.class);
                                 goBack.putExtra("username", username);
                                 startActivity(goBack);
+                                finish();
                             }
                         });
 
@@ -177,6 +181,7 @@ public class CreateGroup extends AppCompatActivity {
                                 Intent goBack = new Intent(CreateGroup.this, NavDrawerActivity.class);
                                 goBack.putExtra("username", username);
                                 startActivity(goBack);
+                                finish();
                             }
                         });
 
@@ -204,54 +209,11 @@ public class CreateGroup extends AppCompatActivity {
     }
 
 
-
-
-//        if(!groupName.matches("") && !groupName.matches("Group Name")) {
-//            String groupKey = generateKey();
-//            //CHECK TO SEE THAT KEY DOES NOT EXIST
-//            DatabaseReference groupsRef = ref.child("groups");
-//            Map<String, Object> group_info = new HashMap<String, Object>();
-//            Map<String, Object> members = new HashMap<String, Object>();
-//
-//            members.put("user1", new String(username));
-//            group_info.put("/"+groupKey+"/", new Group(groupName, members, 1));
-//            groupsRef.updateChildren(group_info);
-//
-//            // Set user's group boolean to true
-//            DatabaseReference usersRef = ref.child("users").child(username);
-//            Map<String, Object> group_bool = new HashMap<String, Object>();
-//            group_bool.put("/group/", new Boolean(true));
-//            usersRef.updateChildren(group_bool);
-//
-//            AlertDialog.Builder builder = new AlertDialog.Builder(CreateGroup.this);
-//            builder.setTitle("\"" + groupName + "\"" + " successfully created.");
-//            builder.setMessage("Your group's key is: " + groupKey +
-//                    "\nPlease pass on this key to your roommates so that they can join.");
-//            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//                public void onClick(DialogInterface dialog, int id) {
-//                    Intent goBack = new Intent(CreateGroup.this, MainPage2.class);
-//                    goBack.putExtra("username", username);
-//
-//                    startActivity(goBack);                }
-//            });
-//            builder.create().show();
-//        }
-//        else{
-//            AlertDialog.Builder builder = new AlertDialog.Builder(CreateGroup.this);
-//            builder.setMessage("Please type in a group name");
-//            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//                public void onClick(DialogInterface dialog, int id) {
-//                    // Do nothing
-//                }
-//            });
-//            builder.create().show();
-//        }
-//    }
-
     public void cancelCreateGroup(View view){
         Intent goBack = new Intent(this, NavDrawerActivity.class);
         Bundle extras = getIntent().getExtras();
         goBack.putExtra("username",  extras.getString("username") );
         startActivity(goBack);
+        finish();
     }
 }

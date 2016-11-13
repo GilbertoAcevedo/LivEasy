@@ -20,7 +20,8 @@
 
     <item android:title="Manage Group">
         <menu>
-            <item android:title="Manage Requests"
+            <item
+                android:title="Manage Requests"
                 android:id="@+id/manage_requests"
                 android:icon="@drawable/ic_menu_manage" />
             <item
@@ -31,6 +32,8 @@
     </item>
     <item android:title="Manage Account" >
         <menu >
+            <item android:title="Leave Group"
+                android:id="@+id/leave_group" />
             <item
                 android:id="@+id/logout"
                 android:title="Log Out" />

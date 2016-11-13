@@ -104,14 +104,14 @@ public class ManageRequests extends AppCompatActivity {
                             final Map<String, Object> currentUserMap = (HashMap<String, Object>) dataSnapshot.getValue();
 
                             if((boolean)currentUserMap.get("isPending")){
-                                Map<String, Object> updateUser = new HashMap<String, Object>();
+                                final Map<String, Object> updateUser = new HashMap<String, Object>();
                                 //set group to true
                                 updateUser.put("/group/", new Boolean(true));
                                 //set groupID to this group
                                 updateUser.put("/groupID/", extras.getString("groupKey"));
                                 //set pending to false
                                 updateUser.put("/isPending/", new Boolean(false));
-                                uRef.updateChildren(updateUser);
+                                //uRef.updateChildren(updateUser);
 
                                 final DatabaseReference gRef = ref.getReference().child("groups").child((String) extras.getString("groupKey"));
                                 ValueEventListener groupListener = new ValueEventListener() {
@@ -131,6 +131,8 @@ public class ManageRequests extends AppCompatActivity {
                                         pending.remove(currentUsername);
                                         group.put("pending", pending);
                                         gRef.updateChildren(group);
+
+                                        uRef.updateChildren(updateUser);
                                     }
 
                                     @Override
@@ -140,9 +142,14 @@ public class ManageRequests extends AppCompatActivity {
                                 };
                                 gRef.addListenerForSingleValueEvent(groupListener);
                                 gRef.removeEventListener(groupListener);
+
+                                Toast toast = Toast.makeText(ManageRequests.this, currentUsername+" has been accepted",
+                                        Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.CENTER,0,0);
+                                toast.show();
                             }
                             else{
-                                Toast toast = Toast.makeText(ManageRequests.this, currentUsername+" is no longer pending",
+                                Toast toast = Toast.makeText(ManageRequests.this, currentUsername + " has previously been accepted or rejected",
                                         Toast.LENGTH_SHORT);
                                 toast.setGravity(Gravity.CENTER,0,0);
                                 toast.show();
@@ -200,9 +207,14 @@ public class ManageRequests extends AppCompatActivity {
                                 };
                                 gRef.addListenerForSingleValueEvent(groupListener);
                                 gRef.removeEventListener(groupListener);
+
+                                Toast toast = Toast.makeText(ManageRequests.this, currentUsername+" has been rejected",
+                                        Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.CENTER,0,0);
+                                toast.show();
                             }
                             else{
-                                Toast toast = Toast.makeText(ManageRequests.this, currentUsername+" is no longer pending",
+                                Toast toast = Toast.makeText(ManageRequests.this, currentUsername+" has previously been accepted or rejected",
                                         Toast.LENGTH_SHORT);
                                 toast.setGravity(Gravity.CENTER,0,0);
                                 toast.show();
@@ -234,44 +246,7 @@ public class ManageRequests extends AppCompatActivity {
         setContentView(layout);
 
 
-//        adapter = new ArrayAdapter<String>(this,
-//                android.R.layout.simple_list_item_1,
-//                listItems);
-//
-//        ListView pendingList = (ListView) findViewById(R.id.pending_list);
-//
-//
-//        pendingList.setAdapter(adapter);
-//        adapter.notifyDataSetChanged();
-
-
     }
-
-    public static void accept(String groupKey, String username){
-
-    }
-
-//    public static void getGroupKey(String username){
-//        FirebaseDatabase ref = FirebaseDatabase.getInstance();
-//        DatabaseReference uRef = ref.getReference().child("users").child(username);
-//
-//        final User user = new User();
-//        ValueEventListener listener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                groupKey = (String)dataSnapshot.child("groupID").getValue();
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        };
-//        uRef.addListenerForSingleValueEvent(listener);
-//        uRef.removeEventListener(listener);
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
@@ -280,7 +255,9 @@ public class ManageRequests extends AppCompatActivity {
             case android.R.id.home:
                 Intent goBack = new Intent(this, NavDrawerActivity.class);
                 goBack.putExtra("username", (String)extras.get("username"));
-                NavUtils.navigateUpTo(this, goBack);
+                startActivity(goBack);
+                finish();
+                //NavUtils.navigateUpTo(this, goBack);
                 return true;
         }
         return super.onOptionsItemSelected(item);
