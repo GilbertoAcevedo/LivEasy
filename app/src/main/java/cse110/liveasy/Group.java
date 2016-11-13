@@ -14,29 +14,17 @@ public class Group {
     public int num_users;
     public ArrayList<String> pending;
 
-    public Group(){
+    public Group() {
         this.pending = new ArrayList<String>();
         num_users = 1;
     }
 
-    public Group(String name, Map<String, Object> members, int num_users){
+    public Group(String name, Map<String, Object> members, int num_users) {
         this.name = name;
         this.members = members;
         this.num_users = num_users;
         this.pending = new ArrayList<String>();
     }
 
-//    public String[] getMembers() {
-//
-//        String[] mems = new String[num_users];
-//        int i = 0;
-//        for (Map.Entry<String, Object> entry : members.entrySet()) {
-//
-//            mems[i] = entry.getKey();
-//            i++;
-//        }
-//
-//        return mems;
-//    }
 }
 

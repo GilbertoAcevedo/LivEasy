@@ -41,7 +41,7 @@ public class Splash extends AppCompatActivity {
 
         String username = sharedpreferences.getString("username", "");
         System.out.println("Username...: " + username);
-        //If the contents in sharedpreferences are not empty, then we log in using the user preferences
+        // If the contents in sharedpreferences are not empty, then we log in using the user preferences
         if(!username.matches("") ) {
             System.out.println("Inside splash, username has been retrived");
             // login with email and password method

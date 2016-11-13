@@ -8,7 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Map;
+
 import cse110.liveasy.R;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class Home4 extends Fragment {
@@ -21,8 +24,85 @@ public class Home4 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home4, container, false);
+        final View theView = inflater.inflate(R.layout.fragment_home4, container, false);
+        String[] membersList = ((NavDrawerActivity)getActivity()).getMembers();
+
+
+        final String[] roommateList = new String[(membersList.length) - 1];
+
+        final String mainUser = ((NavDrawerActivity)getActivity()).username;
+        Map<String, Object> group = ((NavDrawerActivity)getActivity()).group.members;
+
+        int j = 0;
+        for (int i = 0; i < membersList.length; i++) {
+            if (!membersList[i].equals(mainUser)) {
+                roommateList[j] = membersList[i];
+                j++;
+            }
+        }
+
+        final Profile mainProfile = new Profile((Map<String, Object>) group.get(mainUser), mainUser);
+        CircleImageView selfie = (CircleImageView) theView.findViewById(R.id.main_profile_image4);
+        selfie.setImageResource(R.drawable.woodie); //TODO
+
+        selfie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ((NavDrawerActivity) getActivity()).toProfilePopup(v, mainProfile, mainUser);
+            }
+        });
+
+        for (int index = 0; index < roommateList.length; index++) {
+
+            Map<String, Object> currentMember = (Map <String, Object>)((NavDrawerActivity)getActivity()).group.members.get(roommateList[index]);
+            final Profile newProfile = new Profile(currentMember, roommateList[index]);
+            final String membersName = roommateList[index];
+
+            switch(index) {
+                case 0:
+                    CircleImageView memberSelfie = (CircleImageView) theView.findViewById(R.id.member_image_4_1);
+                    memberSelfie.setImageResource(R.drawable.woodie1);
+
+                    memberSelfie.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            ((NavDrawerActivity) getActivity()).toProfilePopup(v, newProfile, membersName);
+                        }
+                    });
+
+
+                case 1:
+                    CircleImageView memberSelfie1 = (CircleImageView) theView.findViewById(R.id.member_image_4_2);
+                    memberSelfie1.setImageResource(R.drawable.woodie2);
+
+                    memberSelfie1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            ((NavDrawerActivity) getActivity()).toProfilePopup(v, newProfile, membersName);
+                        }
+                    });
+
+                case 2:
+                    CircleImageView memberSelfie2 = (CircleImageView) theView.findViewById(R.id.member_image_4_3);
+                    memberSelfie2.setImageResource(R.drawable.woodie3);
+
+                    memberSelfie2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            ((NavDrawerActivity) getActivity()).toProfilePopup(v, newProfile, membersName);
+                        }
+                    });
+            }
+
+
+        }
+
+        return theView;
+
     }
 
 }

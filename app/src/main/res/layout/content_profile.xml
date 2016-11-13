@@ -22,7 +22,7 @@
             android:padding="@dimen/activity_horizontal_margin">
 
             <ImageView
-                android:id="@+id/ivContactItem1"
+                android:id="@+id/ivContactI"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -30,23 +30,22 @@
                 android:src="@drawable/ic_phone_black" />
 
             <TextView
-                android:id="@+id/tvNumber1"
+                android:id="@+id/main_profile_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_toEndOf="@id/ivContactItem1"
-                android:text="(123) 456-7890"
+                android:layout_toEndOf="@id/ivContactI"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#212121" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvNumber1"
+                android:layout_below="@id/main_profile_number"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
-                android:layout_toEndOf="@id/ivContactItem1"
-                android:text="Main"
+                android:layout_toEndOf="@id/ivContactI"
+                android:text="Mobile"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="#727272" />
 
@@ -70,25 +69,24 @@
                 android:src="@drawable/ic_email_black" />
 
             <TextView
-                android:id="@+id/tvNumber3"
+                android:id="@+id/main_profile_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toEndOf="@id/ivContactItem3"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="chintan@letsnurture.com"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#212121" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvNumber3"
+                android:layout_below="@id/main_profile_email"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/ivContactItem3"
-                android:text="Main"
+                android:text="Email"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="#727272" />
 
@@ -116,15 +114,14 @@
                 android:textColor="#212121" />
 
             <TextView
-                android:id="@+id/aboutMe2"
+                android:id="@+id/about_me1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/aboutMe"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
-                android:text="Hi! I'm Woodie!"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="#212121" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#727272" />
 
         </RelativeLayout>
 
@@ -152,13 +149,12 @@
                 android:textColor="#212121" />
 
             <TextView
-                android:id="@+id/allergies2"
+                android:id="@+id/allergies1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/allergies"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
-                android:text="Yes"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#727272" />
 
@@ -188,13 +184,12 @@
                 android:textColor="#212121" />
 
             <TextView
-                android:id="@+id/smoking2"
+                android:id="@+id/smoking1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/smoking"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
-                android:text="No"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#727272" />
 
@@ -224,13 +219,12 @@
                 android:textColor="#212121" />
 
             <TextView
-                android:id="@+id/drinking2"
+                android:id="@+id/drinking1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/drinking"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
-                android:text="Yes ;)"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#727272" />
 
@@ -260,49 +254,12 @@
                 android:textColor="#212121" />
 
             <TextView
-                android:id="@+id/pets2"
+                android:id="@+id/pets1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/pets"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
-                android:text="Yes!!!"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="#727272" />
-
-        </RelativeLayout>
-
-        <include layout="@layout/item_divider" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:padding="@dimen/activity_horizontal_margin">
-
-
-
-            <TextView
-                android:id="@+id/car"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="Car"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="#212121" />
-
-            <TextView
-                android:id="@+id/car2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/car"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="8dp"
-                android:text="No :("
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#727272" />
 
@@ -332,15 +289,14 @@
                 android:textColor="#212121" />
 
             <TextView
-                android:id="@+id/petPeeves2"
+                android:id="@+id/pet_peeves"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/petPeeves"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
-                android:text="I dislike..."
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="#212121" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#727272" />
 
         </RelativeLayout>
 
@@ -368,14 +324,56 @@
                 android:textColor="#212121" />
 
             <TextView
-                android:id="@+id/guests2"
+                android:id="@+id/guests1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/guests"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
-                android:text="Yes"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#727272" />
+
+        </RelativeLayout>
+
+        <include layout="@layout/item_divider" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/activity_horizontal_margin">
+
+
+
+            <TextView
+                android:id="@+id/e_contact_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="#212121" />
+
+            <TextView
+                android:id="@+id/e_contact_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/e_contact_name"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="8dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#727272" />
+
+            <TextView
+                android:id="@+id/e_contact_relationship"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/e_contact_phone"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="8dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="#727272" />
 
         </RelativeLayout>
