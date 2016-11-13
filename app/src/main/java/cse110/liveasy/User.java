@@ -1,5 +1,7 @@
 package cse110.liveasy;
 
+import java.util.HashMap;
+
 /**
  * Created by gilbe_000 on 10/22/2016.
  */
@@ -12,6 +14,7 @@ public class User {
     public boolean group;
     public boolean isPending;
     public String groupID;
+    public HashMap<String,Object> preferences;
 
 
     public User(String full_name, String phone_number, String email, boolean group) {
@@ -42,5 +45,8 @@ public class User {
         return group;
     }
 
+    public void setPrefrences(HashMap<String,Object> map){
+        this.preferences = map;
+    }
 
 }

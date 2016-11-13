@@ -211,7 +211,7 @@ public class SignupActivity extends AppCompatActivity {
 
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
-        Intent intent = new Intent(SignupActivity.this,NavDrawerActivity.class);
+        Intent intent = new Intent(SignupActivity.this, Questionaire.class);
         intent.putExtra("username", username);
         startActivity(intent);
         finish();

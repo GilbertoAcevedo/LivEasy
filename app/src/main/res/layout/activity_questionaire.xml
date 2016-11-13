@@ -221,6 +221,22 @@
             android:ems="10"
             android:id="@+id/input_allergies"
             android:hint="i.e. Sea Salt"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="20dp">
+
+        <Button
+            android:text="Save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="uploadData" />
     </LinearLayout>
 
 </LinearLayout>
