@@ -22,11 +22,8 @@ public class MainPage2 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_page2);
+        setContentView(R.layout.fragment_home1);
 
-        /*String[] activities = {"Duke added Gerardo", "Gerardo added Sergio"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getListView().getContext(), android.R.layout.simple_expandable_list_item_1, activities);
-        getListView().setAdapter(adapter);*/
     }
 
     public void toProfilePopup(View view) {

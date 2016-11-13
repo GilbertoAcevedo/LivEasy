@@ -25,4 +25,18 @@ public class Group {
         this.num_users = num_users;
         this.pending = new ArrayList<String>();
     }
+
+    public String[] getMembers() {
+
+        String[] mems = new String[num_users];
+        int i = 0;
+        for (Map.Entry<String, Object> entry : members.entrySet()) {
+
+            mems[i] = entry.getKey();
+            i++;
+        }
+
+        return mems;
+    }
 }
+

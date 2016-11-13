@@ -40,8 +40,6 @@
             android:name=".SignupActivity"
             android:theme="@style/AppTheme.Dark" />
         <activity android:name=".MainPage2" />
-        <activity android:name=".MainPage3" />
-        <activity android:name=".MainPage4" />
         <activity
             android:name=".CreateGroup"
             android:label="Create A New Group" />
