@@ -15,6 +15,28 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import android.content.Intent;
+import android.provider.MediaStore;
+import android.os.Bundle;
+import android.widget.Button;
+import android.view.View;
+import android.graphics.Bitmap;
+import android.widget.ImageView;
+
+
+import android.app.Activity;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.net.Uri;
+import android.os.Environment;
+import android.util.Log;
+import android.view.View.OnClickListener;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.w3c.dom.Text;
 
 import java.util.HashMap;
@@ -28,6 +50,12 @@ public class Questionaire extends AppCompatActivity {
     Boolean petPeevesIsOpen = false;
     Boolean allergiesIsOpen = false;
     Bundle extras;
+
+    private Button mTakePhoto;
+    private ImageView mImageView;
+    private static final String TAG = "upload";
+    static final int REQUEST_TAKE_PHOTO = 1;
+    String mCurrentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +96,24 @@ public class Questionaire extends AppCompatActivity {
 
         LinearLayout allergiesLayout = (LinearLayout)findViewById(R.id.allergies_layout);
         allergiesLayout.setVisibility(LinearLayout.GONE);
+
+
+
+        mTakePhoto = (Button) findViewById(R.id.uploadPhotoBtn);
+        mImageView = (ImageView) findViewById(R.id.selfie_thumbnail);
+
+        mTakePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int id = v.getId();
+                switch (id) {
+                    case R.id.uploadPhotoBtn:
+                        takePhoto();
+                        break;
+                }
+            }
+        });
+
 
     }
 
@@ -378,16 +424,125 @@ public class Questionaire extends AppCompatActivity {
         }
 
     }
+
+    // Picture Taking functionality
+
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                System.out.println("photoFile was not null*****");
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        Uri.fromFile(photoFile));
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        String storageDir = Environment.getExternalStorageDirectory() + "/picupload";
+        File dir = new File(storageDir);
+        if (!dir.exists())
+            dir.mkdir();
+
+        File image = new File(storageDir + "/" + imageFileName + ".jpg");
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+
+        Log.i(TAG, "photo path = " + mCurrentPhotoPath);
+        return image;
+    }
+
+    private void takePhoto() {
+
+        dispatchTakePictureIntent();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Log.i(TAG, "onActivityResult: " + this);
+
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+
+            setPic();
+            //Set up database uploading here
+//			Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+//			if (bitmap != null) {
+//				mImageView.setImageBitmap(bitmap);
+//				try {
+//					sendPhoto(bitmap);
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+        }
+    }
+
+    private void setPic() {
+        // Get the dimensions of the View
+        int targetW = mImageView.getWidth();
+        int targetH = mImageView.getHeight();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor << 1;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        if(bitmap == null)
+        {
+            System.out.println("bitmap = null...");
+        }
+
+        Matrix mtx = new Matrix();
+        mtx.postRotate(90);
+        // Rotating Bitmap
+        Bitmap rotatedBMP = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mtx, true);
+
+        if (rotatedBMP != bitmap)
+            bitmap.recycle();
+
+        mImageView.setImageBitmap(rotatedBMP);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
-//                contactIsOpen = true;
-//                aboutMeIsOpen = true;
-//                preferenceIsOpen = true;
-//                petPeevesIsOpen = true;
-//                allergiesIsOpen = true;
-//
-//                toggleContact(view);
-//                toggleAboutMe(view);
-//                togglePreferences(view);
-//                togglePetPeeves(view);
-//                toggleAllergies(view);

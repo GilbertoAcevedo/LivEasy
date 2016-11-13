@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -34,17 +37,11 @@
             android:theme="@style/AppTheme.Dark" />
         <activity
             android:name=".SignupActivity"
-            android:noHistory="true"
-            android:theme="@style/AppTheme.Dark" />
-        <activity
-            android:name=".MainPage2"
-            android:noHistory="true" />
-        <activity
-            android:name=".MainPage3"
-            android:noHistory="true" />
-        <activity
-            android:name=".MainPage4"
-            android:noHistory="true" />
+            android:theme="@style/AppTheme.Dark"
+            android:noHistory="true"/>
+        <activity android:name=".MainPage2"
+            android:noHistory="true"/>
+
         <activity
             android:name=".CreateGroup"
             android:label="Create A New Group"
@@ -77,6 +74,15 @@
         <activity
             android:name=".Questionaire"
             android:label="Set Up Profile"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize|screenLayout">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
             android:noHistory="true" />
         <activity
             android:name=".ShareGroupCode"
