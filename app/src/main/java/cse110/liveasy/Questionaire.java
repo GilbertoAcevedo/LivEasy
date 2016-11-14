@@ -73,6 +73,7 @@ public class Questionaire extends AppCompatActivity {
     private static final String TAG = "upload";
     static final int REQUEST_TAKE_PHOTO = 1;
     String mCurrentPhotoPath;
+    String url = "";
 
 
     @Override
@@ -219,6 +220,9 @@ public class Questionaire extends AppCompatActivity {
             currentText = (TextView)findViewById(R.id.input_allergies);
             currentString = currentText.getText().toString();
             preferences.put("allergies", currentString);
+
+            //photo_url
+            preferences.put("photo_url", url);
 
             //uploading...
             FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -513,26 +517,10 @@ public class Questionaire extends AppCompatActivity {
             StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
             Uri file = Uri.fromFile(new File(mCurrentPhotoPath));
             StorageReference profileRef = mStorageRef.child(extras.getString("username"));
-//            profileRef.putFile(file)
-//                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                            // Get a URL to the uploaded content
-//                            System.out.println("Upload successful");
-//                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception exception) {
-//                            // Handle unsuccessful uploads
-//                            System.out.println("Upload not successful");
-//                        }
-//                    });
 
             Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 33, baos);
             byte[] fileData = baos.toByteArray();
             UploadTask uploadTask = profileRef.putBytes(fileData);
             uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -546,6 +534,7 @@ public class Questionaire extends AppCompatActivity {
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    url = downloadUrl.toString();
                     System.out.println("Upload successful");
                 }
             });

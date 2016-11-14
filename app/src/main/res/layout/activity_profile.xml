@@ -31,7 +31,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:paddingTop="10dp"
-                android:src="@drawable/woodie"
                 app:civ_border_width="2dp"
                 app:civ_border_color="#FF000000"
                 app:layout_collapseMode="parallax"

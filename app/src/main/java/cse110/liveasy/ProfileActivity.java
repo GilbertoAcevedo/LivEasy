@@ -20,9 +20,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -50,7 +53,14 @@ public class ProfileActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 final Map<String, Object> currentUserMap = (HashMap<String, Object>) dataSnapshot.getValue();
 
-                //TODO IMAGES
+                CircleImageView selfie = (CircleImageView) findViewById(R.id.profile_image);
+                Picasso.with(ProfileActivity.this)
+                        .load((String)currentUserMap.get("photo_url"))
+                        .rotate(90)
+                        .resize(200,200)
+                        .centerCrop()
+                        .placeholder(R.drawable.blank)
+                        .into(selfie);
 
                 TextView phone = (TextView) findViewById(R.id.main_profile_number);
                 String formattedNumber = PhoneNumberUtils.formatNumber((String) currentUserMap.get("phone_number"), "US");

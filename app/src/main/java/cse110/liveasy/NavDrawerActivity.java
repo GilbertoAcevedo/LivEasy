@@ -52,6 +52,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -123,12 +124,14 @@ public class NavDrawerActivity extends AppCompatActivity
                 String user_full_name = (String) dataSnapshot.child("full_name").getValue();
                 Boolean user_isPending = (Boolean) dataSnapshot.child("isPending").getValue();
                 System.out.println("From database user has group "+user_has_group.booleanValue());
+                String photo_url = (String) dataSnapshot.child("photo_url").getValue();
                 user.groupID = user_group_id;
                 user.email = user_email;
                 user.phone_number = user_phone_number;
                 user.full_name= user_full_name;
                 user.isPending = user_isPending;
                 user.group = user_has_group.booleanValue();
+                user.photo_url = photo_url;
 
                 NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
                 View hView =  navigationView.getHeaderView(0);
@@ -136,34 +139,14 @@ public class NavDrawerActivity extends AppCompatActivity
                 nav_email.setText(user.email);
                 TextView nav_user = (TextView)hView.findViewById(R.id.textView3);
                 nav_user.setText(user.full_name);
-                //get image
-                StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
-                StorageReference profileRef = mStorageRef.child(username);
+                ImageView thumbnail = (ImageView)hView.findViewById(R.id.imageView);
+                Picasso.with(NavDrawerActivity.this)
+                        .load(photo_url)
+                        .resize(150,150)
+                        .centerCrop()
+                        .rotate(90)
+                        .into(thumbnail);
 
-                final long ONE_MEGABYTE = 4 * 1024 * 1024;
-                profileRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                    @Override
-                    public void onSuccess(byte[] bytes) {
-                        // Data for "images/island.jpg" is returns, use this as needed
-                        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-                        View hView2 =  navigationView.getHeaderView(0);
-                        ImageView nav_pic = (ImageView)hView2.findViewById(R.id.imageView);
-                        Matrix mtx = new Matrix();
-                        mtx.postRotate(90);
-                        // Rotating Bitmap
-                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        Bitmap rotatedBMP = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), mtx, true);
-
-                        nav_pic.setImageBitmap(rotatedBMP);
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
-                    }
-                });
-                //nav_pic.setImageResource(R.drawable.woodie);
 
                 //updateGroup();
                 updateUser();
@@ -492,11 +475,16 @@ public class NavDrawerActivity extends AppCompatActivity
         View dialog_view = inflater.inflate(R.layout.activity_popup_profile, null);
         TextView users_name = (TextView)dialog_view.findViewById(R.id.username);
         users_name.setText(memberName);
-//TODO IMAGES
-        /*CircleImageView selfie = (CircleImageView)dialog_view.findViewById(R.id.profile_image);
-        selfie.setImageResource();*/
 
-        //View dialog_view2 = inflater.inflate(R.layout.activity_content_popup_profile, null);
+        CircleImageView selfie = (CircleImageView)dialog_view.findViewById(R.id.profile_image_popup);
+        Picasso.with(this)
+                .load(memberContent.photo_url)
+                .rotate(90)
+                .resize(200,200)
+                .centerCrop()
+                .placeholder(R.drawable.blank)
+                .into(selfie);
+
 
         TextView email = (TextView)dialog_view.findViewById(R.id.email);
         email.setText(memberContent.email);
