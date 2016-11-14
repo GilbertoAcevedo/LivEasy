@@ -128,7 +128,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         };
         uRef.addListenerForSingleValueEvent(userListener);
-
+        uRef.removeEventListener(userListener);
 
 
         setContentView(R.layout.activity_profile);
