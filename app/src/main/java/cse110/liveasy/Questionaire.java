@@ -224,6 +224,8 @@ public class Questionaire extends AppCompatActivity {
             //photo_url
             preferences.put("photo_url", url);
 
+
+
             //uploading...
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference ref = database.getReference().child("users").child(extras.getString("username"));
@@ -300,6 +302,11 @@ public class Questionaire extends AppCompatActivity {
         currentText = currentView.getText().toString();
         if(currentText.equals("")){
             createToast("Allergies cannot be empty");
+            return false;
+        }
+
+        if(url.equals("")){
+            createToast("You must take a photo or wait for photo to finish uploading.");
             return false;
         }
 
