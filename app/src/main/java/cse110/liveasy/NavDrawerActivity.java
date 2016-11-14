@@ -75,6 +75,7 @@ public class NavDrawerActivity extends AppCompatActivity
     String username = "";
     final User user = new User();
     final Group group = new Group();
+    boolean currentPending = false;
     int pendingSize;
     int memberCount;
     int count = 0;
@@ -128,6 +129,7 @@ public class NavDrawerActivity extends AppCompatActivity
                 user.phone_number = user_phone_number;
                 user.full_name= user_full_name;
                 user.isPending = user_isPending;
+                currentPending = user_isPending; // listen for change
                 user.group = user_has_group.booleanValue();
 
                 NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -449,11 +451,7 @@ public class NavDrawerActivity extends AppCompatActivity
                             if ( group.num_users != gnum.intValue() ) {
 
                                 System.out.println("Changing intents when gnum = "+gnum.intValue()+" group.num_users = "+group.num_users);
-                                Intent restartActivity = new Intent(NavDrawerActivity.this, NavDrawerActivity.class);
-                                restartActivity.putExtra("username", username);
-                                startActivity(restartActivity);
-                                removeAllListeners();
-                                finish();
+                                restartActivity();
                             }
                         }
 
@@ -643,11 +641,7 @@ public class NavDrawerActivity extends AppCompatActivity
                     gRef.removeValue();
                 }
 
-                Intent restartActivity = new Intent(NavDrawerActivity.this, NavDrawerActivity.class);
-                restartActivity.putExtra("username", username);
-                startActivity(restartActivity);
-                removeAllListeners();
-                finish();
+                restartActivity();
 
             }
 
@@ -658,6 +652,15 @@ public class NavDrawerActivity extends AppCompatActivity
         };
         gRef.addListenerForSingleValueEvent(listener);
         gRef.removeEventListener(listener);
+
+    }
+
+    public void restartActivity() {
+        Intent restartActivity = new Intent(NavDrawerActivity.this, NavDrawerActivity.class);
+        restartActivity.putExtra("username", username);
+        startActivity(restartActivity);
+        removeAllListeners();
+        finish();
 
     }
 
@@ -686,6 +689,11 @@ public class NavDrawerActivity extends AppCompatActivity
 
                 if( user.group && groupListener == null) {
                     updateGroup();
+                }
+
+                if( currentPending != user.isPending ) {
+                    restartActivity();
+
                 }
             }
 
