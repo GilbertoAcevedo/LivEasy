@@ -73,6 +73,7 @@ public class Questionaire extends AppCompatActivity {
     private static final String TAG = "upload";
     static final int REQUEST_TAKE_PHOTO = 1;
     String mCurrentPhotoPath;
+    String url = "";
 
 
     @Override
@@ -220,6 +221,11 @@ public class Questionaire extends AppCompatActivity {
             currentString = currentText.getText().toString();
             preferences.put("allergies", currentString);
 
+            //photo_url
+            preferences.put("photo_url", url);
+
+
+
             //uploading...
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference ref = database.getReference().child("users").child(extras.getString("username"));
@@ -296,6 +302,11 @@ public class Questionaire extends AppCompatActivity {
         currentText = currentView.getText().toString();
         if(currentText.equals("")){
             createToast("Allergies cannot be empty");
+            return false;
+        }
+
+        if(url.equals("")){
+            createToast("You must take a photo or wait for photo to finish uploading.");
             return false;
         }
 
@@ -513,26 +524,10 @@ public class Questionaire extends AppCompatActivity {
             StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
             Uri file = Uri.fromFile(new File(mCurrentPhotoPath));
             StorageReference profileRef = mStorageRef.child(extras.getString("username"));
-//            profileRef.putFile(file)
-//                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                            // Get a URL to the uploaded content
-//                            System.out.println("Upload successful");
-//                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception exception) {
-//                            // Handle unsuccessful uploads
-//                            System.out.println("Upload not successful");
-//                        }
-//                    });
 
             Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 33, baos);
             byte[] fileData = baos.toByteArray();
             UploadTask uploadTask = profileRef.putBytes(fileData);
             uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -546,6 +541,7 @@ public class Questionaire extends AppCompatActivity {
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    url = downloadUrl.toString();
                     System.out.println("Upload successful");
                 }
             });
@@ -631,7 +627,7 @@ public class Questionaire extends AppCompatActivity {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)) {
 
-                // Show an expanation to the user *asynchronously* -- don't block
+                // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
 

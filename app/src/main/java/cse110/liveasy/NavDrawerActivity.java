@@ -7,57 +7,41 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Build;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.renderscript.Sampler;
-import android.support.annotation.RequiresApi;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.telephony.PhoneNumberFormattingTextWatcher;
-import android.telephony.PhoneNumberUtils;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
+import android.support.annotation.RequiresApi;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.PhoneNumberUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,6 +59,7 @@ public class NavDrawerActivity extends AppCompatActivity
     String username = "";
     final User user = new User();
     final Group group = new Group();
+    boolean currentPending = false;
     int pendingSize;
     int memberCount;
     int count = 0;
@@ -123,12 +108,15 @@ public class NavDrawerActivity extends AppCompatActivity
                 String user_full_name = (String) dataSnapshot.child("full_name").getValue();
                 Boolean user_isPending = (Boolean) dataSnapshot.child("isPending").getValue();
                 System.out.println("From database user has group "+user_has_group.booleanValue());
+                String photo_url = (String) dataSnapshot.child("photo_url").getValue();
                 user.groupID = user_group_id;
                 user.email = user_email;
                 user.phone_number = user_phone_number;
                 user.full_name= user_full_name;
                 user.isPending = user_isPending;
+                currentPending = user_isPending; // listen for change
                 user.group = user_has_group.booleanValue();
+                user.photo_url = photo_url;
 
                 NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
                 View hView =  navigationView.getHeaderView(0);
@@ -136,34 +124,14 @@ public class NavDrawerActivity extends AppCompatActivity
                 nav_email.setText(user.email);
                 TextView nav_user = (TextView)hView.findViewById(R.id.textView3);
                 nav_user.setText(user.full_name);
-                //get image
-                StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
-                StorageReference profileRef = mStorageRef.child(username);
+                ImageView thumbnail = (ImageView)hView.findViewById(R.id.imageView);
+                Picasso.with(NavDrawerActivity.this)
+                        .load(photo_url)
+                        .resize(150,150)
+                        .centerCrop()
+                        .rotate(90)
+                        .into(thumbnail);
 
-                final long ONE_MEGABYTE = 4 * 1024 * 1024;
-                profileRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                    @Override
-                    public void onSuccess(byte[] bytes) {
-                        // Data for "images/island.jpg" is returns, use this as needed
-                        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-                        View hView2 =  navigationView.getHeaderView(0);
-                        ImageView nav_pic = (ImageView)hView2.findViewById(R.id.imageView);
-                        Matrix mtx = new Matrix();
-                        mtx.postRotate(90);
-                        // Rotating Bitmap
-                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        Bitmap rotatedBMP = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), mtx, true);
-
-                        nav_pic.setImageBitmap(rotatedBMP);
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
-                    }
-                });
-                //nav_pic.setImageResource(R.drawable.woodie);
 
                 //updateGroup();
                 updateUser();
@@ -449,11 +417,7 @@ public class NavDrawerActivity extends AppCompatActivity
                             if ( group.num_users != gnum.intValue() ) {
 
                                 System.out.println("Changing intents when gnum = "+gnum.intValue()+" group.num_users = "+group.num_users);
-                                Intent restartActivity = new Intent(NavDrawerActivity.this, NavDrawerActivity.class);
-                                restartActivity.putExtra("username", username);
-                                startActivity(restartActivity);
-                                removeAllListeners();
-                                finish();
+                                restartActivity();
                             }
                         }
 
@@ -492,11 +456,16 @@ public class NavDrawerActivity extends AppCompatActivity
         View dialog_view = inflater.inflate(R.layout.activity_popup_profile, null);
         TextView users_name = (TextView)dialog_view.findViewById(R.id.username);
         users_name.setText(memberName);
-//TODO IMAGES
-        /*CircleImageView selfie = (CircleImageView)dialog_view.findViewById(R.id.profile_image);
-        selfie.setImageResource();*/
 
-        //View dialog_view2 = inflater.inflate(R.layout.activity_content_popup_profile, null);
+        CircleImageView selfie = (CircleImageView)dialog_view.findViewById(R.id.profile_image_popup);
+        Picasso.with(this)
+                .load(memberContent.photo_url)
+                .rotate(90)
+                .resize(200,200)
+                .centerCrop()
+                .placeholder(R.drawable.blank)
+                .into(selfie);
+
 
         TextView email = (TextView)dialog_view.findViewById(R.id.email);
         email.setText(memberContent.email);
@@ -643,11 +612,7 @@ public class NavDrawerActivity extends AppCompatActivity
                     gRef.removeValue();
                 }
 
-                Intent restartActivity = new Intent(NavDrawerActivity.this, NavDrawerActivity.class);
-                restartActivity.putExtra("username", username);
-                startActivity(restartActivity);
-                removeAllListeners();
-                finish();
+                restartActivity();
 
             }
 
@@ -658,6 +623,15 @@ public class NavDrawerActivity extends AppCompatActivity
         };
         gRef.addListenerForSingleValueEvent(listener);
         gRef.removeEventListener(listener);
+
+    }
+
+    public void restartActivity() {
+        Intent restartActivity = new Intent(NavDrawerActivity.this, NavDrawerActivity.class);
+        restartActivity.putExtra("username", username);
+        startActivity(restartActivity);
+        removeAllListeners();
+        finish();
 
     }
 
@@ -686,6 +660,27 @@ public class NavDrawerActivity extends AppCompatActivity
 
                 if( user.group && groupListener == null) {
                     updateGroup();
+                }
+
+                if( currentPending != user.isPending ) {
+
+                    if((user.group)){
+                        Toast toast = Toast.makeText(NavDrawerActivity.this, "You have been accepted into group",
+                                Toast.LENGTH_SHORT);
+                            toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
+                            toast.show();
+                            currentPending = user_isPending;
+                    }
+                    else if((!user.group)){
+                        Toast toast = Toast.makeText(NavDrawerActivity.this, "You have been rejected from group\"",
+                                Toast.LENGTH_SHORT);
+                            toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
+                            toast.show();
+                            currentPending = user_isPending;
+                    }
+
+                    restartActivity();
+
                 }
             }
 

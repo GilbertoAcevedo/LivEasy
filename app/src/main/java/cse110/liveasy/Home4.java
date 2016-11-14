@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.Map;
 
 import cse110.liveasy.R;
@@ -43,7 +45,14 @@ public class Home4 extends Fragment {
 
         final Profile mainProfile = new Profile((Map<String, Object>) group.get(mainUser), mainUser);
         CircleImageView selfie = (CircleImageView) theView.findViewById(R.id.main_profile_image4);
-        selfie.setImageResource(R.drawable.woodie); //TODO
+
+        Picasso.with((NavDrawerActivity)getContext())
+                .load(((NavDrawerActivity)getActivity()).user.photo_url)
+                .rotate(90)
+                .resize(200,200)
+                .centerCrop()
+                .placeholder(R.drawable.blank)
+                .into(selfie);
 
         selfie.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +71,14 @@ public class Home4 extends Fragment {
             switch(index) {
                 case 0:
                     CircleImageView memberSelfie = (CircleImageView) theView.findViewById(R.id.member_image_4_1);
-                    memberSelfie.setImageResource(R.drawable.woodie1);
+
+                    Picasso.with((NavDrawerActivity)getContext())
+                            .load(newProfile.photo_url)
+                            .rotate(90)
+                            .resize(200,200)
+                            .centerCrop()
+                            .placeholder(R.drawable.blank)
+                            .into(memberSelfie);
 
                     memberSelfie.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -75,7 +91,14 @@ public class Home4 extends Fragment {
 
                 case 1:
                     CircleImageView memberSelfie1 = (CircleImageView) theView.findViewById(R.id.member_image_4_2);
-                    memberSelfie1.setImageResource(R.drawable.woodie2);
+
+                    Picasso.with((NavDrawerActivity)getContext())
+                            .load(newProfile.photo_url)
+                            .rotate(90)
+                            .resize(200,200)
+                            .centerCrop()
+                            .placeholder(R.drawable.blank)
+                            .into(memberSelfie1);
 
                     memberSelfie1.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -87,7 +110,14 @@ public class Home4 extends Fragment {
 
                 case 2:
                     CircleImageView memberSelfie2 = (CircleImageView) theView.findViewById(R.id.member_image_4_3);
-                    memberSelfie2.setImageResource(R.drawable.woodie3);
+
+                    Picasso.with((NavDrawerActivity)getContext())
+                            .load(newProfile.photo_url)
+                            .rotate(90)
+                            .resize(200,200)
+                            .centerCrop()
+                            .placeholder(R.drawable.blank)
+                            .into(memberSelfie2);
 
                     memberSelfie2.setOnClickListener(new View.OnClickListener() {
                         @Override

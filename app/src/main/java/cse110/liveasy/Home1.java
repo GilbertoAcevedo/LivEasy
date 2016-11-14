@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.google.firebase.database.DatabaseReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.Map;
 
@@ -33,8 +34,15 @@ public class Home1 extends Fragment {
         final String mainUser = ((NavDrawerActivity)getActivity()).username;
 
         final Profile mainProfile = new Profile(userObject, mainUser);
+
         CircleImageView selfie = (CircleImageView) view.findViewById(R.id.main_profile_image1);
-        selfie.setImageResource(R.drawable.woodie); //TODO
+        Picasso.with((NavDrawerActivity)getContext())
+                .load(((NavDrawerActivity)getActivity()).user.photo_url)
+                .rotate(90)
+                .resize(200,200)
+                .centerCrop()
+                .placeholder(R.drawable.blank)
+                .into(selfie);
 
         selfie.setOnClickListener(new View.OnClickListener() {
             @Override
