@@ -527,7 +527,7 @@ public class ProfileActivity extends AppCompatActivity {
             // Set E Contact Name Listener
 
             final TextView eName  = (TextView) findViewById(R.id.e_contact_name);
-            final EditText editeName = (EditText) findViewById(R.id.edit_e_name);
+            final EditText editeName = (EditText) findViewById(R.id.edit_contact_name);
 
             eName.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -576,7 +576,7 @@ public class ProfileActivity extends AppCompatActivity {
             // Set E Contact Phone Listener
 
             final TextView ePhone  = (TextView) findViewById(R.id.e_contact_phone);
-            final EditText editePhone = (EditText) findViewById(R.id.edit_e_phone);
+            final EditText editePhone = (EditText) findViewById(R.id.edit_contact_phone);
 
             ePhone.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
