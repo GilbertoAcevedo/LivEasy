@@ -2,22 +2,6 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <menu />
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-    </group>
-
     <item android:title="Manage Group">
         <menu>
             <item
@@ -33,10 +17,12 @@
     <item android:title="Manage Account" >
         <menu >
             <item android:title="Leave Group"
-                android:id="@+id/leave_group" />
+                android:id="@+id/leave_group"
+                android:icon="@android:drawable/ic_menu_close_clear_cancel" />
             <item
                 android:id="@+id/logout"
-                android:title="Log Out" />
+                android:title="Log Out"
+                android:icon="@android:drawable/ic_menu_directions" />
         </menu>
     </item>
 

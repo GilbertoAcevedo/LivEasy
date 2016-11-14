@@ -272,24 +272,25 @@ public class NavDrawerActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-            Intent goToCreateGroup = new Intent(this, CreateGroup.class);
-
-            Bundle extras = getIntent().getExtras();
-
-            if (extras != null) {
-                String value = extras.getString("username");
-                goToCreateGroup.putExtra("username", value);
-            }
-            removeAllListeners();
-            startActivity(goToCreateGroup);
-            finish();
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_send) {
+//        if (id == R.id.nav_camera) {
+//            // Handle the camera action
+//            Intent goToCreateGroup = new Intent(this, CreateGroup.class);
+//
+//            Bundle extras = getIntent().getExtras();
+//
+//            if (extras != null) {
+//                String value = extras.getString("username");
+//                goToCreateGroup.putExtra("username", value);
+//            }
+//            removeAllListeners();
+//            startActivity(goToCreateGroup);
+//            finish();
+//        } else if (id == R.id.nav_gallery) {
+//
+//        } else if (id == R.id.nav_slideshow) {
+//
+//        } else
+        if (id == R.id.nav_send) {
             Intent goToShareCode = new Intent(this, ShareGroupCode.class);
             goToShareCode.putExtra("username", username);
             goToShareCode.putExtra("group_id", user.groupID);
