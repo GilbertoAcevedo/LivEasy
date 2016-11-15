@@ -775,7 +775,8 @@ public class ProfileActivity extends AppCompatActivity {
     {
         //uploading...
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference().child("users").child(extras.getString("username"));
+        DatabaseReference ref = database.getReference().child("groups").child(extras.getString("username"));
+
         userMap.put("phone_number", originalPhoneNumber);
         userMap.put("email", originalEmail);
         userMap.put("smoking", smokingSpinnerFlag);
@@ -788,6 +789,14 @@ public class ProfileActivity extends AppCompatActivity {
         userMap.put("e_contact_name", originaleName);
         userMap.put("e_contact_phone_number", originalePhone);
         ref.updateChildren(userMap);
+        if( (Boolean)getIntent().getExtras().get("group")) {
+            DatabaseReference gref = database.getReference().child("groups").
+                    child(getIntent().getExtras().getString("groupID")).
+                    child("members").
+                    child(getIntent().getExtras().getString("username"));
+
+            gref.updateChildren(userMap);
+        }
     }
 
     public void onSaveChangesPressed(View v) {

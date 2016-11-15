@@ -60,6 +60,7 @@ public class NavDrawerActivity extends AppCompatActivity
     final User user = new User();
     final Group group = new Group();
     boolean currentPending = false;
+    boolean hasGroup = false;
     int pendingSize;
     int memberCount;
     int count = 0;
@@ -113,9 +114,13 @@ public class NavDrawerActivity extends AppCompatActivity
                 user.email = user_email;
                 user.phone_number = user_phone_number;
                 user.full_name= user_full_name;
+
                 user.isPending = user_isPending;
                 currentPending = user_isPending; // listen for change
+
                 user.group = user_has_group.booleanValue();
+                hasGroup = user_has_group.booleanValue();
+
                 user.photo_url = photo_url;
 
                 NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -487,6 +492,8 @@ public class NavDrawerActivity extends AppCompatActivity
                 Intent goProfile = new Intent(NavDrawerActivity.this, ProfileActivity.class);
                 goProfile.putExtra("username", username);
                 goProfile.putExtra("memberName", memberName);
+                goProfile.putExtra("group", user.group);
+                goProfile.putExtra("groupID",user.groupID);
                 removeAllListeners();
                 startActivity(goProfile);
                 finish();
@@ -665,19 +672,23 @@ public class NavDrawerActivity extends AppCompatActivity
 
                 if( currentPending != user.isPending ) {
 
-                    if((user.group)){
-                        Toast toast = Toast.makeText(NavDrawerActivity.this, "You have been accepted into group",
-                                Toast.LENGTH_SHORT);
+                    if( user.group != hasGroup ) {
+
+                        if ((user.group)) {
+                            Toast toast = Toast.makeText(NavDrawerActivity.this, "You have been accepted into group",
+                                    Toast.LENGTH_SHORT);
                             toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
                             toast.show();
                             currentPending = user_isPending;
-                    }
-                    else if((!user.group)){
-                        Toast toast = Toast.makeText(NavDrawerActivity.this, "You have been rejected from group\"",
-                                Toast.LENGTH_SHORT);
+                            hasGroup = user.group;
+                        } else if ((!user.group)) {
+                            Toast toast = Toast.makeText(NavDrawerActivity.this, "You have been rejected from group\"",
+                                    Toast.LENGTH_SHORT);
                             toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
                             toast.show();
                             currentPending = user_isPending;
+                            hasGroup = user.group;
+                        }
                     }
 
                     restartActivity();
