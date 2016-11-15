@@ -1,14 +1,21 @@
 package cse110.liveasy;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,9 +46,6 @@ public class TaskActivity extends AppCompatActivity {
         this.members = (HashMap<String, Object>)extras.get("members");
         this.user = extras.getString("username");
 
-        System.out.println(members.toString());
-
-
         LinearLayout layout = (LinearLayout)findViewById(R.id.task_layout);
 
         TextView title = new TextView(this);
@@ -58,8 +62,6 @@ public class TaskActivity extends AppCompatActivity {
         Map<String,Object> tempMembers = this.members;
         Iterator it = tempMembers.entrySet().iterator();
         while (it.hasNext()) {
-            System.out.println(members.toString());
-
             Map.Entry pair = (Map.Entry)it.next();
             String user = (String)pair.getKey();
             innerLayout = createUserLayout(user);
@@ -72,19 +74,64 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     public LinearLayout createUserLayout(String username){
-        System.out.println(members.toString());
 
-        setUserTasksArray(username);
         LinearLayout returnLayout = new LinearLayout(this);
         returnLayout.setOrientation(LinearLayout.VERTICAL);
         returnLayout.getShowDividers();
 
+        LinearLayout userView = new LinearLayout(this);
+        userView.setOrientation(LinearLayout.HORIZONTAL);
+
         TextView userTitle = new TextView(this);
         userTitle.setText(username);
         userTitle.setTextSize(30);
-        returnLayout.addView(userTitle);
+        userView.addView(userTitle);
 
-        for(String task: userTasks){
+        LinearLayout l = new LinearLayout(this);
+        l.setPadding(40,100,40,10);
+        final EditText input = new EditText(TaskActivity.this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setPadding(5,30,5,30);
+        input.setLayoutParams(lp);
+        l.addView(input);
+
+        final String tempUsername = username;
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Add Task for " + username);
+        builder.setView(l);
+        builder.setCancelable(false);
+        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                addTask(tempUsername, input.getText().toString());
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int id){
+
+                dialog.dismiss();
+                dialog.cancel();
+            }
+        });
+        final AlertDialog alertDialog =  builder.create();
+        Button addButton = new Button(this);
+        addButton.setText("Add");
+        addButton.setTextSize(10);
+        addButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                alertDialog.show();
+            }
+        });
+        userView.addView(addButton);
+        returnLayout.addView(userView);
+
+        ArrayList<String> temp = userTasks;
+        System.out.println("hello: " + temp.toString());
+        for(int i = 1; i < temp.size(); ++i){
+            String task = temp.get(i);
+            System.out.println("hello");
             LinearLayout taskLayout;
             if(username.equals(user)) {
                 taskLayout = new LinearLayout(this);
@@ -115,6 +162,7 @@ public class TaskActivity extends AppCompatActivity {
                         completeTask(userNameForListener, taskForListener);
                     }
                 });
+                taskLayout.addView(accept);
             }
             else{
                 taskLayout = new LinearLayout(this);
@@ -143,7 +191,7 @@ public class TaskActivity extends AppCompatActivity {
 
     public void addTask(String username, String task){
         setUserTasksArray(username);
-        DatabaseReference gRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID).child("tasks").child(username);
+        DatabaseReference gRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID).child("tasks");
         ArrayList<String> tempArrayList = userTasks;
         tempArrayList.add(task);
         Map<String, Object> map = new HashMap<>();
@@ -164,23 +212,11 @@ public class TaskActivity extends AppCompatActivity {
     public void setUserTasksArray(String username){
         final DatabaseReference gRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID);
         final String tempUsername = username;
-        System.out.println("thissss shoulllddh print");
-        System.out.println(members.toString());
         final HashMap<String,Object> tempMembers = (HashMap)members;
-        System.out.println(tempMembers.toString());
 
         ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                System.out.println(tempMembers.toString());
-
-                if(dataSnapshot.child("tasks").getValue() == null){
-                    addTasksFieldToDatabase();
-                }
-                if(dataSnapshot.child("tasks").child(tempUsername).getValue() == null){
-                    System.out.println("wat");
-                    addUserToTasksField(tempUsername);
-                }
                 ArrayList<String> tempArrayList = (ArrayList<String>)dataSnapshot.child("tasks").child(tempUsername).getValue();
                 System.out.println("array list:" + tempArrayList.toString());
                 userTasks = tempArrayList;

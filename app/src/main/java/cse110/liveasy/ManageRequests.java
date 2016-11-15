@@ -130,9 +130,19 @@ public class ManageRequests extends AppCompatActivity {
                                         ArrayList<String> pending = (ArrayList<String>) dataSnapshot1.child("pending").getValue();
                                         pending.remove(currentUsername);
                                         group.put("pending", pending);
+
+
+                                        ArrayList<String> tasks = new ArrayList<String>();
+                                        tasks.add("");
+                                        Map<String,Object> user_tasks = (HashMap)group.get("tasks");
+                                        user_tasks.put(currentUsername, tasks);
+                                        group.put("tasks", user_tasks);
+
                                         gRef.updateChildren(group);
 
                                         uRef.updateChildren(updateUser);
+
+
                                     }
 
                                     @Override
