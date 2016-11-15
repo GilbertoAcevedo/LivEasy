@@ -12,6 +12,9 @@
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"
                 android:title="Share Group Code" />
+            <item android:title="Tasks"
+                android:id="@+id/manage_tasks"
+                android:icon="@android:drawable/ic_menu_agenda" />
         </menu>
     </item>
     <item android:title="Manage Account" >
