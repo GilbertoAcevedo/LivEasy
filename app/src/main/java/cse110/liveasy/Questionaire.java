@@ -522,7 +522,7 @@ public class Questionaire extends AppCompatActivity {
 
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
 
-            setPic();
+            Bitmap bitmap = setPic();
             //Set up database uploading here
 
 
@@ -532,7 +532,7 @@ public class Questionaire extends AppCompatActivity {
 
 
 
-            Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 33, baos);
             byte[] fileData = baos.toByteArray();
@@ -556,7 +556,7 @@ public class Questionaire extends AppCompatActivity {
         }
     }
 
-    private void setPic() {
+    private Bitmap setPic() {
         // Get the dimensions of the View
         int targetW = mImageView.getWidth();
         int targetH = mImageView.getHeight();
@@ -594,6 +594,8 @@ public class Questionaire extends AppCompatActivity {
         Bitmap bmRotated = rotateBitmap(bitmap, orientation);
 
         mImageView.setImageBitmap(bmRotated);
+
+        return bmRotated;
     }
 
 
