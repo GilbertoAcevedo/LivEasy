@@ -67,6 +67,8 @@ public class Questionaire extends AppCompatActivity {
     Boolean petPeevesIsOpen = false;
     Boolean allergiesIsOpen = false;
     Bundle extras;
+    boolean hasClickedUploadPhotoBtn = false;
+
 
     private Button mTakePhoto;
     private ImageView mImageView;
@@ -74,6 +76,8 @@ public class Questionaire extends AppCompatActivity {
     static final int REQUEST_TAKE_PHOTO = 1;
     String mCurrentPhotoPath;
     String url = "";
+
+
 
 
     @Override
@@ -524,6 +528,8 @@ public class Questionaire extends AppCompatActivity {
             StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
             Uri file = Uri.fromFile(new File(mCurrentPhotoPath));
             StorageReference profileRef = mStorageRef.child(extras.getString("username"));
+
+
 
             Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
