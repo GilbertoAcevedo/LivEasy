@@ -775,7 +775,7 @@ public class ProfileActivity extends AppCompatActivity {
     {
         //uploading...
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference().child("groups").child(extras.getString("username"));
+        DatabaseReference ref = database.getReference().child("users").child(extras.getString("username"));
 
         userMap.put("phone_number", originalPhoneNumber);
         userMap.put("email", originalEmail);
