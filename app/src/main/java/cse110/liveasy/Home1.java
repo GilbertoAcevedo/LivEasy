@@ -38,7 +38,6 @@ public class Home1 extends Fragment {
         CircleImageView selfie = (CircleImageView) view.findViewById(R.id.main_profile_image1);
         Picasso.with((NavDrawerActivity)getContext())
                 .load(((NavDrawerActivity)getActivity()).user.photo_url)
-                .rotate(90)
                 .resize(200,200)
                 .centerCrop()
                 .placeholder(R.drawable.blank)

@@ -153,7 +153,6 @@ public class ProfileActivity extends AppCompatActivity {
                 CircleImageView selfie = (CircleImageView) findViewById(R.id.profile_image);
                 Picasso.with(ProfileActivity.this)
                         .load((String)currentUserMap.get("photo_url"))
-                        .rotate(90)
                         .resize(200,200)
                         .centerCrop()
                         .placeholder(R.drawable.blank)

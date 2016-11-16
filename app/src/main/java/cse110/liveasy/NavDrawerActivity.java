@@ -136,7 +136,6 @@ public class NavDrawerActivity extends AppCompatActivity
                         .load(photo_url)
                         .resize(150,150)
                         .centerCrop()
-                        .rotate(90)
                         .into(thumbnail);
 
 
@@ -468,7 +467,6 @@ public class NavDrawerActivity extends AppCompatActivity
         CircleImageView selfie = (CircleImageView)dialog_view.findViewById(R.id.profile_image_popup);
         Picasso.with(this)
                 .load(memberContent.photo_url)
-                .rotate(90)
                 .resize(200,200)
                 .centerCrop()
                 .placeholder(R.drawable.blank)
