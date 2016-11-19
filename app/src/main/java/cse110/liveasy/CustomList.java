@@ -58,7 +58,6 @@ public class CustomList extends ArrayAdapter<String>{
 
         Picasso.with(context)
                 .load(URLs[position])
-                .rotate(90)
                 .resize(200,200)
                 .centerCrop()
                 .placeholder(R.drawable.blank)

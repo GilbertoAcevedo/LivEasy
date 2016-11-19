@@ -153,7 +153,6 @@ public class ProfileActivity extends AppCompatActivity {
                 CircleImageView selfie = (CircleImageView) findViewById(R.id.profile_image);
                 Picasso.with(ProfileActivity.this)
                         .load((String)currentUserMap.get("photo_url"))
-                        .rotate(90)
                         .resize(200,200)
                         .centerCrop()
                         .placeholder(R.drawable.blank)
@@ -775,7 +774,7 @@ public class ProfileActivity extends AppCompatActivity {
     {
         //uploading...
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference().child("groups").child(extras.getString("username"));
+        DatabaseReference ref = database.getReference().child("users").child(extras.getString("username"));
 
         userMap.put("phone_number", originalPhoneNumber);
         userMap.put("email", originalEmail);
@@ -789,6 +788,7 @@ public class ProfileActivity extends AppCompatActivity {
         userMap.put("e_contact_name", originaleName);
         userMap.put("e_contact_phone_number", originalePhone);
         ref.updateChildren(userMap);
+
         if( (Boolean)getIntent().getExtras().get("group")) {
             DatabaseReference gref = database.getReference().child("groups").
                     child(getIntent().getExtras().getString("groupID")).

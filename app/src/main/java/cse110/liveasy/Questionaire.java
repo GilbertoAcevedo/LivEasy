@@ -4,6 +4,7 @@ import android.*;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.ExifInterface;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -67,6 +68,8 @@ public class Questionaire extends AppCompatActivity {
     Boolean petPeevesIsOpen = false;
     Boolean allergiesIsOpen = false;
     Bundle extras;
+    boolean hasClickedUploadPhotoBtn = false;
+
 
     private Button mTakePhoto;
     private ImageView mImageView;
@@ -74,6 +77,8 @@ public class Questionaire extends AppCompatActivity {
     static final int REQUEST_TAKE_PHOTO = 1;
     String mCurrentPhotoPath;
     String url = "";
+
+
 
 
     @Override
@@ -517,7 +522,7 @@ public class Questionaire extends AppCompatActivity {
 
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
 
-            setPic();
+            Bitmap bitmap = setPic();
             //Set up database uploading here
 
 
@@ -525,7 +530,9 @@ public class Questionaire extends AppCompatActivity {
             Uri file = Uri.fromFile(new File(mCurrentPhotoPath));
             StorageReference profileRef = mStorageRef.child(extras.getString("username"));
 
-            Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+
+
+
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 33, baos);
             byte[] fileData = baos.toByteArray();
@@ -549,7 +556,7 @@ public class Questionaire extends AppCompatActivity {
         }
     }
 
-    private void setPic() {
+    private Bitmap setPic() {
         // Get the dimensions of the View
         int targetW = mImageView.getWidth();
         int targetH = mImageView.getHeight();
@@ -574,15 +581,21 @@ public class Questionaire extends AppCompatActivity {
             System.out.println("bitmap = null...");
         }
 
-        Matrix mtx = new Matrix();
-        mtx.postRotate(90);
-        // Rotating Bitmap
-        Bitmap rotatedBMP = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mtx, true);
 
-        if (rotatedBMP != bitmap)
-            bitmap.recycle();
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(mCurrentPhotoPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_UNDEFINED);
 
-        mImageView.setImageBitmap(rotatedBMP);
+        Bitmap bmRotated = rotateBitmap(bitmap, orientation);
+
+        mImageView.setImageBitmap(bmRotated);
+
+        return bmRotated;
     }
 
 
@@ -734,7 +747,49 @@ public class Questionaire extends AppCompatActivity {
         }
     }
 
+    public static Bitmap rotateBitmap(Bitmap bitmap, int orientation) {
 
+        Matrix matrix = new Matrix();
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_NORMAL:
+                return bitmap;
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                matrix.setScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                matrix.setRotate(180);
+                break;
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                matrix.setRotate(180);
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_TRANSPOSE:
+                matrix.setRotate(90);
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                matrix.setRotate(90);
+                break;
+            case ExifInterface.ORIENTATION_TRANSVERSE:
+                matrix.setRotate(-90);
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                matrix.setRotate(-90);
+                break;
+            default:
+                return bitmap;
+        }
+        try {
+            Bitmap bmRotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            bitmap.recycle();
+            return bmRotated;
+        }
+        catch (OutOfMemoryError e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }
 

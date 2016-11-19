@@ -48,7 +48,6 @@ public class Home4 extends Fragment {
 
         Picasso.with((NavDrawerActivity)getContext())
                 .load(((NavDrawerActivity)getActivity()).user.photo_url)
-                .rotate(90)
                 .resize(200,200)
                 .centerCrop()
                 .placeholder(R.drawable.blank)
@@ -74,7 +73,6 @@ public class Home4 extends Fragment {
 
                     Picasso.with((NavDrawerActivity)getContext())
                             .load(newProfile.photo_url)
-                            .rotate(90)
                             .resize(200,200)
                             .centerCrop()
                             .placeholder(R.drawable.blank)
@@ -94,7 +92,6 @@ public class Home4 extends Fragment {
 
                     Picasso.with((NavDrawerActivity)getContext())
                             .load(newProfile.photo_url)
-                            .rotate(90)
                             .resize(200,200)
                             .centerCrop()
                             .placeholder(R.drawable.blank)
@@ -113,7 +110,6 @@ public class Home4 extends Fragment {
 
                     Picasso.with((NavDrawerActivity)getContext())
                             .load(newProfile.photo_url)
-                            .rotate(90)
                             .resize(200,200)
                             .centerCrop()
                             .placeholder(R.drawable.blank)

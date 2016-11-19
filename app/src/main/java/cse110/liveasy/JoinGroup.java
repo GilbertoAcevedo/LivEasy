@@ -69,9 +69,13 @@ public class JoinGroup extends AppCompatActivity {
                     current.add(username);
 
                     Map<String, Object> user_pending = new HashMap<String, Object>();
-
                     user_pending.put("/isPending/", new Boolean(true));
                     uRef.updateChildren(user_pending);
+
+                    // flag user as they requested
+                    Map<String, Object> user_requested_group = new HashMap<String, Object>();
+                    user_requested_group.put("/groupID/", new String("requested") );
+                    uRef.updateChildren(user_requested_group);
 
                     Map<String,Object> map = new HashMap<String,Object>();
                     map.put("pending", current);

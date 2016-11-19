@@ -61,7 +61,7 @@ public class NavDrawerActivity extends AppCompatActivity
     final User user = new User();
     final Group group = new Group();
     boolean currentPending = false;
-    boolean hasGroup = false;
+    Boolean hasRequestedGroup = false;
     int pendingSize;
     int memberCount;
     int count = 0;
@@ -119,9 +119,11 @@ public class NavDrawerActivity extends AppCompatActivity
                 user.isPending = user_isPending;
                 currentPending = user_isPending; // listen for change
 
-                user.group = user_has_group.booleanValue();
-                hasGroup = user_has_group.booleanValue();
+                if( user.groupID.compareTo("requested") == 0 ) {
+                    hasRequestedGroup = true;
+                }
 
+                user.group = user_has_group.booleanValue();
                 user.photo_url = photo_url;
 
                 NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -135,7 +137,6 @@ public class NavDrawerActivity extends AppCompatActivity
                         .load(photo_url)
                         .resize(150,150)
                         .centerCrop()
-                        .rotate(90)
                         .into(thumbnail);
 
 
@@ -474,7 +475,6 @@ public class NavDrawerActivity extends AppCompatActivity
         CircleImageView selfie = (CircleImageView)dialog_view.findViewById(R.id.profile_image_popup);
         Picasso.with(this)
                 .load(memberContent.photo_url)
-                .rotate(90)
                 .resize(200,200)
                 .centerCrop()
                 .placeholder(R.drawable.blank)
@@ -678,26 +678,27 @@ public class NavDrawerActivity extends AppCompatActivity
                     updateGroup();
                 }
 
+
+                // notify user is they were rejected or accepted
                 if( currentPending != user.isPending ) {
 
-                    if( user.group != hasGroup ) {
 
-                        if ((user.group)) {
-                            Toast toast = Toast.makeText(NavDrawerActivity.this, "You have been accepted into group",
-                                    Toast.LENGTH_SHORT);
-                            toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
-                            toast.show();
-                            currentPending = user_isPending;
-                            hasGroup = user.group;
-                        } else if ((!user.group)) {
-                            Toast toast = Toast.makeText(NavDrawerActivity.this, "You have been rejected from group\"",
-                                    Toast.LENGTH_SHORT);
-                            toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
-                            toast.show();
-                            currentPending = user_isPending;
-                            hasGroup = user.group;
-                        }
+                    if ( hasRequestedGroup && user.group ) {
+                        Toast toast = Toast.makeText(NavDrawerActivity.this, "You have been accepted into group",
+                                Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
+                        toast.show();
+                        currentPending = user_isPending;
+
+                    } else if ( hasRequestedGroup && !user.group ) {
+                        Toast toast = Toast.makeText(NavDrawerActivity.this, "You have been rejected from group\"",
+                                Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
+                        toast.show();
+                        currentPending = user_isPending;
+
                     }
+
 
                     restartActivity();
 
