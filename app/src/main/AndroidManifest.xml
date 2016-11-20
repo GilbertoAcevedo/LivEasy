@@ -28,7 +28,6 @@
         </activity>
         <activity
             android:name=".Splash"
-            android:noHistory="true"
             android:theme="@style/noActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -72,8 +71,8 @@
         <!-- Profile Activity -->
         <activity
             android:name=".ProfileActivity"
-            android:label="@string/app_name"
-            android:noHistory="true" />
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" />
 
         <!-- Group Profile Activity -->
         <activity
@@ -88,11 +87,11 @@
             android:configChanges="orientation|screenSize|screenLayout">
         </activity>
 
-            android:noHistory="true" />
         <activity
             android:name=".ShareGroupCode"
             android:label="Group Code"
             android:noHistory="true" />
+
     </application>
 
 </manifest>

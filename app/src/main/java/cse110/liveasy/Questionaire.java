@@ -68,7 +68,6 @@ public class Questionaire extends AppCompatActivity {
     Boolean petPeevesIsOpen = false;
     Boolean allergiesIsOpen = false;
     Bundle extras;
-    boolean hasClickedUploadPhotoBtn = false;
 
 
     private Button mTakePhoto;
@@ -87,7 +86,7 @@ public class Questionaire extends AppCompatActivity {
         setContentView(R.layout.activity_questionaire);
 
 
-        cameraPermission();
+
 
 
 
@@ -137,7 +136,7 @@ public class Questionaire extends AppCompatActivity {
                 int id = v.getId();
                 switch (id) {
                     case R.id.uploadPhotoBtn:
-                        takePhoto();
+                        cameraPermission();
                         break;
                 }
             }
@@ -465,8 +464,6 @@ public class Questionaire extends AppCompatActivity {
     }
 
     // Picture Taking functionality
-
-
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
@@ -601,10 +598,10 @@ public class Questionaire extends AppCompatActivity {
 
     private void cameraPermission() {
         // Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(this
-                ,
+        if (ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
+            System.out.println("At cameraPermission***");
 
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -626,6 +623,10 @@ public class Questionaire extends AppCompatActivity {
                 // app-defined int constant. The callback method gets the
                 // result of the request.
             }
+
+        }
+        else{
+            takePhoto();
         }
     }
 
@@ -700,11 +701,14 @@ public class Questionaire extends AppCompatActivity {
 
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
+                    takePhoto();
 
                 } else {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
+
+                    url = "https://firebasestorage.googleapis.com/v0/b/liveasy-85049.appspot.com/o/woodie.jpg?alt=media&token=87057c2f-1d19-4b23-90f1-1f215b5ad618";
                 }
                 return;
             }

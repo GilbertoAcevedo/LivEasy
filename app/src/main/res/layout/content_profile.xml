@@ -372,6 +372,7 @@
                 android:layout_below="@id/petPeeves"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
+                android:inputType="text"
                 android:visibility="gone"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="#212121" />
@@ -461,6 +462,7 @@
                 android:layout_below="@id/eContactName"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
+                android:inputType="text"
                 android:visibility="gone"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="#212121" />
@@ -506,6 +508,7 @@
                 android:layout_below="@id/eContactPhone"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
+                android:inputType="phone"
                 android:visibility="gone"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="#212121" />

@@ -110,6 +110,7 @@ public class NavDrawerActivity extends AppCompatActivity
                 Boolean user_isPending = (Boolean) dataSnapshot.child("isPending").getValue();
                 System.out.println("From database user has group "+user_has_group.booleanValue());
                 String photo_url = (String) dataSnapshot.child("photo_url").getValue();
+                System.out.println("Nav: "+photo_url);
                 user.groupID = user_group_id;
                 user.email = user_email;
                 user.phone_number = user_phone_number;
@@ -447,12 +448,7 @@ public class NavDrawerActivity extends AppCompatActivity
 
 
     /***********************************************************/
-//    public void clickGoToProfile(View view) {
-//        Bundle extras = getIntent().getExtras();
-//        Intent goToProfile = new Intent(this, ProfileActivity.class);
-//        goToProfile.putExtra("username", (String)extras.get("username"));
-//        startActivity(goToProfile);
-//    }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void toProfilePopup(View view, Profile memberContent, final String memberName) {
         //get info for which photo was clicked on

@@ -1,9 +1,20 @@
 package cse110.liveasy;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,6 +23,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneNumberUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -21,19 +33,34 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,6 +96,19 @@ public class ProfileActivity extends AppCompatActivity {
     boolean changeFlag = false;
 
     Map<String, Object> userMap;
+
+    private Button mTakePhoto;
+    private ImageView mImageView;
+    private static final String TAG = "upload";
+    static final int REQUEST_TAKE_PHOTO = 1;
+    String mCurrentPhotoPath;
+    String url = "";
+    File photoFile = null;
+    Bitmap bitmap = null;
+    Boolean changedPic = false;
+
+    ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +189,8 @@ public class ProfileActivity extends AppCompatActivity {
                 final Map<String, Object> currentUserMap = (HashMap<String, Object>) dataSnapshot.getValue();
                 userMap = currentUserMap;
                 changeFlag = false;
+
+                System.out.println((String)currentUserMap.get("photo_url"));
 
                 CircleImageView selfie = (CircleImageView) findViewById(R.id.profile_image);
                 Picasso.with(ProfileActivity.this)
@@ -250,6 +292,18 @@ public class ProfileActivity extends AppCompatActivity {
         uRef.removeEventListener(userListener);
 
         if(canEdit) {
+
+            //set listener for selfie image
+            CircleImageView selfie = (CircleImageView) findViewById(R.id.profile_image);
+            selfie.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    takePhoto();
+
+                    return false;
+                }
+            });
 
             // Set listener for phone text view
             final TextView phoneNumber = (TextView) findViewById(R.id.main_profile_number);
@@ -736,14 +790,21 @@ public class ProfileActivity extends AppCompatActivity {
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     uploadData();
-                                    changeFlag = false;
-                                    Intent goBack = new Intent(ProfileActivity.this, NavDrawerActivity.class);
-                                    goBack.putExtra("username", (String)extras.get("username"));
-                                    startActivity(goBack);
-                                    finish();
-                                    //NavUtils.navigateUpTo(this, goBack);
-
-
+                                    if(changedPic == true){
+                                        progressDialog = new ProgressDialog(ProfileActivity.this,
+                                                R.style.AppTheme_Dark_Dialog);
+                                        progressDialog.setIndeterminate(true);
+                                        progressDialog.setMessage("Uploading picture...");
+                                        progressDialog.show();
+                                        uploadPicAndJump();
+                                    }
+                                    else {
+                                        changeFlag = false;
+                                        Intent goBack = new Intent(ProfileActivity.this, NavDrawerActivity.class);
+                                        goBack.putExtra("username", (String) extras.get("username"));
+                                        startActivity(goBack);
+                                        finish();
+                                    }
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -789,6 +850,19 @@ public class ProfileActivity extends AppCompatActivity {
         userMap.put("e_contact_phone_number", originalePhone);
         ref.updateChildren(userMap);
 
+        // Change user auth email
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        user.updateEmail(originalEmail)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "User email address updated.");
+                        }
+                    }
+                });
+
         if( (Boolean)getIntent().getExtras().get("group")) {
             DatabaseReference gref = database.getReference().child("groups").
                     child(getIntent().getExtras().getString("groupID")).
@@ -797,6 +871,82 @@ public class ProfileActivity extends AppCompatActivity {
 
             gref.updateChildren(userMap);
         }
+
+
+    }
+
+    public void uploadPic(){
+        //uploading...
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference ref = database.getReference().child("users").child(extras.getString("username"));
+
+        // Save selfie
+        StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference profileRef = mStorageRef.child(extras.getString("username"));
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 33, baos);
+        byte[] fileData = baos.toByteArray();
+        UploadTask uploadTask = profileRef.putBytes(fileData);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+                System.out.println("Upload unsuccessful");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                url = downloadUrl.toString();
+                System.out.println("Profile: "+url);
+                userMap.put("photo_url", url);
+                ref.updateChildren(userMap);
+                progressDialog.dismiss();
+            }
+        });
+    }
+
+    public void uploadPicAndJump(){
+        //uploading...
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference ref = database.getReference().child("users").child(extras.getString("username"));
+
+        // Save selfie
+        StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference profileRef = mStorageRef.child(extras.getString("username"));
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 33, baos);
+        byte[] fileData = baos.toByteArray();
+        UploadTask uploadTask = profileRef.putBytes(fileData);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+                System.out.println("Upload unsuccessful");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                url = downloadUrl.toString();
+                System.out.println("Profile: "+url);
+                userMap.put("photo_url", url);
+                ref.updateChildren(userMap);
+
+                // Jump to Nav Drawer
+                progressDialog.dismiss();
+                Intent goBack = new Intent(ProfileActivity.this, NavDrawerActivity.class);
+                goBack.putExtra("username", (String) extras.get("username"));
+                changedPic = false;
+                changeFlag = false;
+                startActivity(goBack);
+                finish();
+            }
+        });
     }
 
     public void onSaveChangesPressed(View v) {
@@ -808,6 +958,15 @@ public class ProfileActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             uploadData();
                             changeFlag = false;
+                            if(changedPic == true){
+                                progressDialog = new ProgressDialog(ProfileActivity.this,
+                                        R.style.AppTheme_Dark_Dialog);
+                                progressDialog.setIndeterminate(true);
+                                progressDialog.setMessage("Uploading picture...");
+                                progressDialog.show();
+                                uploadPic();
+                                changedPic = false;
+                            }
                             //finish();
                         }
                     })
@@ -831,19 +990,28 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
-        if(changeFlag == true && canEdit) {
+    public void onBackPressed() {
+        if (changeFlag == true && canEdit) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Would you like to save changes made?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             uploadData();
-                            changeFlag = false;
-                            Intent goBack = new Intent(ProfileActivity.this, NavDrawerActivity.class);
-                            goBack.putExtra("username", (String) extras.get("username"));
-                            startActivity(goBack);
-                            finish();
-
+                            if(changedPic == true){
+                                progressDialog = new ProgressDialog(ProfileActivity.this,
+                                        R.style.AppTheme_Dark_Dialog);
+                                progressDialog.setIndeterminate(true);
+                                progressDialog.setMessage("Uploading picture...");
+                                progressDialog.show();
+                                uploadPicAndJump();
+                            }
+                            else{
+                                changeFlag = false;
+                                Intent goBack = new Intent(ProfileActivity.this, NavDrawerActivity.class);
+                                goBack.putExtra("username", (String) extras.get("username"));
+                                startActivity(goBack);
+                                finish();
+                            }
                         }
                     })
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -857,13 +1025,155 @@ public class ProfileActivity extends AppCompatActivity {
 
             AlertDialog alert = builder.create();
             alert.show();
-        }
-        else
-        {
+        } else {
             Intent goBack = new Intent(this, NavDrawerActivity.class);
             goBack.putExtra("username", (String) extras.get("username"));
             startActivity(goBack);
             finish();
         }
     }
+
+
+    // Picture Taking functionality
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                System.out.println("photoFile was not null*****");
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        Uri.fromFile(photoFile));
+                System.out.println("photoFile was not null*****");
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                System.out.println("photoFile was not null*****");
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        String storageDir = Environment.getExternalStorageDirectory() + "/picupload";
+        File dir = new File(storageDir);
+        if (!dir.exists())
+            dir.mkdir();
+
+        File image = new File(storageDir + "/" + imageFileName + ".jpg");
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+
+        Log.i(TAG, "photo path = " + mCurrentPhotoPath);
+
+
+        return image;
+    }
+
+    private void takePhoto() {
+
+        dispatchTakePictureIntent();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        System.out.println("onActivityResult***");
+
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+            System.out.println("Inside if onActivityResult****");
+            bitmap = setPic();
+
+        }
+    }
+
+    private Bitmap setPic() {
+
+        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+        if(bitmap == null)
+        {
+            System.out.println("bitmap = null...");
+        }
+
+        System.out.println("Inside setPic****");
+
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(mCurrentPhotoPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_UNDEFINED);
+
+        Bitmap bmRotated = rotateBitmap(bitmap, orientation);
+
+        CircleImageView selfie = (CircleImageView) findViewById(R.id.profile_image);
+        Picasso.with(ProfileActivity.this)
+                .load(photoFile)
+                .resize(200,200)
+                .centerCrop()
+                .placeholder(R.drawable.blank)
+                .into(selfie);
+
+        changeFlag = true;
+        changedPic = true;
+
+        return bmRotated;
+    }
+
+    public static Bitmap rotateBitmap(Bitmap bitmap, int orientation) {
+
+        Matrix matrix = new Matrix();
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_NORMAL:
+                return bitmap;
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                matrix.setScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                matrix.setRotate(180);
+                break;
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                matrix.setRotate(180);
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_TRANSPOSE:
+                matrix.setRotate(90);
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                matrix.setRotate(90);
+                break;
+            case ExifInterface.ORIENTATION_TRANSVERSE:
+                matrix.setRotate(-90);
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                matrix.setRotate(-90);
+                break;
+            default:
+                return bitmap;
+        }
+        try {
+            Bitmap bmRotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            bitmap.recycle();
+            return bmRotated;
+        }
+        catch (OutOfMemoryError e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
