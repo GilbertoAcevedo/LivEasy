@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -350,8 +351,6 @@ public class NavDrawerActivity extends AppCompatActivity
             removeAllListeners();
             startActivity(goToShareCode);
             finish();
-
-
         } else if (id == R.id.manage_requests){
             Intent goToRequests = new Intent(this, ManageRequests.class);
             goToRequests.putStringArrayListExtra("pending", group.pending);
@@ -359,6 +358,15 @@ public class NavDrawerActivity extends AppCompatActivity
             goToRequests.putExtra("groupKey", user.groupID);
             removeAllListeners();
             startActivity(goToRequests);
+            finish();
+        }
+        else if(id == R.id.manage_tasks){
+            Intent goToManageTasks = new Intent(this, TaskActivity.class);
+            goToManageTasks.putExtra("username", username);
+            goToManageTasks.putExtra("group_id", user.groupID);
+            goToManageTasks.putExtra("members", (HashMap)group.members);
+            removeAllListeners();
+            startActivity(goToManageTasks);
             finish();
         }
         else if ( id == R.id.leave_group ){

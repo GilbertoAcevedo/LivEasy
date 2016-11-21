@@ -146,6 +146,15 @@ public class CreateGroup extends AppCompatActivity {
                         chatMap.put("chat_room", "");
                         groupsRef.child(groupKey).updateChildren(chatMap);
 
+                        ArrayList<String> tasks = new ArrayList<String>();
+                        tasks.add("");
+                        Map<String, Object> tasks_folder = new HashMap<String, Object>();
+                        Map<String, Object > user_tasks = new HashMap<String, Object>();
+                        user_tasks.put(username, tasks);
+                        tasks_folder.put("tasks", user_tasks);
+                        groupsRef.child(groupKey).updateChildren(tasks_folder);
+
+
                         Context context = view.getContext();
                         LinearLayout layout = new LinearLayout(context);
                         layout.setOrientation(LinearLayout.VERTICAL);
