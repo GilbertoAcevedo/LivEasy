@@ -68,6 +68,8 @@ public class NavDrawerActivity extends AppCompatActivity
     ValueEventListener groupListener;
     ValueEventListener userListener;
 
+    MenuItem groupChatItem;
+
 
 
     @Override
@@ -79,6 +81,10 @@ public class NavDrawerActivity extends AppCompatActivity
         username = extras.getString("username");
 
         System.out.println("Username in NAV Drawer .... "+username);
+
+        NavigationView navView = (NavigationView)findViewById(R.id.nav_view);
+        Menu navMenu = navView.getMenu();
+        groupChatItem = navMenu.findItem(R.id.group_chat);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -297,7 +303,15 @@ public class NavDrawerActivity extends AppCompatActivity
 //        } else if (id == R.id.nav_slideshow) {
 //
 //        } else
-        if (id == R.id.nav_send) {
+        if(id == R.id.group_chat){
+            Intent goToGroupChat = new Intent(this, GroupChat.class);
+            goToGroupChat.putExtra("username", username);
+            goToGroupChat.putExtra("group_id", user.groupID);
+            removeAllListeners();
+            startActivity(goToGroupChat);
+            finish();
+        }
+        else if (id == R.id.nav_send) {
             Intent goToShareCode = new Intent(this, ShareGroupCode.class);
             goToShareCode.putExtra("username", username);
             goToShareCode.putExtra("group_id", user.groupID);
@@ -430,6 +444,9 @@ public class NavDrawerActivity extends AppCompatActivity
                         }
 
                         if (user.group) {
+
+                            groupChatItem.setEnabled(true);
+                            groupChatItem.setVisible(true);
                             getSupportActionBar().setTitle(group.name);
                             notificationUp();
                         }

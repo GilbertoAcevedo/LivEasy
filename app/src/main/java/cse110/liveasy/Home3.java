@@ -66,6 +66,8 @@ public class Home3 extends Fragment {
             final Profile newProfile = new Profile(currentMember, roommateList[index]);
             final String membersName = roommateList[index];
 
+            System.out.println("Photo URL:**** "+ newProfile.photo_url);
+
             switch(index) {
                 case 0:
                     CircleImageView memberSelfie = (CircleImageView) theView.findViewById(R.id.member_image_3_1);

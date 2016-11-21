@@ -105,7 +105,7 @@ public class CreateGroup extends AppCompatActivity {
                 } else {
                     if (!groupName.matches("") && !groupName.matches("Group Name")) {
                         final String groupKey = generateKey();
-                        //CHECK TO SEE THAT KEY DOES NOT EXIST
+
                         DatabaseReference groupsRef = ref.child("groups");
                         Map<String, Object> group_info = new HashMap<String, Object>();
                         Map<String, Object> members = new HashMap<String, Object>();
@@ -133,6 +133,11 @@ public class CreateGroup extends AppCompatActivity {
                         pending.add("");
                         pending_folder.put("/pending/", pending);
                         groupsRef.child(groupKey).updateChildren(pending_folder);
+
+                        //Add group chat child onto database
+                        Map<String, Object> chatMap = new HashMap<String, Object>();
+                        chatMap.put("chat_room", "");
+                        groupsRef.child(groupKey).updateChildren(chatMap);
 
                         Context context = view.getContext();
                         LinearLayout layout = new LinearLayout(context);
