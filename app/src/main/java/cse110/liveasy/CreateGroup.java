@@ -142,6 +142,11 @@ public class CreateGroup extends AppCompatActivity {
                         tasks_folder.put("tasks", user_tasks);
                         groupsRef.child(groupKey).updateChildren(tasks_folder);
 
+                        Map<String,Object> address = new HashMap<>();
+                        address.put("address", "please enter address");
+                        groupsRef.child(groupKey).updateChildren(address);
+
+
 
                         Context context = view.getContext();
                         LinearLayout layout = new LinearLayout(context);

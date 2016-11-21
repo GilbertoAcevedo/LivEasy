@@ -88,7 +88,14 @@
             android:configChanges="orientation|screenSize|screenLayout">
         </activity>
 
-            android:noHistory="true" />
+        <activity
+            android:name=".TaskActivity"
+            android:label="Tasks"
+            android:noHistory="true">
+        </activity>
+
+
+        android:noHistory="true" />
         <activity
             android:name=".ShareGroupCode"
             android:label="Group Code"

@@ -5,15 +5,20 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.renderscript.Sampler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -34,6 +39,11 @@ public class TaskActivity extends AppCompatActivity {
     public String user;
     public Map<String, Object> members;
     public ArrayList<String> userTasks = new ArrayList<>();
+    public LinearLayout layout;
+    public DatabaseReference ref;
+    public ValueEventListener refreshListener;
+    public Boolean hasRefreshButton = false;
+    public Boolean needsRefreshButton = false;
 
 
     @Override
@@ -45,181 +55,172 @@ public class TaskActivity extends AppCompatActivity {
         this.groupID = extras.getString("group_id");
         this.members = (HashMap<String, Object>)extras.get("members");
         this.user = extras.getString("username");
+        ref = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID).child("tasks");
 
-        LinearLayout layout = (LinearLayout)findViewById(R.id.task_layout);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        layout = (LinearLayout)findViewById(R.id.task_layout);
 
         TextView title = new TextView(this);
         title.setText("Tasks");
         title.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
         title.setTextSize(18);
-        title.setPadding(0,15,0,100);
+        title.setPadding(0,15,0,0);
         title.setTypeface(title.getTypeface(), Typeface.BOLD);
 
         layout.addView(title);
 
 
-        LinearLayout innerLayout;
-        Map<String,Object> tempMembers = this.members;
-        Iterator it = tempMembers.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
-            String user = (String)pair.getKey();
-            innerLayout = createUserLayout(user);
-            layout.addView(innerLayout);
-            it.remove();
-        }
-
-
-
-    }
-
-    public LinearLayout createUserLayout(String username){
-
-        LinearLayout returnLayout = new LinearLayout(this);
-        returnLayout.setOrientation(LinearLayout.VERTICAL);
-        returnLayout.getShowDividers();
-
-        LinearLayout userView = new LinearLayout(this);
-        userView.setOrientation(LinearLayout.HORIZONTAL);
-
-        TextView userTitle = new TextView(this);
-        userTitle.setText(username);
-        userTitle.setTextSize(30);
-        userView.addView(userTitle);
-
-        LinearLayout l = new LinearLayout(this);
-        l.setPadding(40,100,40,10);
-        final EditText input = new EditText(TaskActivity.this);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        input.setPadding(5,30,5,30);
-        input.setLayoutParams(lp);
-        l.addView(input);
-
-        final String tempUsername = username;
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add Task for " + username);
-        builder.setView(l);
-        builder.setCancelable(false);
-        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                addTask(tempUsername, input.getText().toString());
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
-            public void onClick(DialogInterface dialog, int id){
-
-                dialog.dismiss();
-                dialog.cancel();
-            }
-        });
-        final AlertDialog alertDialog =  builder.create();
-        Button addButton = new Button(this);
-        addButton.setText("Add");
-        addButton.setTextSize(10);
-        addButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                alertDialog.show();
-            }
-        });
-        userView.addView(addButton);
-        returnLayout.addView(userView);
-
-        ArrayList<String> temp = userTasks;
-        System.out.println("hello: " + temp.toString());
-        for(int i = 1; i < temp.size(); ++i){
-            String task = temp.get(i);
-            System.out.println("hello");
-            LinearLayout taskLayout;
-            if(username.equals(user)) {
-                taskLayout = new LinearLayout(this);
-                taskLayout.setOrientation(LinearLayout.HORIZONTAL);
-                taskLayout.setPadding(10, 0, 0, 0);
-
-                TextView taskText = new TextView(this);
-                taskText.setText(task);
-                taskText.setTextSize(15);
-                taskText.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
-
-                LinearLayout.LayoutParams taskTextParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT, 1.5f);
-                taskText.setLayoutParams(taskTextParam);
-
-                taskLayout.addView(taskText);
-
-                LinearLayout.LayoutParams buttonParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
-                Button accept = new Button(this);
-                accept.setText("Done");
-                accept.setLayoutParams(buttonParam);
-                final String userNameForListener = username;
-                final String taskForListener = task;
-                accept.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        completeTask(userNameForListener, taskForListener);
-                    }
-                });
-                taskLayout.addView(accept);
-            }
-            else{
-                taskLayout = new LinearLayout(this);
-                taskLayout.setOrientation(LinearLayout.HORIZONTAL);
-                taskLayout.setPadding(10, 0, 0, 0);
-
-                TextView taskText = new TextView(this);
-                taskText.setText(task);
-                taskText.setTextSize(15);
-                taskText.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
-
-                LinearLayout.LayoutParams taskTextParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
-                taskText.setLayoutParams(taskTextParam);
-
-                taskLayout.addView(taskText);
-            }
-            returnLayout.addView(taskLayout);
-
-        }
-
-
-        return returnLayout;
+        populateLayout(layout);
+        startRefreshListener();
     }
 
 
-    public void addTask(String username, String task){
-        setUserTasksArray(username);
-        DatabaseReference gRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID).child("tasks");
-        ArrayList<String> tempArrayList = userTasks;
-        tempArrayList.add(task);
-        Map<String, Object> map = new HashMap<>();
-        map.put(username, tempArrayList);
-        gRef.updateChildren(map);
-    }
 
-    public void completeTask(String username, String task){
-        setUserTasksArray(username);
-        DatabaseReference gRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID).child("tasks").child(username);
-        ArrayList<String> tempArrayList = userTasks;
-        tempArrayList.remove(task);
-        Map<String, Object> map = new HashMap<>();
-        map.put(username, tempArrayList);
-        gRef.updateChildren(map);
-    }
-
-    public void setUserTasksArray(String username){
-        final DatabaseReference gRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID);
-        final String tempUsername = username;
-        final HashMap<String,Object> tempMembers = (HashMap)members;
-
+    public void populateLayout(LinearLayout l){
+        DatabaseReference tRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID).child("tasks");
         ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<String> tempArrayList = (ArrayList<String>)dataSnapshot.child("tasks").child(tempUsername).getValue();
-                System.out.println("array list:" + tempArrayList.toString());
-                userTasks = tempArrayList;
+                Map<String,Object> tempMembers = members;
+                tempMembers.remove(user);
+                Iterator it = tempMembers.entrySet().iterator();
+                boolean notUser = false;
+                while (it.hasNext()) {
+                    String currUser;
+                    if(notUser) {
+                        Map.Entry pair = (Map.Entry) it.next();
+                        currUser = (String) pair.getKey();
+                    }else{
+                        currUser = user;
+                    }
+
+
+                    final LinearLayout innerLayout = new LinearLayout(TaskActivity.this);
+                    innerLayout.setOrientation(LinearLayout.VERTICAL);
+                    innerLayout.setPadding(0,50,0,0);
+
+                    final LinearLayout userView = new LinearLayout(TaskActivity.this);
+                    userView.setOrientation(LinearLayout.HORIZONTAL);
+                    userView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                                                            LinearLayout.LayoutParams.WRAP_CONTENT));
+
+                    TextView userTitle = new TextView(TaskActivity.this);
+                    userTitle.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                                                                            LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+                    userTitle.setText(currUser);
+                    userTitle.setTextSize(50);
+                    userView.addView(userTitle);
+
+                    LinearLayout lay = new LinearLayout(TaskActivity.this);
+                    lay.setPadding(40,100,40,10);
+                    final EditText input = new EditText(TaskActivity.this);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT);
+                    input.setPadding(5,30,5,30);
+                    input.setLayoutParams(lp);
+                    lay.addView(input);
+
+                    final String tempUsername = currUser;
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(TaskActivity.this);
+                    input.setText("");
+                    builder.setTitle("Add Task for " + currUser);
+                    builder.setView(lay);
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            addTask(tempUsername, input.getText().toString());
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+                        public void onClick(DialogInterface dialog, int id){
+                            dialog.dismiss();
+                            dialog.cancel();
+                        }
+                    });
+                    final AlertDialog alertDialog =  builder.create();
+                    Button addButton = new Button(TaskActivity.this);
+                    addButton.setText("Add New Task");
+                    addButton.setTextSize(10);
+                    addButton.setOnClickListener(new View.OnClickListener(){
+                        @Override
+                        public void onClick(View v){
+                            alertDialog.show();
+                        }
+                    });
+                    userView.addView(addButton);
+                    innerLayout.addView(userView);
+
+                    ArrayList<String> temp = (ArrayList<String>)dataSnapshot.child(currUser).getValue();
+                    for(int i = 1; i < temp.size(); ++i){
+                        String task = temp.get(i);
+                        LinearLayout taskLayout;
+                        if(currUser.equals(user)) {
+                            taskLayout = new LinearLayout(TaskActivity.this);
+                            taskLayout.setGravity(Gravity.FILL);
+                            taskLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                                                                        LinearLayout.LayoutParams.MATCH_PARENT));
+
+                            taskLayout.setOrientation(LinearLayout.HORIZONTAL);
+                            taskLayout.setPadding(10,20,0,20);
+
+                            TextView taskText = new TextView(TaskActivity.this);
+                            taskText.setText(task);
+                            taskText.setTextSize(15);
+                            taskText.setGravity(Gravity.CENTER_VERTICAL | Gravity.FILL_VERTICAL);
+
+                            TableLayout.LayoutParams taskTextParam = new TableLayout.LayoutParams(0,
+                                    TableLayout.LayoutParams.WRAP_CONTENT, 1f);
+                            taskText.setLayoutParams(taskTextParam);
+
+                            taskLayout.addView(taskText);
+
+                            Button done = new Button(TaskActivity.this);
+                            done.setGravity(Gravity.CENTER);
+                            done.setText("Done");
+
+                            final String userNameForListener = currUser;
+                            final String taskForListener = task;
+                            final LinearLayout taskLayout2 = taskLayout;
+                            done.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    completeTask(userNameForListener, taskForListener);
+                                    //taskLayout2.setVisibility(LinearLayout.GONE);
+                                }
+                            });
+                            taskLayout.addView(done);
+                        }
+                        else{
+                            taskLayout = new LinearLayout(TaskActivity.this);
+                            taskLayout.setOrientation(LinearLayout.HORIZONTAL);
+                            taskLayout.setGravity(Gravity.FILL);
+                            taskLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                    LinearLayout.LayoutParams.MATCH_PARENT));
+                            taskLayout.setPadding(10, 20, 0, 20);
+
+                            TextView taskText = new TextView(TaskActivity.this);
+                            taskText.setText(task);
+                            taskText.setTextSize(15);
+                            taskText.setGravity(Gravity.CENTER_VERTICAL | Gravity.FILL_VERTICAL);
+
+                            LinearLayout.LayoutParams taskTextParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                    LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
+                            taskText.setLayoutParams(taskTextParam);
+
+                            taskLayout.addView(taskText);
+                        }
+                        innerLayout.addView(taskLayout);
+                    }
+
+                    layout.addView(innerLayout);
+                    if(notUser) {
+                        it.remove();
+                    }
+                    notUser = true;
+                }
             }
 
             @Override
@@ -227,28 +228,143 @@ public class TaskActivity extends AppCompatActivity {
 
             }
         };
-        gRef.addListenerForSingleValueEvent(listener);
-        gRef.removeEventListener(listener);
+        tRef.addListenerForSingleValueEvent(listener);
+        tRef.removeEventListener(listener);
 
-        System.out.println("this gets called after");
     }
 
-    public void addTasksFieldToDatabase(){
-        DatabaseReference gRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID);
-        Map<String, Object> tasks = new HashMap<String,Object>();
-        ArrayList<String> temp = new ArrayList<>();
-        temp.add("");
-        tasks.put(user, temp);
 
-        Map<String,Object> finalMap = new HashMap<>();
-        finalMap.put("tasks", tasks);
-        gRef.updateChildren(finalMap);
+
+
+
+    public void addTask(String username, String task){
+        final DatabaseReference tasksRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID).child("tasks");
+        final String tempUsername = username;
+        final String tempTask = task;
+
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<String> tasks = (ArrayList<String>)dataSnapshot.child(tempUsername).getValue();
+                tasks.add(tempTask);
+                Map<String,Object> map = new HashMap<>();
+                map.put(tempUsername, tasks);
+                tasksRef.updateChildren(map);
+                restartActivity();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        tasksRef.addListenerForSingleValueEvent(listener);
+        tasksRef.removeEventListener(listener);
     }
 
-    public void addUserToTasksField(String username){
-        DatabaseReference gRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID).child("tasks");
-        Map<String, Object> userTasks = new HashMap<>();
-        userTasks.put(username, new ArrayList<String>());
-        gRef.updateChildren(userTasks);
+
+
+    public void completeTask(String username, String task){
+        final String tempTask = task;
+        final String tempUsername = username;
+        final DatabaseReference tRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID).child("tasks");
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<String> tasks = (ArrayList<String>)dataSnapshot.child(tempUsername).getValue();
+                tasks.remove(tempTask);
+                Map<String, Object> map = new HashMap<>();
+                map.put(tempUsername, tasks);
+                tRef.updateChildren(map);
+                restartActivity();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        tRef.addListenerForSingleValueEvent(listener);
+        tRef.removeEventListener(listener);
+    }
+
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent goBack = new Intent(this, NavDrawerActivity.class);
+                goBack.putExtra("username", (String)extras.get("username"));
+                stopRefreshListener();
+                startActivity(goBack);
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
+
+    @Override
+    public void onBackPressed(){
+        //restartActivity();
+    }
+
+
+
+    public void restartActivity(){
+        stopRefreshListener();
+        recreate();
+    }
+
+    public void startRefreshListener(){
+        //user ref
+        refreshListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!hasRefreshButton && needsRefreshButton) {
+                    addRefreshButton();
+                    Toast toast = Toast.makeText(TaskActivity.this, "Changes have been made, please tap the refresh button below before continuing",
+                            Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.show();
+                }
+
+                needsRefreshButton = true;
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        ref.addValueEventListener(refreshListener);
+    }
+
+    public void stopRefreshListener(){
+        ref.removeEventListener(refreshListener);
+    }
+
+    public void addRefreshButton(){
+        LinearLayout buttonLayout = new LinearLayout(this);
+        buttonLayout.setPadding(16,16,16,16);
+
+        Button button = new Button(this);
+        button.setText("Refresh");
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                restartActivity();
+            }
+        });
+
+        buttonLayout.addView(button);
+
+        layout.addView(buttonLayout);
     }
 }
