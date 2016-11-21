@@ -23,12 +23,11 @@
 
 
             <TextView
-                android:id="@+id/tvNumber1"
+                android:id="@+id/address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toEndOf="@id/ivContactItem1"
-                android:text="10236 Charing Cross Rd\nLos Angeles, CA 90024"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#212121"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"

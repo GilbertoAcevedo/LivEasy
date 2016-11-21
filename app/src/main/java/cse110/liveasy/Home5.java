@@ -1,6 +1,7 @@
 package cse110.liveasy;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.Map;
+import java.util.Random;
 
 
 public class Home5 extends Fragment {
@@ -62,7 +64,6 @@ public class Home5 extends Fragment {
 
         //CustomList adapter = new CustomList(getActivity(), user, imageID);
         CustomList adapter = new CustomList(getActivity(), user, URLs, numbers, emails);
-
         list=(ListView) view.findViewById(R.id.list);
         list.setAdapter(adapter);
 
@@ -73,26 +74,19 @@ public class Home5 extends Fragment {
                 Map<String, Object> currentMember = (Map <String, Object>)((NavDrawerActivity)getActivity()).group.members.get(user[position]);
                 final Profile newProfile = new Profile(currentMember, user[position]);
 
-                /*CircleImageView memberSelfie = (CircleImageView) v.findViewById(R.id.img);
+                ((NavDrawerActivity) getActivity()).toProfilePopup(v, newProfile, user[position]);
 
-                Picasso.with((NavDrawerActivity)getContext())
-                        .load(URLs[position])
-                        .rotate(90)
-                        .resize(200,200)
-                        .centerCrop()
-                        .placeholder(R.drawable.blank)
-                        .into(memberSelfie);
-
-                memberSelfie.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {*/
-
-                        ((NavDrawerActivity) getActivity()).toProfilePopup(v, newProfile, user[position]);
-                    //}
-                //});
 
             }
         });
+
+        CircleImageView groupPic = (CircleImageView) view.findViewById(R.id.group_image5);
+        Picasso.with((NavDrawerActivity)getContext())
+                .load(((NavDrawerActivity)getActivity()).group.photo_url)
+                .resize(200,200)
+                .centerCrop()
+                .placeholder(R.drawable.blank)
+                .into(groupPic);
 
         // Inflate the layout for this fragment
         return view;

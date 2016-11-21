@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -45,6 +46,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -64,6 +66,7 @@ public class NavDrawerActivity extends AppCompatActivity
     int pendingSize;
     int memberCount;
     int count = 0;
+    int backcount = 0;
 
     ValueEventListener groupListener;
     ValueEventListener userListener;
@@ -164,6 +167,12 @@ public class NavDrawerActivity extends AppCompatActivity
                                 String gname = (String) dataSnapshot.child("name").getValue();
                                 Long gnum = (Long) dataSnapshot.child("num_users").getValue();
 
+                                String aptAddy = (String) dataSnapshot.child("address").getValue();
+                                group.address = aptAddy;
+
+                                String group_photo = (String) dataSnapshot.child("group_photo").getValue();
+                                group.photo_url = group_photo;
+
                                 // Update each user's info
                                 group.members = group_content;
                                 group.pending = pending;
@@ -251,9 +260,32 @@ public class NavDrawerActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            //super.onBackPressed();
-            //do nothing
+        }
+
+        else {
+            MediaPlayer quack = MediaPlayer.create(this, R.raw.quack);
+            MediaPlayer quack1 = MediaPlayer.create(this, R.raw.quack1);
+            MediaPlayer quack2 = MediaPlayer.create(this, R.raw.quack2);
+            MediaPlayer quack3 = MediaPlayer.create(this, R.raw.quack3);
+            MediaPlayer quack4 = MediaPlayer.create(this, R.raw.quack4);
+            Random randomGen = new Random();
+
+            int check = backcount%5;
+
+            if (check == randomGen.nextInt(5)) {
+                if (check == 0)
+                    quack.start();
+                if (check == 1)
+                    quack1.start();
+                if (check == 2)
+                    quack2.start();
+                if (check == 3)
+                    quack3.start();
+                if (check == 4)
+                    quack4.start();
+            }
+
+            backcount++;
         }
     }
 
@@ -521,7 +553,7 @@ public class NavDrawerActivity extends AppCompatActivity
     }
 
     public void toGroupProfilePopup(View view) {
-        final AlertDialog.Builder group_builder = new AlertDialog.Builder(this);
+        /*final AlertDialog.Builder group_builder = new AlertDialog.Builder(this);
         LayoutInflater group_inflater = (this).getLayoutInflater();
         View group_dialog_view = group_inflater.inflate(R.layout.activity_popup_group_profile, null);
 
@@ -546,7 +578,15 @@ public class NavDrawerActivity extends AppCompatActivity
         });
 
         group_builder.setView(group_dialog_view);
-        group_builder.create().show();
+        group_builder.create().show();*/
+
+        Intent goProfile = new Intent(NavDrawerActivity.this, GroupProfileActivity.class);
+        goProfile.putExtra("username", username);
+        goProfile.putExtra("groupName", group.name);
+        goProfile.putExtra("groupKey", user.groupID);
+        removeAllListeners();
+        startActivity(goProfile);
+        finish();
     }
 
 

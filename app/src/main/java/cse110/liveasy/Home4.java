@@ -1,6 +1,7 @@
 package cse110.liveasy;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import com.squareup.picasso.Picasso;
 
 import java.util.Map;
+import java.util.Random;
 
 import cse110.liveasy.R;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -126,6 +128,14 @@ public class Home4 extends Fragment {
 
 
         }
+
+        CircleImageView groupPic = (CircleImageView) theView.findViewById(R.id.group_image4);
+        Picasso.with((NavDrawerActivity)getContext())
+                .load(((NavDrawerActivity)getActivity()).group.photo_url)
+                .resize(200,200)
+                .centerCrop()
+                .placeholder(R.drawable.blank)
+                .into(groupPic);
 
         return theView;
 

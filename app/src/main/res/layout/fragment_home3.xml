@@ -50,10 +50,9 @@
             android:layout_alignParentEnd="true"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/circleImageView2"
+            android:id="@+id/group_image3"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/mansion"
             app:civ_border_width="2dp"
             app:civ_border_color="#FF000000"
             android:onClick="toGroupProfilePopup"

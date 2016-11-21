@@ -105,7 +105,7 @@ public class CreateGroup extends AppCompatActivity {
                 } else {
                     if (!groupName.matches("") && !groupName.matches("Group Name")) {
                         final String groupKey = generateKey();
-
+                        //CHECK TO SEE THAT KEY DOES NOT EXIST
                         DatabaseReference groupsRef = ref.child("groups");
                         Map<String, Object> group_info = new HashMap<String, Object>();
                         Map<String, Object> members = new HashMap<String, Object>();
@@ -134,6 +134,13 @@ public class CreateGroup extends AppCompatActivity {
                         pending_folder.put("/pending/", pending);
                         groupsRef.child(groupKey).updateChildren(pending_folder);
 
+                        Map<String, Object> address = new HashMap<>();
+                        address.put("address", "Please enter your address");
+                        groupsRef.child(groupKey).updateChildren(address);
+
+                        Map<String, Object> group_photo = new HashMap<>();
+                        group_photo.put("group_photo", "https://firebasestorage.googleapis.com/v0/b/liveasy-85049.appspot.com/o/addhouse.jpg?alt=media&token=ad5a0da8-73ae-4a0d-8272-4572f93ec33b");
+                        groupsRef.child(groupKey).updateChildren(group_photo);
                         //Add group chat child onto database
                         Map<String, Object> chatMap = new HashMap<String, Object>();
                         chatMap.put("chat_room", "");
@@ -159,7 +166,7 @@ public class CreateGroup extends AppCompatActivity {
                         groupKeyTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
 
                         TextView message2 = new TextView(view.getContext());
-                        message2.setText("Please share this key with your rommates so that they may join.");
+                        message2.setText("Please share this key with your roommates so that they may join.");
                         message2.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
                         layout.addView(title);
                         layout.addView(message1);

@@ -49,10 +49,9 @@
             android:layout_toEndOf="@+id/main_profile_image4"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/group_image"
+            android:id="@+id/group_image4"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/mansion"
             app:civ_border_width="2dp"
             app:civ_border_color="#FF000000"
             android:onClick="toGroupProfilePopup"

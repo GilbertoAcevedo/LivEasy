@@ -66,4 +66,5 @@ public class CustomList extends ArrayAdapter<String>{
 
         return rowView;
     }
+
 }

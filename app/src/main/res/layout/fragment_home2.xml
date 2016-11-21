@@ -37,10 +37,9 @@
             android:layout_toStartOf="@id/main_profile_image" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/circleImageView3"
+            android:id="@+id/group_image2"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/mansion"
             app:civ_border_width="2dp"
             app:civ_border_color="#FF000000"
             android:layout_below="@id/main_profile_image"
@@ -49,6 +48,7 @@
             android:layout_marginRight="22dp"
             android:layout_marginEnd="22dp"
             android:onClick="toGroupProfilePopup"/>
+
 
         <!--<ListView
             android:id="@android:id/list"
@@ -61,6 +61,8 @@
         </ListView>-->
 
 
+=======
+>>>>>>> Stashed changes
     </RelativeLayout>
 
 </FrameLayout>

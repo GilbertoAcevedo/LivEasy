@@ -13,6 +13,8 @@ public class Group {
     public Map<String, Object> members;
     public int num_users;
     public ArrayList<String> pending;
+    public String address;
+    public String photo_url;
 
     public Group() {
         this.pending = new ArrayList<String>();
