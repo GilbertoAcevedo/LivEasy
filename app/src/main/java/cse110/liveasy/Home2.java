@@ -35,7 +35,6 @@ public class Home2 extends Fragment {
         final View theView = inflater.inflate(R.layout.fragment_home2, container, false);
         String[] membersList = ((NavDrawerActivity)getActivity()).getMembers();
 
-
         final String[] roommateList = new String[(membersList.length) - 1];
 
         final String mainUser = ((NavDrawerActivity)getActivity()).username;
@@ -93,7 +92,10 @@ public class Home2 extends Fragment {
                     });
 
             }
+
         }
+
+
 
         CircleImageView groupPic = (CircleImageView) theView.findViewById(R.id.group_image2);
         Picasso.with((NavDrawerActivity)getContext())
@@ -102,6 +104,7 @@ public class Home2 extends Fragment {
                 .centerCrop()
                 .placeholder(R.drawable.blank)
                 .into(groupPic);
+
 
         return theView;
     }

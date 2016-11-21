@@ -264,29 +264,29 @@ public class NavDrawerActivity extends AppCompatActivity
         }
 
         else {
-//            MediaPlayer quack = MediaPlayer.create(this, R.raw.quack);
-//            MediaPlayer quack1 = MediaPlayer.create(this, R.raw.quack1);
-//            MediaPlayer quack2 = MediaPlayer.create(this, R.raw.quack2);
-//            MediaPlayer quack3 = MediaPlayer.create(this, R.raw.quack3);
-//            MediaPlayer quack4 = MediaPlayer.create(this, R.raw.quack4);
-//            Random randomGen = new Random();
-//
-//            int check = backcount%5;
-//
-//            if (check == randomGen.nextInt(5)) {
-//                if (check == 0)
-//                    quack.start();
-//                if (check == 1)
-//                    quack1.start();
-//                if (check == 2)
-//                    quack2.start();
-//                if (check == 3)
-//                    quack3.start();
-//                if (check == 4)
-//                    quack4.start();
-//            }
-//
-//            backcount++;
+            MediaPlayer quack = MediaPlayer.create(this, R.raw.quack);
+            MediaPlayer quack1 = MediaPlayer.create(this, R.raw.quack1);
+            MediaPlayer quack2 = MediaPlayer.create(this, R.raw.quack2);
+            MediaPlayer quack3 = MediaPlayer.create(this, R.raw.quack3);
+            MediaPlayer quack4 = MediaPlayer.create(this, R.raw.quack4);
+            Random randomGen = new Random();
+
+            int check = backcount%5;
+
+            if (check == randomGen.nextInt(5)) {
+                if (check == 0)
+                    quack.start();
+                if (check == 1)
+                    quack1.start();
+                if (check == 2)
+                    quack2.start();
+                if (check == 3)
+                    quack3.start();
+                if (check == 4)
+                    quack4.start();
+            }
+
+            backcount++;
         }
     }
 

@@ -890,7 +890,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void uploadPic(){
         //uploading...
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference ref = database.getReference().child("users").child(extras.getString("username"));
 
         // Save selfie
@@ -916,14 +916,27 @@ public class ProfileActivity extends AppCompatActivity {
                 System.out.println("Profile: "+url);
                 userMap.put("photo_url", url);
                 ref.updateChildren(userMap);
+
+                if( (Boolean)getIntent().getExtras().get("group")) {
+                    DatabaseReference gref = database.getReference().child("groups").
+                            child(getIntent().getExtras().getString("groupID")).
+                            child("members").
+                            child(getIntent().getExtras().getString("username"));
+
+                    gref.updateChildren(userMap);
+                }
+
                 progressDialog.dismiss();
             }
         });
+
+
+
     }
 
     public void uploadPicAndJump(){
         //uploading...
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference ref = database.getReference().child("users").child(extras.getString("username"));
 
         // Save selfie
@@ -949,6 +962,15 @@ public class ProfileActivity extends AppCompatActivity {
                 System.out.println("Profile: "+url);
                 userMap.put("photo_url", url);
                 ref.updateChildren(userMap);
+
+                if( (Boolean)getIntent().getExtras().get("group")) {
+                    DatabaseReference gref = database.getReference().child("groups").
+                            child(getIntent().getExtras().getString("groupID")).
+                            child("members").
+                            child(getIntent().getExtras().getString("username"));
+
+                    gref.updateChildren(userMap);
+                }
 
                 // Jump to Nav Drawer
                 progressDialog.dismiss();
