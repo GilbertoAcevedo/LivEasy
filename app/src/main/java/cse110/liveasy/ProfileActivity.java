@@ -5,17 +5,12 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneNumberUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -31,8 +26,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -274,7 +267,9 @@ public class ProfileActivity extends AppCompatActivity {
 
                         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                         public boolean onKey(View v, int keyCode, KeyEvent event) {
+
                             changedPhoneNumber = editphoneNumber.getText().toString();
+
 
 
                             // If the event is a key-down event on the "enter" button
@@ -477,7 +472,7 @@ public class ProfileActivity extends AppCompatActivity {
             // Set Pet Peeves View Listener
 
             final TextView petPeeves  = (TextView) findViewById(R.id.pet_peeves);
-            final EditText editPetPeeves = (EditText) findViewById(R.id.edit_petPeeves);
+            final EditText editPetPeeves = (EditText) findViewById(R.id.edit_groupAddress);
 
             petPeeves.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -725,6 +720,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
