@@ -136,6 +136,10 @@ public class Questionaire extends AppCompatActivity {
                 int id = v.getId();
                 switch (id) {
                     case R.id.uploadPhotoBtn:
+                        readPermission();
+
+                        writePermission();
+
                         cameraPermission();
                         break;
                 }
@@ -489,7 +493,7 @@ public class Questionaire extends AppCompatActivity {
     private File createImageFile() throws IOException {
         // Create an image file name
 
-        readPermission();
+
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         String storageDir = Environment.getExternalStorageDirectory() + "/picupload";
@@ -507,7 +511,6 @@ public class Questionaire extends AppCompatActivity {
     }
 
     private void takePhoto() {
-        writePermission();
 
         dispatchTakePictureIntent();
     }
@@ -607,13 +610,20 @@ public class Questionaire extends AppCompatActivity {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     android.Manifest.permission.CAMERA)) {
 
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.CAMERA},
+                        MY_PERMISSIONS_REQUEST_CAMERA);
+
                 // Show an expanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
+                System.out.println("Inside if Camera Permission*******");
 
             } else {
 
                 // No explanation needed, we can request the permission.
+                System.out.println("Inside else Camera Permission*******");
+
 
                 ActivityCompat.requestPermissions(this,
                         new String[]{android.Manifest.permission.CAMERA},
@@ -644,6 +654,9 @@ public class Questionaire extends AppCompatActivity {
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_READ);
 
             } else {
 

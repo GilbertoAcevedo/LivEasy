@@ -1,9 +1,11 @@
 package cse110.liveasy;
 
+import android.*;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -18,7 +20,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -108,6 +112,10 @@ public class ProfileActivity extends AppCompatActivity {
     Boolean changedPic = false;
 
     ProgressDialog progressDialog;
+
+    public static final int MY_PERMISSIONS_REQUEST_CAMERA = 0;
+    public static final int MY_PERMISSIONS_REQUEST_WRITE = 1;
+    public static final int MY_PERMISSIONS_REQUEST_READ = 2;
 
 
     @Override
@@ -299,7 +307,12 @@ public class ProfileActivity extends AppCompatActivity {
                 @Override
                 public boolean onLongClick(View v) {
 
-                    takePhoto();
+                    readPermission();
+
+                    writePermission();
+
+                    cameraPermission();
+
 
                     return false;
                 }
@@ -877,7 +890,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void uploadPic(){
         //uploading...
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference ref = database.getReference().child("users").child(extras.getString("username"));
 
         // Save selfie
@@ -903,14 +916,27 @@ public class ProfileActivity extends AppCompatActivity {
                 System.out.println("Profile: "+url);
                 userMap.put("photo_url", url);
                 ref.updateChildren(userMap);
+
+                if( (Boolean)getIntent().getExtras().get("group")) {
+                    DatabaseReference gref = database.getReference().child("groups").
+                            child(getIntent().getExtras().getString("groupID")).
+                            child("members").
+                            child(getIntent().getExtras().getString("username"));
+
+                    gref.updateChildren(userMap);
+                }
+
                 progressDialog.dismiss();
             }
         });
+
+
+
     }
 
     public void uploadPicAndJump(){
         //uploading...
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference ref = database.getReference().child("users").child(extras.getString("username"));
 
         // Save selfie
@@ -936,6 +962,15 @@ public class ProfileActivity extends AppCompatActivity {
                 System.out.println("Profile: "+url);
                 userMap.put("photo_url", url);
                 ref.updateChildren(userMap);
+
+                if( (Boolean)getIntent().getExtras().get("group")) {
+                    DatabaseReference gref = database.getReference().child("groups").
+                            child(getIntent().getExtras().getString("groupID")).
+                            child("members").
+                            child(getIntent().getExtras().getString("username"));
+
+                    gref.updateChildren(userMap);
+                }
 
                 // Jump to Nav Drawer
                 progressDialog.dismiss();
@@ -1131,6 +1166,172 @@ public class ProfileActivity extends AppCompatActivity {
 
         return bmRotated;
     }
+
+    private void cameraPermission() {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            System.out.println("At cameraPermission***");
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.CAMERA)) {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.CAMERA},
+                        MY_PERMISSIONS_REQUEST_CAMERA);
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                System.out.println("Inside if Camera Permission*******");
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+                System.out.println("Inside else Camera Permission*******");
+
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.CAMERA},
+                        MY_PERMISSIONS_REQUEST_CAMERA);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+
+        }
+        else{
+            takePhoto();
+        }
+    }
+
+    private void readPermission() {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this
+                ,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_READ);
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_READ);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+    }
+
+    private void writePermission() {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this
+                ,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_WRITE);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults)     {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_CAMERA:{
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    takePhoto();
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                    url = "https://firebasestorage.googleapis.com/v0/b/liveasy-85049.appspot.com/o/woodie.jpg?alt=media&token=87057c2f-1d19-4b23-90f1-1f215b5ad618";
+                }
+                return;
+            }
+
+
+            case MY_PERMISSIONS_REQUEST_READ:{
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            case MY_PERMISSIONS_REQUEST_WRITE:{
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
 
     public static Bitmap rotateBitmap(Bitmap bitmap, int orientation) {
 

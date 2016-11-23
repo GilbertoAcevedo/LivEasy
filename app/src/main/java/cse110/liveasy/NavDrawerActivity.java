@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -265,29 +266,29 @@ public class NavDrawerActivity extends AppCompatActivity
         }
 
         else {
-//            MediaPlayer quack = MediaPlayer.create(this, R.raw.quack);
-//            MediaPlayer quack1 = MediaPlayer.create(this, R.raw.quack1);
-//            MediaPlayer quack2 = MediaPlayer.create(this, R.raw.quack2);
-//            MediaPlayer quack3 = MediaPlayer.create(this, R.raw.quack3);
-//            MediaPlayer quack4 = MediaPlayer.create(this, R.raw.quack4);
-//            Random randomGen = new Random();
-//
-//            int check = backcount%5;
-//
-//            if (check == randomGen.nextInt(5)) {
-//                if (check == 0)
-//                    quack.start();
-//                if (check == 1)
-//                    quack1.start();
-//                if (check == 2)
-//                    quack2.start();
-//                if (check == 3)
-//                    quack3.start();
-//                if (check == 4)
-//                    quack4.start();
-//            }
-//
-//            backcount++;
+            MediaPlayer quack = MediaPlayer.create(this, R.raw.quack);
+            MediaPlayer quack1 = MediaPlayer.create(this, R.raw.quack1);
+            MediaPlayer quack2 = MediaPlayer.create(this, R.raw.quack2);
+            MediaPlayer quack3 = MediaPlayer.create(this, R.raw.quack3);
+            MediaPlayer quack4 = MediaPlayer.create(this, R.raw.quack4);
+            Random randomGen = new Random();
+
+            int check = backcount%5;
+
+            if (check == randomGen.nextInt(5)) {
+                if (check == 0)
+                    quack.start();
+                if (check == 1)
+                    quack1.start();
+                if (check == 2)
+                    quack2.start();
+                if (check == 3)
+                    quack3.start();
+                if (check == 4)
+                    quack4.start();
+            }
+
+            backcount++;
         }
     }
 
@@ -372,6 +373,15 @@ public class NavDrawerActivity extends AppCompatActivity
             finish();
 
         }
+        else if(id == R.id.manage_tasks){
+            Intent goToManageTasks = new Intent(this, TaskActivity.class);
+            goToManageTasks.putExtra("username", username);
+            goToManageTasks.putExtra("group_id", user.groupID);
+            goToManageTasks.putExtra("members", (HashMap)group.members);
+            removeAllListeners();
+            startActivity(goToManageTasks);
+            finish();
+        }
         else if ( id == R.id.leave_group ){
             View v = findViewById(R.id.content_nav_drawer);
             AlertDialog.Builder displayConfirmation  = new AlertDialog.Builder(v.getContext());
@@ -424,7 +434,6 @@ public class NavDrawerActivity extends AppCompatActivity
             startActivity(goToLogin);
             finish();
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
