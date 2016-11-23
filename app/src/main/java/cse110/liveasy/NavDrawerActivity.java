@@ -73,6 +73,7 @@ public class NavDrawerActivity extends AppCompatActivity
     ValueEventListener userListener;
 
     MenuItem groupChatItem;
+    MenuItem removeUserItem;
 
 
 
@@ -89,6 +90,7 @@ public class NavDrawerActivity extends AppCompatActivity
         NavigationView navView = (NavigationView)findViewById(R.id.nav_view);
         Menu navMenu = navView.getMenu();
         groupChatItem = navMenu.findItem(R.id.group_chat);
+        removeUserItem = navMenu.findItem(R.id.remove_user);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -351,6 +353,8 @@ public class NavDrawerActivity extends AppCompatActivity
             removeAllListeners();
             startActivity(goToShareCode);
             finish();
+
+
         } else if (id == R.id.manage_requests){
             Intent goToRequests = new Intent(this, ManageRequests.class);
             goToRequests.putStringArrayListExtra("pending", group.pending);
@@ -359,6 +363,15 @@ public class NavDrawerActivity extends AppCompatActivity
             removeAllListeners();
             startActivity(goToRequests);
             finish();
+        }
+        else if ( id == R.id.remove_user ) {
+            Intent goToRemoveUser = new Intent(this, RemoveUserFromGroup.class);
+            goToRemoveUser.putExtra("username", getIntent().getExtras().getString("username"));
+            goToRemoveUser.putExtra("groupID", user.groupID);
+            removeAllListeners();
+            startActivity(goToRemoveUser);
+            finish();
+
         }
         else if(id == R.id.manage_tasks){
             Intent goToManageTasks = new Intent(this, TaskActivity.class);
@@ -487,6 +500,8 @@ public class NavDrawerActivity extends AppCompatActivity
 
                             groupChatItem.setEnabled(true);
                             groupChatItem.setVisible(true);
+                            removeUserItem.setEnabled(true);
+                            removeUserItem.setVisible(true);
                             getSupportActionBar().setTitle(group.name);
                             notificationUp();
                         }

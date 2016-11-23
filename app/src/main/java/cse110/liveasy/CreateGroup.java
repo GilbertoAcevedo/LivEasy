@@ -134,6 +134,19 @@ public class CreateGroup extends AppCompatActivity {
                         pending_folder.put("/pending/", pending);
                         groupsRef.child(groupKey).updateChildren(pending_folder);
 
+
+                        /*********************************************/
+                        // to be used for removing users from group
+                        ArrayList<String> usersToBeDeleted = new ArrayList<String>();
+                        Map<String, Object> usersToBeDeleted_folder = new HashMap<String, Object>();
+                        Map<String, Object> usersToBeDeleted_default = new HashMap<String, Object>();
+                        usersToBeDeleted.add("");
+                        usersToBeDeleted_default.put("default", usersToBeDeleted);
+                        usersToBeDeleted_folder.put("/usersToBeDeleted/", usersToBeDeleted_default);
+                        groupsRef.child(groupKey).updateChildren(usersToBeDeleted_folder);
+                        /**********************************************/
+
+
                         Map<String, Object> address = new HashMap<>();
                         address.put("address", "Please enter your address");
                         groupsRef.child(groupKey).updateChildren(address);

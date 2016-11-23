@@ -24,5 +24,6 @@
         <item>I am OK with it</item>
         <item>I am NOT ok with it</item>
     </string-array>
+    <string name="title_activity_remove_user_from_group">RemoveUserFromGroup</string>
 
 </resources>
