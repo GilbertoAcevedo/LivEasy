@@ -72,6 +72,7 @@ public class NavDrawerActivity extends AppCompatActivity
     ValueEventListener userListener;
 
     MenuItem groupChatItem;
+    MenuItem removeUserItem;
 
 
 
@@ -88,6 +89,7 @@ public class NavDrawerActivity extends AppCompatActivity
         NavigationView navView = (NavigationView)findViewById(R.id.nav_view);
         Menu navMenu = navView.getMenu();
         groupChatItem = navMenu.findItem(R.id.group_chat);
+        removeUserItem = navMenu.findItem(R.id.remove_user);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -263,29 +265,29 @@ public class NavDrawerActivity extends AppCompatActivity
         }
 
         else {
-            MediaPlayer quack = MediaPlayer.create(this, R.raw.quack);
-            MediaPlayer quack1 = MediaPlayer.create(this, R.raw.quack1);
-            MediaPlayer quack2 = MediaPlayer.create(this, R.raw.quack2);
-            MediaPlayer quack3 = MediaPlayer.create(this, R.raw.quack3);
-            MediaPlayer quack4 = MediaPlayer.create(this, R.raw.quack4);
-            Random randomGen = new Random();
-
-            int check = backcount%5;
-
-            if (check == randomGen.nextInt(5)) {
-                if (check == 0)
-                    quack.start();
-                if (check == 1)
-                    quack1.start();
-                if (check == 2)
-                    quack2.start();
-                if (check == 3)
-                    quack3.start();
-                if (check == 4)
-                    quack4.start();
-            }
-
-            backcount++;
+//            MediaPlayer quack = MediaPlayer.create(this, R.raw.quack);
+//            MediaPlayer quack1 = MediaPlayer.create(this, R.raw.quack1);
+//            MediaPlayer quack2 = MediaPlayer.create(this, R.raw.quack2);
+//            MediaPlayer quack3 = MediaPlayer.create(this, R.raw.quack3);
+//            MediaPlayer quack4 = MediaPlayer.create(this, R.raw.quack4);
+//            Random randomGen = new Random();
+//
+//            int check = backcount%5;
+//
+//            if (check == randomGen.nextInt(5)) {
+//                if (check == 0)
+//                    quack.start();
+//                if (check == 1)
+//                    quack1.start();
+//                if (check == 2)
+//                    quack2.start();
+//                if (check == 3)
+//                    quack3.start();
+//                if (check == 4)
+//                    quack4.start();
+//            }
+//
+//            backcount++;
         }
     }
 
@@ -361,6 +363,15 @@ public class NavDrawerActivity extends AppCompatActivity
             startActivity(goToRequests);
             finish();
         }
+        else if ( id == R.id.remove_user ) {
+            Intent goToRemoveUser = new Intent(this, RemoveUserFromGroup.class);
+            goToRemoveUser.putExtra("username", getIntent().getExtras().getString("username"));
+            goToRemoveUser.putExtra("groupID", user.groupID);
+            removeAllListeners();
+            startActivity(goToRemoveUser);
+            finish();
+
+        }
         else if ( id == R.id.leave_group ){
             View v = findViewById(R.id.content_nav_drawer);
             AlertDialog.Builder displayConfirmation  = new AlertDialog.Builder(v.getContext());
@@ -413,6 +424,7 @@ public class NavDrawerActivity extends AppCompatActivity
             startActivity(goToLogin);
             finish();
         }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -479,6 +491,8 @@ public class NavDrawerActivity extends AppCompatActivity
 
                             groupChatItem.setEnabled(true);
                             groupChatItem.setVisible(true);
+                            removeUserItem.setEnabled(true);
+                            removeUserItem.setVisible(true);
                             getSupportActionBar().setTitle(group.name);
                             notificationUp();
                         }

@@ -14,8 +14,14 @@
                 android:id="@+id/manage_requests"
                 android:icon="@drawable/ic_menu_manage" />
             <item
+                android:title="Remove Members from Group"
+                android:id="@+id/remove_user"
+                android:enabled="false"
+                android:visible="false"
+                android:icon="?android:attr/actionModeCutDrawable" />
+            <item
                 android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/ic_menu_share"
                 android:title="Share Group Code" />
         </menu>
     </item>

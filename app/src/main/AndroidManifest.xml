@@ -83,12 +83,17 @@
             android:name=".Questionaire"
             android:configChanges="orientation|screenSize|screenLayout"
             android:label="Set Up Profile"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ShareGroupCode"
             android:label="Group Code"
             android:noHistory="true" />
-        <activity android:name=".GroupChat"></activity>
+        <activity android:name=".GroupChat" />
+        <activity
+            android:name=".RemoveUserFromGroup"
+            android:label="Remove Members from Group"
+            android:noHistory="true">
+        </activity>
     </application>
 
 </manifest>
