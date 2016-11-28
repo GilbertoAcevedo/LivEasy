@@ -85,12 +85,13 @@ public class RemoveUserFromGroup extends AppCompatActivity {
 
                     TextView user = new TextView(RemoveUserFromGroup.this);
                     user.setText(listItems.get(index));
-                    user.setTextSize(15);
+                    user.setTextSize(24);
 
                     user.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
 
                     LinearLayout.LayoutParams button_param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT, 1.5f);
+                    button_param.setMargins(0,0,0,10);
 
                     LinearLayout.LayoutParams user_param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
@@ -191,6 +192,7 @@ public class RemoveUserFromGroup extends AppCompatActivity {
                             inner_layout.setVisibility(LinearLayout.GONE);
                         }
                     });
+
 
                     inner_layout.addView(user, LinearLayout.LayoutParams.WRAP_CONTENT);
                     inner_layout.addView(removeUser);

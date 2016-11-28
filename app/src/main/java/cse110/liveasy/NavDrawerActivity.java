@@ -639,11 +639,12 @@ public class NavDrawerActivity extends AppCompatActivity
                         if (list.size() != pendingSize) {
 
                             if (list.size() > 1) {
-                                System.out.println("before list size: " + list.size() + "\nbefore pendingSize: " + pendingSize);
-                                Toast toast = Toast.makeText(NavDrawerActivity.this, "You have " + (list.size() - 1) + " pending request(s)",
-                                        Toast.LENGTH_SHORT);
-                                toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
-                                toast.show();
+                                if(!isFinishing()) {
+                                    Toast toast = Toast.makeText(NavDrawerActivity.this, "You have " + (list.size() - 1) + " pending request(s)",
+                                            Toast.LENGTH_SHORT);
+                                    toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
+                                    toast.show();
+                                }
                             }
                             pendingSize = list.size();
                             System.out.println("after list size: " + list.size() + "\nafter pendingSize: " + pendingSize);
@@ -716,13 +717,14 @@ public class NavDrawerActivity extends AppCompatActivity
     }
 
     public void restartActivity() {
-
-        Intent restartActivity = new Intent(NavDrawerActivity.this, NavDrawerActivity.class);
-        restartActivity.putExtra("username", username);
-        removeAllListeners();
-        restartActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(restartActivity);
-        finish();
+        if(!isFinishing()) {
+            Intent restartActivity = new Intent(NavDrawerActivity.this, NavDrawerActivity.class);
+            restartActivity.putExtra("username", username);
+            removeAllListeners();
+            restartActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(restartActivity);
+            finish();
+        }
 
 
     }
