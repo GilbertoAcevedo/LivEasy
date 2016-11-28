@@ -65,8 +65,6 @@ public class NavDrawerActivity extends AppCompatActivity
     MenuItem groupChatItem;
     MenuItem removeUserItem;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -339,24 +337,6 @@ public class NavDrawerActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-//        if (id == R.id.nav_camera) {
-//            // Handle the camera action
-//            Intent goToCreateGroup = new Intent(this, CreateGroup.class);
-//
-//            Bundle extras = getIntent().getExtras();
-//
-//            if (extras != null) {
-//                String value = extras.getString("username");
-//                goToCreateGroup.putExtra("username", value);
-//            }
-//            removeAllListeners();
-//            startActivity(goToCreateGroup);
-//            finish();
-//        } else if (id == R.id.nav_gallery) {
-//
-//        } else if (id == R.id.nav_slideshow) {
-//
-//        } else
         if(id == R.id.group_chat){
             Intent goToGroupChat = new Intent(this, GroupChat.class);
             goToGroupChat.putExtra("username", username);
@@ -537,7 +517,6 @@ public class NavDrawerActivity extends AppCompatActivity
         }
     }
 
-
     /***********************************************************/
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -631,7 +610,6 @@ public class NavDrawerActivity extends AppCompatActivity
         finish();
     }
 
-
     public void notificationUp() {
         System.out.println("in notifications up has group: " + user.groupID);
         if (user.group) {
@@ -678,8 +656,6 @@ public class NavDrawerActivity extends AppCompatActivity
         }
     }
 
-
-
     public void removeUserFromGroup(final String userName){
 
 
@@ -706,6 +682,11 @@ public class NavDrawerActivity extends AppCompatActivity
                 Map<String,Object> members = (HashMap<String,Object>)dataSnapshot.child("members").getValue();
                 members.remove(userName);
 
+                //remove user from tasks
+                Map<String,Object> tasks = (HashMap)group.get("tasks");
+                tasks.remove(userName);
+                group.put("tasks", tasks);
+
                 int currentMembers = ((Long)dataSnapshot.child("num_users").getValue()).intValue();
                 if(currentMembers > 1) {
                     group.put("members", members);
@@ -730,15 +711,16 @@ public class NavDrawerActivity extends AppCompatActivity
     }
 
     public void restartActivity() {
+
         Intent restartActivity = new Intent(NavDrawerActivity.this, NavDrawerActivity.class);
         restartActivity.putExtra("username", username);
-        startActivity(restartActivity);
         removeAllListeners();
+        restartActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(restartActivity);
         finish();
 
+
     }
-
-
 
     public void updateUser(){
         DatabaseReference uRef = ref.child("users").child(username);
@@ -765,29 +747,48 @@ public class NavDrawerActivity extends AppCompatActivity
                     updateGroup();
                 }
 
-
                 // notify user is they were rejected or accepted
                 if( currentPending != user.isPending ) {
 
 
+                    // user has requested group and now has a group
                     if ( hasRequestedGroup && user.group ) {
-                        Toast toast = Toast.makeText(NavDrawerActivity.this, "You have been accepted into group",
-                                Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
-                        toast.show();
-                        currentPending = user_isPending;
+
+                        // check if this activity is not a background activity
+                        if ( !isFinishing() ) {
+
+                            // update user object
+                            currentPending = user_isPending;
+
+                            // display a message to the user that they have been accepted
+                            Toast toast = Toast.makeText(NavDrawerActivity.this, "Welcome, You have been ACCEPTED! :D",
+                                    Toast.LENGTH_SHORT);
+                            toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
+                            toast.show();
+                        }
 
                     } else if ( hasRequestedGroup && !user.group ) {
-                        Toast toast = Toast.makeText(NavDrawerActivity.this, "You have been rejected from group\"",
-                                Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
-                        toast.show();
-                        currentPending = user_isPending;
+
+                        // check if this activity is not a background activity
+                        if( !isFinishing() ) {
+                            currentPending = user_isPending;
+                            View v = findViewById(R.id.content_nav_drawer);
+                            AlertDialog.Builder displayConfirmation = new AlertDialog.Builder(v.getContext());
+                            displayConfirmation.setMessage("You have been REJECTED! D:");
+                            displayConfirmation.setTitle("We regret to inform...");
+                            displayConfirmation.setCancelable(false);
+
+                            displayConfirmation.setPositiveButton("Aw Shucks",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            restartActivity();
+                                        }
+                                    });
+                            displayConfirmation.create().show();
+                        }
 
                     }
-
-
-                    restartActivity();
 
                 }
             }

@@ -83,8 +83,7 @@
         <activity
             android:name=".Questionaire"
             android:label="Set Up Profile"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|screenSize|screenLayout">
+            android:screenOrientation="portrait">
         </activity>
 
         <activity
