@@ -718,8 +718,6 @@ public class NavDrawerActivity extends AppCompatActivity
         restartActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(restartActivity);
         finish();
-
-
     }
 
     public void updateUser(){
@@ -759,11 +757,26 @@ public class NavDrawerActivity extends AppCompatActivity
                             // update user object
                             currentPending = user_isPending;
 
-                            // display a message to the user that they have been accepted
-                            Toast toast = Toast.makeText(NavDrawerActivity.this, "Welcome, You have been ACCEPTED! :D",
-                                    Toast.LENGTH_SHORT);
-                            toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
-                            toast.show();
+                            View v = findViewById(R.id.content_nav_drawer);
+                            AlertDialog.Builder displayConfirmation = new AlertDialog.Builder(v.getContext());
+                            displayConfirmation.setMessage("Welcome!");
+                            displayConfirmation.setTitle("You have been accepted :D !");
+                            displayConfirmation.setCancelable(false);
+
+                            displayConfirmation.setPositiveButton("Awesome",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            restartActivity();
+                                        }
+                                    });
+                            displayConfirmation.create().show();
+
+//                            // display a message to the user that they have been accepted
+//                            Toast toast = Toast.makeText(NavDrawerActivity.this, "Welcome, You have been ACCEPTED! :D",
+//                                    Toast.LENGTH_SHORT);
+//                            toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
+//                            toast.show();
                         }
 
                     } else if ( hasRequestedGroup && !user.group ) {

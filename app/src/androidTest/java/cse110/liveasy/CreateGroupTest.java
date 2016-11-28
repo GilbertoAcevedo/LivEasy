@@ -29,6 +29,13 @@ import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
+/**
+ Given I am on the “Create a Group Page”
+ When I type in a group name AND click “Create Group”
+ Then a pop window will be displayed, which includes a shareable group key
+ AND the option to copy it to my clipboard AND an okay button to dismiss the pop up
+ **/
+
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class CreateGroupTest {
