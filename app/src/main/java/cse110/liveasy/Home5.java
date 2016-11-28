@@ -40,6 +40,8 @@ public class Home5 extends Fragment {
         final String[] user = new String[((NavDrawerActivity)getActivity()).group.num_users];
         String[] allMembers = ((NavDrawerActivity)getActivity()).getMembers();
         user[0] = ((NavDrawerActivity)getActivity()).username;
+
+        // loop through list of member and create a list without main user
         int j = 1;
         for (int i = 0; i < ((NavDrawerActivity)getActivity()).group.num_users; i++) {
             if (!allMembers[i].equals(((NavDrawerActivity)getActivity()).username)) {
@@ -48,10 +50,12 @@ public class Home5 extends Fragment {
             }
         }
 
+        // set up for the custom list adapter
         final String[] URLs = new String[((NavDrawerActivity)getActivity()).group.num_users];
         String[] emails = new String[((NavDrawerActivity)getActivity()).group.num_users];
         String[] numbers = new String[((NavDrawerActivity)getActivity()).group.num_users];
 
+        // set up the above arrays to get the appropriate information
         for (int i = 0; i < ((NavDrawerActivity)getActivity()).group.num_users; i++) {
             Map<String, Object> member = (Map<String, Object>)((NavDrawerActivity)getActivity()).group.members.get(user[i]);
             URLs[i] = (String) member.get("photo_url");
@@ -59,18 +63,17 @@ public class Home5 extends Fragment {
             emails[i] = (String) member.get("email");
         }
 
-
-        //Integer[] imageID = {R.drawable.woodie, R.drawable.woodie, R.drawable.woodie, R.drawable.woodie,R.drawable.woodie};
-
-        //CustomList adapter = new CustomList(getActivity(), user, imageID);
+        // use our customlist to make a listview
         CustomList adapter = new CustomList(getActivity(), user, URLs, numbers, emails);
         list=(ListView) view.findViewById(R.id.list);
         list.setAdapter(adapter);
 
+        // set each list item to be clickable to a popup
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             public void onItemClick(AdapterView<?> parent, View v, final int position, long id) {
 
+                // make a new profile according to the position of list item clicked
                 Map<String, Object> currentMember = (Map <String, Object>)((NavDrawerActivity)getActivity()).group.members.get(user[position]);
                 final Profile newProfile = new Profile(currentMember, user[position]);
 
@@ -80,6 +83,7 @@ public class Home5 extends Fragment {
             }
         });
 
+        // set up the group image and make it clickable
         CircleImageView groupPic = (CircleImageView) view.findViewById(R.id.group_image5);
         Picasso.with((NavDrawerActivity)getContext())
                 .load(((NavDrawerActivity)getActivity()).group.photo_url)
