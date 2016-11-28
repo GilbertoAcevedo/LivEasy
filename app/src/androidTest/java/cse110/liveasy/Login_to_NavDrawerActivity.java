@@ -35,6 +35,11 @@ import static org.hamcrest.Matchers.allOf;
  AND have an account
  When I click “Login”
  Then I will be taken to the home page containing me and two buttons: Create Group and Join Group
+
+ Credential
+ username: logintest
+ password: password
+ email: logintest@example.com
  ***/
 @LargeTest
 @RunWith(AndroidJUnit4.class)
