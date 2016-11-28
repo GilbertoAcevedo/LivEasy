@@ -42,6 +42,15 @@ import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
+/***
+ * Scenario
+ Given I am on the “Create Account” page
+ AND do not have an account yet
+ AND input all the necessary information
+ When I click “Create Account”
+ Then I will be taken to a questionnaire page to input information that my household members should know
+ ***/
+
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class Create_Account_to_Nav_Drawer {
