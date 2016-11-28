@@ -2,6 +2,7 @@ package cse110.liveasy;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -189,7 +191,9 @@ public class TaskActivity extends AppCompatActivity {
                     //create button that will open dialog box
                     Button addButton = new Button(TaskActivity.this);
                     addButton.setText("Add New Task");
-                    addButton.setTextSize(10);
+                    addButton.setBackgroundResource(R.drawable.button_background);
+                    addButton.setTextColor(Color.parseColor("#ffffff"));
+                    addButton.setTextSize(15);
                     addButton.setOnClickListener(new View.OnClickListener(){
                         @Override
                         public void onClick(View v){
@@ -217,7 +221,7 @@ public class TaskActivity extends AppCompatActivity {
 
                             TextView taskText = new TextView(TaskActivity.this);
                             taskText.setText(task);
-                            taskText.setTextSize(15);
+                            taskText.setTextSize(20);
                             taskText.setGravity(Gravity.CENTER_VERTICAL | Gravity.FILL_VERTICAL);
 
                             TableLayout.LayoutParams taskTextParam = new TableLayout.LayoutParams(0,
@@ -228,6 +232,9 @@ public class TaskActivity extends AppCompatActivity {
 
                             Button done = new Button(TaskActivity.this);
                             done.setGravity(Gravity.CENTER);
+                            done.setTextColor(Color.parseColor("#ffffff"));
+                            done.setBackgroundResource(R.drawable.btn_accept_background);
+                            done.setTextSize(15);
                             done.setText("Done");
 
                             final String userNameForListener = currUser;
@@ -253,7 +260,7 @@ public class TaskActivity extends AppCompatActivity {
 
                             TextView taskText = new TextView(TaskActivity.this);
                             taskText.setText(task);
-                            taskText.setTextSize(15);
+                            taskText.setTextSize(20);
                             taskText.setGravity(Gravity.CENTER_VERTICAL | Gravity.FILL_VERTICAL);
 
                             LinearLayout.LayoutParams taskTextParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,

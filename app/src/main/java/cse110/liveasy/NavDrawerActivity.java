@@ -323,10 +323,15 @@ public class NavDrawerActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.go_to_calendar) {
+            Intent goToCalendar = new Intent(this, CalendarActivity.class);
+            goToCalendar.putExtra("username", username);
+            goToCalendar.putExtra("group_id", user.groupID);
+            removeAllListeners();
+            startActivity(goToCalendar);
+            finish();
+        }
 
         return super.onOptionsItemSelected(item);
     }

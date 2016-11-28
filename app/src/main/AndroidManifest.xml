@@ -37,10 +37,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Welcome"
-            android:noHistory="true"
-            android:theme="@style/noActionBar" />
-        <activity
             android:name=".LoginActivity"
             android:noHistory="true"
             android:theme="@style/AppTheme.Dark" />
@@ -102,6 +98,10 @@
             android:name=".RemoveUserFromGroup"
             android:label="Remove Members from Group"
             android:noHistory="true">
+        </activity>
+        <activity
+            android:name=".CalendarActivity"
+            android:label="View Calendar" >
         </activity>
     </application>
 

@@ -101,6 +101,7 @@ public class RemoveUserFromGroup extends AppCompatActivity {
 
                     Button removeUser = new Button(RemoveUserFromGroup.this);
                     removeUser.setText("Remove");
+                    removeUser.setBackgroundResource(R.drawable.btn_reject_background);
                     removeUser.setLayoutParams(button_param);
                     removeUser.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -218,6 +219,12 @@ public class RemoveUserFromGroup extends AppCompatActivity {
         // remove user from usersToBeDeleted List
         usersToBeDeletedMap.remove(user_to_be_removed);
         gref.child("usersToBeDeleted").updateChildren(usersToBeDeletedMap);
+
+        //remove users tasks
+        Map<String,Object> tasks = (HashMap)groupMap.get("tasks");
+        tasks.remove(user_to_be_removed);
+        groupMap.put("tasks", tasks);
+
 
         // remove contents of user_to_be_removed from group
         membersMap.remove(user_to_be_removed);
