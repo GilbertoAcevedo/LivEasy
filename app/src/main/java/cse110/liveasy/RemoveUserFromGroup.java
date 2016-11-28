@@ -101,6 +101,7 @@ public class RemoveUserFromGroup extends AppCompatActivity {
 
                     Button removeUser = new Button(RemoveUserFromGroup.this);
                     removeUser.setText("Remove");
+                    removeUser.setBackgroundResource(R.drawable.btn_reject_background);
                     removeUser.setLayoutParams(button_param);
                     removeUser.setOnClickListener(new View.OnClickListener() {
                         @Override
