@@ -6,15 +6,18 @@ package cse110.liveasy;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CalendarView;
 import android.widget.CalendarView.OnDateChangeListener;
 import android.app.Activity;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
+import android.support.v7.app.AppCompatActivity;
 
-public class CalendarActivity extends Activity {
+public class CalendarActivity extends AppCompatActivity {
     CalendarView calendar;
+    Bundle extras;
 
     int year;
     int month;
@@ -22,6 +25,7 @@ public class CalendarActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        extras = getIntent().getExtras();
         super.onCreate(savedInstanceState);
 
         //sets the main layout of the activity
@@ -29,6 +33,9 @@ public class CalendarActivity extends Activity {
 
         //initializes the calendarview
         initializeCalendar();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     public void setTime(int day, int month, int year)
@@ -68,6 +75,22 @@ public class CalendarActivity extends Activity {
     public void goToCalendar( View view ) {
 
         Intent intent = new Intent(this, CalendarActivity.class);
+        intent.putExtra("username", extras.getString("username"));
         startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent goBack = new Intent(this, NavDrawerActivity.class);
+                goBack.putExtra("username", extras.getString("username"));
+                startActivity(goBack);
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
