@@ -619,6 +619,11 @@ public class NavDrawerActivity extends AppCompatActivity
                 Map<String,Object> members = (HashMap<String,Object>)dataSnapshot.child("members").getValue();
                 members.remove(userName);
 
+                //remove user from tasks
+                Map<String,Object> tasks = (HashMap)group.get("tasks");
+                tasks.remove(userName);
+                group.put("tasks", tasks);
+
                 int currentMembers = ((Long)dataSnapshot.child("num_users").getValue()).intValue();
                 if(currentMembers > 1) {
                     group.put("members", members);
