@@ -727,11 +727,16 @@ public class NavDrawerActivity extends AppCompatActivity
                 if( currentPending != user.isPending ) {
 
 
+                    // user has requested group and now has a group
                     if ( hasRequestedGroup && user.group ) {
 
+                        // check if this activity is not a background activity
                         if ( !isFinishing() ) {
+
+                            // update user object
                             currentPending = user_isPending;
 
+                            // display a message to the user that they have been accepted
                             Toast toast = Toast.makeText(NavDrawerActivity.this, "Welcome, You have been ACCEPTED! :D",
                                     Toast.LENGTH_SHORT);
                             toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
@@ -740,6 +745,7 @@ public class NavDrawerActivity extends AppCompatActivity
 
                     } else if ( hasRequestedGroup && !user.group ) {
 
+                        // check if this activity is not a background activity
                         if( !isFinishing() ) {
                             currentPending = user_isPending;
                             View v = findViewById(R.id.content_nav_drawer);

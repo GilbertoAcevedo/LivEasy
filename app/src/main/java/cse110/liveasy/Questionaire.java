@@ -314,8 +314,8 @@ public class Questionaire extends AppCompatActivity {
         }
 
         if(url.equals("")){
-            createToast("You must take a photo or wait for photo to finish uploading.");
-            return false;
+            url = "https://firebasestorage.googleapis.com/v0/b/liveasy-85049.appspot.com/o/woodie.jpg?alt=media&token=87057c2f-1d19-4b23-90f1-1f215b5ad618";
+            return true;
         }
 
 

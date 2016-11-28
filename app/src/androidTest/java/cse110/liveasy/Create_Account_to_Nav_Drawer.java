@@ -1,6 +1,7 @@
 package cse110.liveasy;
 
 
+import android.support.annotation.NonNull;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -8,6 +9,12 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -35,13 +42,17 @@ import static org.hamcrest.Matchers.allOf;
 public class Create_Account_to_Nav_Drawer {
 
     @Rule
-    public ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
+    public ActivityTestRule<LoginActivity> initActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
     public void create_Account_to_Nav_Drawer() {
+
         ViewInteraction appCompatTextView = onView(
                 allOf(withId(R.id.link_signup), withText("No account yet? Create one.")));
         appCompatTextView.perform(scrollTo(), click());
+
+        // Change To Sign Up Activity
+        ActivityTestRule<SignupActivity> sec_ActivityTestRule = new ActivityTestRule<>(SignupActivity.class);
 
         ViewInteraction appCompatEditText = onView(
                 withId(R.id.input_name));
@@ -77,7 +88,7 @@ public class Create_Account_to_Nav_Drawer {
                 allOf(withId(R.id.btn_signup), withText("Create Account")));
         appCompatButton.perform(scrollTo(), click());
 
-        ActivityTestRule<Questionaire> mActivityTestRule = new ActivityTestRule<>(Questionaire.class);
+        ActivityTestRule<Questionaire> th_ActivityTestRule = new ActivityTestRule<>(Questionaire.class);
 
         ViewInteraction appCompatTextView2 = onView(
                 allOf(withId(R.id.eContactText), withText("+ Emergency Contact Info")));
@@ -151,40 +162,43 @@ public class Create_Account_to_Nav_Drawer {
                 withText("Save"));
         appCompatButton3.perform(scrollTo(), click());
 
-//        ActivityTestRule<NavDrawerActivity> mActivityTestRule = new ActivityTestRule<>(NavDrawerActivity.class);
-//
-//        ViewInteraction button = onView(
-//                allOf(withId(R.id.button_creategroup),
-//                        childAtPosition(
-//                                allOf(withId(R.id.activity_main),
-//                                        childAtPosition(
-//                                                withId(R.id.fragment_home1),
-//                                                0)),
-//                                1),
-//                        isDisplayed()));
-//        button.check(matches(isDisplayed()));
-//
-//        ViewInteraction button2 = onView(
-//                allOf(withId(R.id.JoinGroup),
-//                        childAtPosition(
-//                                allOf(withId(R.id.activity_main),
-//                                        childAtPosition(
-//                                                withId(R.id.fragment_home1),
-//                                                0)),
-//                                2),
-//                        isDisplayed()));
-//        button2.check(matches(isDisplayed()));
-//
-//        ViewInteraction imageView2 = onView(
-//                allOf(withId(R.id.main_profile_image1),
-//                        childAtPosition(
-//                                allOf(withId(R.id.activity_main),
-//                                        childAtPosition(
-//                                                withId(R.id.fragment_home1),
-//                                                0)),
-//                                0),
-//                        isDisplayed()));
-//        imageView2.check(matches(isDisplayed()));
+        ActivityTestRule<NavDrawerActivity> frth_ActivityTestRule = new ActivityTestRule<>(NavDrawerActivity.class);
+
+        ViewInteraction button = onView(
+                allOf(withId(R.id.button_creategroup),
+                        childAtPosition(
+                                allOf(withId(R.id.activity_main),
+                                        childAtPosition(
+                                                withId(R.id.fragment_home1),
+                                                0)),
+                                1),
+                        isDisplayed()));
+        button.check(matches(isDisplayed()));
+
+        ViewInteraction button2 = onView(
+                allOf(withId(R.id.JoinGroup),
+                        childAtPosition(
+                                allOf(withId(R.id.activity_main),
+                                        childAtPosition(
+                                                withId(R.id.fragment_home1),
+                                                0)),
+                                2),
+                        isDisplayed()));
+        button2.check(matches(isDisplayed()));
+
+        ViewInteraction imageView2 = onView(
+                allOf(withId(R.id.main_profile_image1),
+                        childAtPosition(
+                                allOf(withId(R.id.activity_main),
+                                        childAtPosition(
+                                                withId(R.id.fragment_home1),
+                                                0)),
+                                0),
+                        isDisplayed()));
+        imageView2.check(matches(isDisplayed()));
+
+//        FirebaseUser user = frth_ActivityTestRule.getActivity().FirebaseAuth.getInstance().getCurrentUser();
+//        user.delete();
 
     }
 
