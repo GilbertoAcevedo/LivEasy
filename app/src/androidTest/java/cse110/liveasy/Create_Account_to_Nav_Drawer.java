@@ -5,7 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v7.app.AppCompatActivity;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -13,8 +15,11 @@ import android.view.ViewParent;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -40,6 +45,10 @@ import static org.hamcrest.Matchers.allOf;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class Create_Account_to_Nav_Drawer {
+
+    FirebaseAuth mAuth;
+
+    FirebaseAuth.AuthStateListener mAuthListener;
 
     @Rule
     public ActivityTestRule<LoginActivity> initActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
@@ -87,6 +96,17 @@ public class Create_Account_to_Nav_Drawer {
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.btn_signup), withText("Create Account")));
         appCompatButton.perform(scrollTo(), click());
+
+        /*** delete the user's account if account already exists ***/
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuth.signInWithEmailAndPassword("johndoe@example.com", "password");
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if( user != null )
+            user.delete();
+        /********************************************************/
 
         ActivityTestRule<Questionaire> th_ActivityTestRule = new ActivityTestRule<>(Questionaire.class);
 
@@ -158,48 +178,21 @@ public class Create_Account_to_Nav_Drawer {
                 allOf(withId(R.id.allergies_text), withText("- Allergies")));
         appCompatTextView8.perform(scrollTo(), click());
 
-        ViewInteraction appCompatButton3 = onView(
-                withText("Save"));
-        appCompatButton3.perform(scrollTo(), click());
+        /*** Ensure you delete the user's account before test ends ***/
 
-        ActivityTestRule<NavDrawerActivity> frth_ActivityTestRule = new ActivityTestRule<>(NavDrawerActivity.class);
+        mAuth = FirebaseAuth.getInstance();
 
-        ViewInteraction button = onView(
-                allOf(withId(R.id.button_creategroup),
-                        childAtPosition(
-                                allOf(withId(R.id.activity_main),
-                                        childAtPosition(
-                                                withId(R.id.fragment_home1),
-                                                0)),
-                                1),
-                        isDisplayed()));
-        button.check(matches(isDisplayed()));
+        mAuth.signInWithEmailAndPassword("johndoe@example.com", "password");
 
-        ViewInteraction button2 = onView(
-                allOf(withId(R.id.JoinGroup),
-                        childAtPosition(
-                                allOf(withId(R.id.activity_main),
-                                        childAtPosition(
-                                                withId(R.id.fragment_home1),
-                                                0)),
-                                2),
-                        isDisplayed()));
-        button2.check(matches(isDisplayed()));
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
-        ViewInteraction imageView2 = onView(
-                allOf(withId(R.id.main_profile_image1),
-                        childAtPosition(
-                                allOf(withId(R.id.activity_main),
-                                        childAtPosition(
-                                                withId(R.id.fragment_home1),
-                                                0)),
-                                0),
-                        isDisplayed()));
-        imageView2.check(matches(isDisplayed()));
+        if( user != null )
+            user.delete();
+        /*** ----------------------------------------------------- ***/
 
-//        FirebaseUser user = frth_ActivityTestRule.getActivity().FirebaseAuth.getInstance().getCurrentUser();
-//        user.delete();
-
+        // delete user's contents
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("users").child("johndoe").removeValue();
     }
 
     private static Matcher<View> childAtPosition(
@@ -220,4 +213,5 @@ public class Create_Account_to_Nav_Drawer {
             }
         };
     }
+
 }
