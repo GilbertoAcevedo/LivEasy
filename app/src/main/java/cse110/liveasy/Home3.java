@@ -29,13 +29,11 @@ public class Home3 extends Fragment {
                              Bundle savedInstanceState) {
         final View theView = inflater.inflate(R.layout.fragment_home3, container, false);
         String[] membersList = ((NavDrawerActivity)getActivity()).getMembers();
-
-
         final String[] roommateList = new String[(membersList.length) - 1];
-
         final String mainUser = ((NavDrawerActivity)getActivity()).username;
         Map<String, Object> group = ((NavDrawerActivity)getActivity()).group.members;
 
+        // loop through list of member and create a list without main user
         int j = 0;
         for (int i = 0; i < membersList.length; i++) {
             if (!membersList[i].equals(mainUser)) {
@@ -45,8 +43,10 @@ public class Home3 extends Fragment {
         }
 
         final Profile mainProfile = new Profile((Map<String, Object>) group.get(mainUser), mainUser);
-        CircleImageView selfie = (CircleImageView) theView.findViewById(R.id.main_profile_image3);
 
+        // set up main user's picutre and make it clickable to a popup
+        CircleImageView selfie = (CircleImageView) theView.findViewById(R.id.main_profile_image3);
+        // get picture
         Picasso.with((NavDrawerActivity)getContext())
                 .load(((NavDrawerActivity)getActivity()).user.photo_url)
                 .resize(200,200)
@@ -62,14 +62,14 @@ public class Home3 extends Fragment {
             }
         });
 
+        // loop through each member and set up their pictures according to each slot
         for (int index = 0; index < roommateList.length; index++) {
 
             Map<String, Object> currentMember = (Map <String, Object>)((NavDrawerActivity)getActivity()).group.members.get(roommateList[index]);
             final Profile newProfile = new Profile(currentMember, roommateList[index]);
             final String membersName = roommateList[index];
 
-            System.out.println("Photo URL:**** "+ newProfile.photo_url);
-
+            // switch case for each different slot
             switch(index) {
                 case 0:
                     CircleImageView memberSelfie = (CircleImageView) theView.findViewById(R.id.member_image_3_1);
@@ -112,6 +112,7 @@ public class Home3 extends Fragment {
 
         }
 
+        // set up the group image and make it clickable
         CircleImageView groupPic = (CircleImageView) theView.findViewById(R.id.group_image3);
         Picasso.with((NavDrawerActivity)getContext())
                 .load(((NavDrawerActivity)getActivity()).group.photo_url)

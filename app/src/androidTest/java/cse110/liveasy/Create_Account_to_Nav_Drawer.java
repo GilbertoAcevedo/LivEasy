@@ -1,13 +1,25 @@
 package cse110.liveasy;
 
 
+import android.support.annotation.NonNull;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v7.app.AppCompatActivity;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -30,18 +42,35 @@ import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
+/***
+ * Scenario
+ Given I am on the “Create Account” page
+ AND do not have an account yet
+ AND input all the necessary information
+ When I click “Create Account”
+ Then I will be taken to a questionnaire page to input information that my household members should know
+ ***/
+
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class Create_Account_to_Nav_Drawer {
 
+    FirebaseAuth mAuth;
+
+    FirebaseAuth.AuthStateListener mAuthListener;
+
     @Rule
-    public ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
+    public ActivityTestRule<LoginActivity> initActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
     public void create_Account_to_Nav_Drawer() {
+
         ViewInteraction appCompatTextView = onView(
                 allOf(withId(R.id.link_signup), withText("No account yet? Create one.")));
         appCompatTextView.perform(scrollTo(), click());
+
+        // Change To Sign Up Activity
+        ActivityTestRule<SignupActivity> sec_ActivityTestRule = new ActivityTestRule<>(SignupActivity.class);
 
         ViewInteraction appCompatEditText = onView(
                 withId(R.id.input_name));
@@ -77,7 +106,18 @@ public class Create_Account_to_Nav_Drawer {
                 allOf(withId(R.id.btn_signup), withText("Create Account")));
         appCompatButton.perform(scrollTo(), click());
 
-        ActivityTestRule<Questionaire> mActivityTestRule = new ActivityTestRule<>(Questionaire.class);
+        /*** delete the user's account if account already exists ***/
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuth.signInWithEmailAndPassword("johndoe@example.com", "password");
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if( user != null )
+            user.delete();
+        /********************************************************/
+
+        ActivityTestRule<Questionaire> th_ActivityTestRule = new ActivityTestRule<>(Questionaire.class);
 
         ViewInteraction appCompatTextView2 = onView(
                 allOf(withId(R.id.eContactText), withText("+ Emergency Contact Info")));
@@ -147,45 +187,21 @@ public class Create_Account_to_Nav_Drawer {
                 allOf(withId(R.id.allergies_text), withText("- Allergies")));
         appCompatTextView8.perform(scrollTo(), click());
 
-        ViewInteraction appCompatButton3 = onView(
-                withText("Save"));
-        appCompatButton3.perform(scrollTo(), click());
+        /*** Ensure you delete the user's account before test ends ***/
 
-//        ActivityTestRule<NavDrawerActivity> mActivityTestRule = new ActivityTestRule<>(NavDrawerActivity.class);
-//
-//        ViewInteraction button = onView(
-//                allOf(withId(R.id.button_creategroup),
-//                        childAtPosition(
-//                                allOf(withId(R.id.activity_main),
-//                                        childAtPosition(
-//                                                withId(R.id.fragment_home1),
-//                                                0)),
-//                                1),
-//                        isDisplayed()));
-//        button.check(matches(isDisplayed()));
-//
-//        ViewInteraction button2 = onView(
-//                allOf(withId(R.id.JoinGroup),
-//                        childAtPosition(
-//                                allOf(withId(R.id.activity_main),
-//                                        childAtPosition(
-//                                                withId(R.id.fragment_home1),
-//                                                0)),
-//                                2),
-//                        isDisplayed()));
-//        button2.check(matches(isDisplayed()));
-//
-//        ViewInteraction imageView2 = onView(
-//                allOf(withId(R.id.main_profile_image1),
-//                        childAtPosition(
-//                                allOf(withId(R.id.activity_main),
-//                                        childAtPosition(
-//                                                withId(R.id.fragment_home1),
-//                                                0)),
-//                                0),
-//                        isDisplayed()));
-//        imageView2.check(matches(isDisplayed()));
+        mAuth = FirebaseAuth.getInstance();
 
+        mAuth.signInWithEmailAndPassword("johndoe@example.com", "password");
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if( user != null )
+            user.delete();
+        /*** ----------------------------------------------------- ***/
+
+        // delete user's contents
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("users").child("johndoe").removeValue();
     }
 
     private static Matcher<View> childAtPosition(
@@ -206,4 +222,5 @@ public class Create_Account_to_Nav_Drawer {
             }
         };
     }
+
 }

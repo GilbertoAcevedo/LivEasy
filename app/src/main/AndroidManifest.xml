@@ -37,10 +37,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Welcome"
-            android:noHistory="true"
-            android:theme="@style/noActionBar" />
-        <activity
             android:name=".LoginActivity"
             android:noHistory="true"
             android:theme="@style/AppTheme.Dark" />
@@ -82,7 +78,6 @@
             android:noHistory="true" />
         <activity
             android:name=".Questionaire"
-            android:configChanges="orientation|screenSize|screenLayout"
             android:label="Set Up Profile"
             android:screenOrientation="portrait">
         </activity>
@@ -103,6 +98,10 @@
             android:name=".RemoveUserFromGroup"
             android:label="Remove Members from Group"
             android:noHistory="true">
+        </activity>
+        <activity
+            android:name=".CalendarActivity"
+            android:label="View Calendar" >
         </activity>
     </application>
 

@@ -61,12 +61,14 @@ public class Questionaire extends AppCompatActivity {
     public static final int MY_PERMISSIONS_REQUEST_WRITE = 1;
     public static final int MY_PERMISSIONS_REQUEST_READ = 2;
 
-
+    //Flags to manage custom collapsable views
     Boolean contactIsOpen = false;
     Boolean aboutMeIsOpen = false;
     Boolean preferenceIsOpen = false;
     Boolean petPeevesIsOpen = false;
     Boolean allergiesIsOpen = false;
+
+    //bunle passed in through intent
     Bundle extras;
 
 
@@ -92,6 +94,7 @@ public class Questionaire extends AppCompatActivity {
 
         extras = getIntent().getExtras();
 
+        //Collect all subtitle views
         TextView eContactText = (TextView)findViewById(R.id.eContactText);
         eContactText.setText("+ Emergency Contact Info");
 
@@ -109,7 +112,7 @@ public class Questionaire extends AppCompatActivity {
 
 
 
-
+        //Collect all linear layouts for input and hide them
         LinearLayout contactLayout = (LinearLayout)findViewById(R.id.contact_layout);
         contactLayout.setVisibility(LinearLayout.GONE);
 
@@ -314,8 +317,8 @@ public class Questionaire extends AppCompatActivity {
         }
 
         if(url.equals("")){
-            createToast("You must take a photo or wait for photo to finish uploading.");
-            return false;
+            url = "https://firebasestorage.googleapis.com/v0/b/liveasy-85049.appspot.com/o/woodie.jpg?alt=media&token=87057c2f-1d19-4b23-90f1-1f215b5ad618";
+            return true;
         }
 
 
@@ -334,6 +337,7 @@ public class Questionaire extends AppCompatActivity {
     }
 
 
+    /** Change status of contact **/
     public void toggleContact(View view){
         closeAll("contact");
         LinearLayout contactLayout = (LinearLayout)findViewById(R.id.contact_layout);
@@ -352,6 +356,7 @@ public class Questionaire extends AppCompatActivity {
         }
     }
 
+    /** change status of about me **/
     public void toggleAboutMe(View view){
         closeAll("about_me");
         LinearLayout aboutMeLayout = (LinearLayout)findViewById(R.id.about_me_layout);
@@ -370,6 +375,7 @@ public class Questionaire extends AppCompatActivity {
         }
     }
 
+    /** change status of preferences **/
     public void togglePreferences(View view){
         closeAll("preferences");
         RelativeLayout preferencesLayout = (RelativeLayout) findViewById(R.id.questionnaire_checkboxes);
@@ -388,6 +394,7 @@ public class Questionaire extends AppCompatActivity {
         }
     }
 
+    /** change status of pet peeves **/
     public void togglePetPeeves(View view){
         closeAll("pet_peeves");
         LinearLayout petPeevesLayout = (LinearLayout) findViewById(R.id.pet_peeve_layout);
@@ -406,6 +413,7 @@ public class Questionaire extends AppCompatActivity {
         }
     }
 
+    /** change status of allergies **/
     public void toggleAllergies(View view){
         closeAll("allergies");
         LinearLayout allergiesLayout = (LinearLayout) findViewById(R.id.allergies_layout);
@@ -424,6 +432,11 @@ public class Questionaire extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * Collapse all layouts except for the exception
+     * @param exception which category will not be collapsed
+     */
     public void closeAll(String exception){
         if(!exception.equals("contact")) {
             LinearLayout contactLayout = (LinearLayout) findViewById(R.id.contact_layout);

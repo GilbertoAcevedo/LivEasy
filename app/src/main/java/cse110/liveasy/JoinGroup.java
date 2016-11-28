@@ -35,20 +35,31 @@ public class JoinGroup extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_group);
+
+        //grab username passed in with the intent
         Bundle extras = getIntent().getExtras();
         username = extras.get("username").toString();
         }
 
+    /**
+     * Override this method so that pressing back does nothing
+     */
     @Override
     public void onBackPressed(){
 
     }
 
+    /**
+     * Will attempt to add the current user to the group specified by the key passed
+     * in through the EditText
+     * @param view context
+     */
     public void joinGroup(View view) {
-
+        //grab the EditText with the user key typed in
         EditText editText = (EditText) findViewById(R.id.editText6);
         final String groupKey = editText.getText().toString();
 
+        //database reference
         FirebaseDatabase ref = FirebaseDatabase.getInstance();
         final DatabaseReference gRef = ref.getReference().child("groups");
 
@@ -59,9 +70,10 @@ public class JoinGroup extends AppCompatActivity {
         ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 //if key is valid
-                System.out.println("before if statement");
                 if(!groupKey.equals("") && (Boolean)dataSnapshot.hasChild(groupKey)){
+
                     //add to pending in group
                     System.out.println("in if statement");
                     ArrayList<String> current = (ArrayList<String>) dataSnapshot.child(groupKey).child("pending").getValue();
@@ -71,6 +83,7 @@ public class JoinGroup extends AppCompatActivity {
                     Map<String, Object> user_pending = new HashMap<String, Object>();
                     user_pending.put("/isPending/", new Boolean(true));
                     uRef.updateChildren(user_pending);
+
 
                     // flag user as they requested
                     Map<String, Object> user_requested_group = new HashMap<String, Object>();
@@ -85,6 +98,8 @@ public class JoinGroup extends AppCompatActivity {
                     LinearLayout layout = new LinearLayout(context);
                     layout.setOrientation(LinearLayout.VERTICAL);
 
+
+                    //TextView for the success method
                     TextView message = new TextView(tempView.getContext());
                     message.setText("Your request has been sent to join the group!");
                     message.setTextSize(17);
@@ -92,6 +107,8 @@ public class JoinGroup extends AppCompatActivity {
 
                     layout.addView(message);
 
+
+                    //Create alert dialog that will tell the user a request has been sent
                     AlertDialog.Builder builder = new AlertDialog.Builder(JoinGroup.this);
                     builder.setView(layout);
                     builder.setTitle("Request Sent");
@@ -115,7 +132,7 @@ public class JoinGroup extends AppCompatActivity {
                     });
                     builder.create().show();
                 }
-                //re-enter key
+                //re-enter key if it is not valid
                 else{
                     Toast toast = Toast.makeText(JoinGroup.this, "Invalid Key, Please Re-Enter",
                             Toast.LENGTH_SHORT);
@@ -134,6 +151,11 @@ public class JoinGroup extends AppCompatActivity {
 
     }
 
+    /**
+     * Cancel and go back to the home page
+     *
+     * @param view context
+     */
     public void cancelJoinGroup(View view){
         Intent goBacktoMain = new Intent(this, NavDrawerActivity.class);
         goBacktoMain.putExtra("username", username);

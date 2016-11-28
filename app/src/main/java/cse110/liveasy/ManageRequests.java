@@ -44,17 +44,17 @@ public class ManageRequests extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_requests);
 
+        //place a back button on the top right of the screen
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        extras = getIntent().getExtras();
-        for (String key : extras.keySet())
-        {
-            System.out.println(key + " = \"" + extras.get(key) + "\"");
-        }
 
+        extras = getIntent().getExtras();
+
+        //get pending list passed in through activty
         listItems = extras.getStringArrayList("pending");
 
+        //linear layout to hold pending requests
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
 
@@ -67,10 +67,12 @@ public class ManageRequests extends AppCompatActivity {
 
         layout.addView(title);
 
+        //iterate through pending requests
         for( int index = 1; index < listItems.size(); index++ ) {
 
             final LinearLayout inner_layout = new LinearLayout(this);
 
+            //text view for pending user
             TextView user = new TextView(this);
             user.setText(listItems.get(index));
             user.setTextSize(15);
@@ -87,8 +89,10 @@ public class ManageRequests extends AppCompatActivity {
 
             final String currentUsername = listItems.get(index);
 
+            //accept button
             Button accept = new Button(this);
             accept.setText("Accept");
+            accept.setBackgroundResource(R.drawable.btn_accept_background);
             accept.setLayoutParams(button_param);
             accept.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -179,6 +183,7 @@ public class ManageRequests extends AppCompatActivity {
 
             Button reject =  new Button(this);
             reject.setText("Reject");
+            reject.setBackgroundResource(R.drawable.btn_reject_background);
             reject.setLayoutParams(button_param);
             reject.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -251,12 +256,13 @@ public class ManageRequests extends AppCompatActivity {
         }
 
 
-
         setContentView(layout);
-
-
     }
 
+
+    /**
+     * Switch case for options selected (for pressing the back button on the top right)
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -266,12 +272,15 @@ public class ManageRequests extends AppCompatActivity {
                 goBack.putExtra("username", (String)extras.get("username"));
                 startActivity(goBack);
                 finish();
-                //NavUtils.navigateUpTo(this, goBack);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+
+    /**
+     * Override this method so the activity does nothing when back button is pressed
+     */
     @Override
     public void onBackPressed(){
 

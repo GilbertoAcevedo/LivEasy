@@ -42,9 +42,10 @@
             android:layout_below="@+id/editText6"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:textSize="18sp"
-            android:textAllCaps="false"
-            android:onClick="joinGroup" />
+            android:onClick="joinGroup"
+            android:background="@drawable/button_background"
+            android:textColor="@color/white"
+            android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse" />
 
         <Button
             android:text="Cancel"
@@ -54,9 +55,11 @@
             android:layout_below="@+id/button9"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:textSize="18sp"
-            android:textAllCaps="false"
-            android:onClick="cancelJoinGroup"/>
+            android:onClick="cancelJoinGroup"
+            android:background="@drawable/button_background"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"
+            android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse" />
 
     </LinearLayout>
 
