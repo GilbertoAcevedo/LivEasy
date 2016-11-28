@@ -19,7 +19,10 @@
         android:layout_alignParentEnd="true"
         android:layout_marginRight="21dp"
         android:layout_marginEnd="21dp"
-        android:id="@+id/send_msg_btn" />
+        android:id="@+id/send_msg_btn"
+        android:background="@drawable/button_background"
+        android:textColor="@color/white"
+        android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse" />
 
     <EditText
         android:layout_width="wrap_content"

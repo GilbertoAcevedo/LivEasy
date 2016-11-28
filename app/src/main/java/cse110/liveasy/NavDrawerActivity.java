@@ -324,8 +324,13 @@ public class NavDrawerActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.go_to_calendar) {
+            Intent goToCalendar = new Intent(this, CalendarActivity.class);
+            goToCalendar.putExtra("username", username);
+            goToCalendar.putExtra("group_id", user.groupID);
+            removeAllListeners();
+            startActivity(goToCalendar);
+            finish();
         }
 
         return super.onOptionsItemSelected(item);

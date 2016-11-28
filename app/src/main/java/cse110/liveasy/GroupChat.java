@@ -257,10 +257,7 @@ public class GroupChat extends AppCompatActivity {
      */
     @Override
     public void onBackPressed(){
-        Intent goBack = new Intent(this, NavDrawerActivity.class);
-        goBack.putExtra("username", username);
-        startActivity(goBack);
-        finish();
+
     }
 
 

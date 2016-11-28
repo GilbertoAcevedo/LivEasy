@@ -8,6 +8,17 @@
     <color name="primary">#E43F3F</color>
     <color name="primary_dark">#E12929</color>
     <color name="primary_darker">#035BA9</color>
+    <color name="primary_darker_click">#033fa8</color>
+
+    <color name="accept_color">#03a80e</color>
+    <color name="accept_color_click">#027c0a</color>
+
+    <color name="reject_color">#e80404</color>
+    <color name="reject_color_click">#c40101</color>
+
+    <color name="light_blue">#BBCFE6</color>
+
+
     <color name="accent">#FFFFFF</color>
 
     <color name="black">#000000</color>

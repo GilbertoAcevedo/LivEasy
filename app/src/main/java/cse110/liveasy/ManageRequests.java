@@ -89,6 +89,7 @@ public class ManageRequests extends AppCompatActivity {
 
             Button accept = new Button(this);
             accept.setText("Accept");
+            accept.setBackgroundResource(R.drawable.btn_accept_background);
             accept.setLayoutParams(button_param);
             accept.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -179,6 +180,7 @@ public class ManageRequests extends AppCompatActivity {
 
             Button reject =  new Button(this);
             reject.setText("Reject");
+            reject.setBackgroundResource(R.drawable.btn_reject_background);
             reject.setLayoutParams(button_param);
             reject.setOnClickListener(new View.OnClickListener() {
                 @Override
