@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.renderscript.Sampler;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ public class TaskActivity extends AppCompatActivity {
     public ValueEventListener refreshListener;
     public Boolean hasRefreshButton = false;
     public Boolean needsRefreshButton = false;
+    public Boolean refreshButtonAdded = false;
 
 
     @Override
@@ -55,25 +57,40 @@ public class TaskActivity extends AppCompatActivity {
         this.groupID = extras.getString("group_id");
         this.members = (HashMap<String, Object>)extras.get("members");
         this.user = extras.getString("username");
-        ref = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID).child("tasks");
+        if(!this.groupID.equals("") && !this.groupID.equals("requested")) {
+            ref = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID).child("tasks");
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        layout = (LinearLayout)findViewById(R.id.task_layout);
+            layout = (LinearLayout) findViewById(R.id.task_layout);
 
-        TextView title = new TextView(this);
-        title.setText("Tasks");
-        title.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
-        title.setTextSize(18);
-        title.setPadding(0,15,0,0);
-        title.setTypeface(title.getTypeface(), Typeface.BOLD);
+            TextView title = new TextView(this);
+            title.setText("Tasks");
+            title.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+            title.setTextSize(18);
+            title.setPadding(0, 15, 0, 0);
+            title.setTypeface(title.getTypeface(), Typeface.BOLD);
 
-        layout.addView(title);
+            layout.addView(title);
 
 
-        populateLayout(layout);
-        startRefreshListener();
+            populateLayout(layout);
+            startRefreshListener();
+        }
+        else{
+            layout = (LinearLayout) findViewById(R.id.task_layout);
+
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+            TextView noGroupText = new TextView(this);
+            noGroupText.setText("You are not in a group yet.");
+            noGroupText.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+            noGroupText.setPadding(0, 200, 0, 0);
+            noGroupText.setTextSize(28);
+            layout.addView(noGroupText);
+        }
     }
 
 
@@ -84,10 +101,16 @@ public class TaskActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String,Object> tempMembers = members;
+                boolean singleUserFlag = false;
+                if(tempMembers.size() == 1){
+                    //there is only one person in the group in this case
+                    singleUserFlag = true;
+                }
                 tempMembers.remove(user);
                 Iterator it = tempMembers.entrySet().iterator();
                 boolean notUser = false;
-                while (it.hasNext()) {
+                while (it.hasNext() || singleUserFlag) {
+                    singleUserFlag = false;
                     String currUser;
                     if(notUser) {
                         Map.Entry pair = (Map.Entry) it.next();
@@ -238,28 +261,37 @@ public class TaskActivity extends AppCompatActivity {
 
 
     public void addTask(String username, String task){
-        final DatabaseReference tasksRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID).child("tasks");
-        final String tempUsername = username;
-        final String tempTask = task;
+        if(!task.equals("")) {
+            final DatabaseReference tasksRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID).child("tasks");
+            final String tempUsername = username;
+            final String tempTask = task;
 
-        ValueEventListener listener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<String> tasks = (ArrayList<String>)dataSnapshot.child(tempUsername).getValue();
-                tasks.add(tempTask);
-                Map<String,Object> map = new HashMap<>();
-                map.put(tempUsername, tasks);
-                tasksRef.updateChildren(map);
-                restartActivity();
-            }
+            ValueEventListener listener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    ArrayList<String> tasks = (ArrayList<String>) dataSnapshot.child(tempUsername).getValue();
+                    tasks.add(tempTask);
+                    Map<String, Object> map = new HashMap<>();
+                    map.put(tempUsername, tasks);
+                    tasksRef.updateChildren(map);
+                    restartActivity();
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        };
-        tasksRef.addListenerForSingleValueEvent(listener);
-        tasksRef.removeEventListener(listener);
+                }
+            };
+            tasksRef.addListenerForSingleValueEvent(listener);
+            tasksRef.removeEventListener(listener);
+        }
+        else{
+            Toast toast = Toast.makeText(TaskActivity.this, "Cannot create empty task.",
+                    Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER,0,0);
+            toast.show();
+
+        }
     }
 
 
@@ -298,7 +330,9 @@ public class TaskActivity extends AppCompatActivity {
             case android.R.id.home:
                 Intent goBack = new Intent(this, NavDrawerActivity.class);
                 goBack.putExtra("username", (String)extras.get("username"));
-                stopRefreshListener();
+                if(!this.groupID.equals("") && !this.groupID.equals("requested")) {
+                    stopRefreshListener();
+                }
                 startActivity(goBack);
                 finish();
                 return true;
@@ -350,21 +384,24 @@ public class TaskActivity extends AppCompatActivity {
         ref.removeEventListener(refreshListener);
     }
 
-    public void addRefreshButton(){
-        LinearLayout buttonLayout = new LinearLayout(this);
-        buttonLayout.setPadding(16,16,16,16);
+    public void addRefreshButton() {
+        if (!refreshButtonAdded) {
+            LinearLayout buttonLayout = new LinearLayout(this);
+            buttonLayout.setPadding(16, 16, 16, 16);
 
-        Button button = new Button(this);
-        button.setText("Refresh");
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                restartActivity();
-            }
-        });
+            Button button = new Button(this);
+            button.setText("Refresh");
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    restartActivity();
+                }
+            });
 
-        buttonLayout.addView(button);
+            buttonLayout.addView(button);
 
-        layout.addView(buttonLayout);
+            layout.addView(buttonLayout);
+            refreshButtonAdded = true;
+        }
     }
 }
