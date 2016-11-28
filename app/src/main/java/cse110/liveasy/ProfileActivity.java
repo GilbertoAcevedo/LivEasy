@@ -68,11 +68,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+// Source: https://github.com/hdodenhof/CircleImageView
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
 
     Bundle extras;
+
+    // Profile fields
     String originalPhoneNumber;
     String changedPhoneNumber;
     String originalEmail;
@@ -87,22 +90,17 @@ public class ProfileActivity extends AppCompatActivity {
     String changedeName;
     String originalePhone;
     String changedePhone;
+    boolean canEdit = false;
+    boolean changeFlag = false;
+    Map<String, Object> userMap;
 
-
-
-    // Spinner flags
+    // Spinner fields
     boolean smokingSpinnerFlag = false;
     boolean drinkingSpinnerFlag = false;
     boolean petsSpinnerFlag = false;
     boolean guestsSpinnerFlag = false;
 
-    boolean canEdit = false;
-    boolean changeFlag = false;
-
-    Map<String, Object> userMap;
-
-    private Button mTakePhoto;
-    private ImageView mImageView;
+    // Camera fields
     private static final String TAG = "upload";
     static final int REQUEST_TAKE_PHOTO = 1;
     String mCurrentPhotoPath;
@@ -110,9 +108,7 @@ public class ProfileActivity extends AppCompatActivity {
     File photoFile = null;
     Bitmap bitmap = null;
     Boolean changedPic = false;
-
     ProgressDialog progressDialog;
-
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 0;
     public static final int MY_PERMISSIONS_REQUEST_WRITE = 1;
     public static final int MY_PERMISSIONS_REQUEST_READ = 2;
@@ -123,16 +119,13 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        //final View theView = findViewById(R.id.profile_activity);
-
         extras = getIntent().getExtras();
         String memberName = (String) extras.get("memberName");
         String userName = (String) extras.get("username");
         changeFlag = false;
 
-
-
         // Initialize Spinners
+        // Tutorial: http://stackoverflow.com/questions/13377361/how-to-create-a-drop-down-list
         final Spinner smokingspinner = (Spinner) findViewById(R.id.smoking_spinner);
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.Options, android.R.layout.simple_spinner_item);
@@ -181,15 +174,14 @@ public class ProfileActivity extends AppCompatActivity {
             guestspinner.setVisibility(View.GONE);
         }
 
-
-
+        // Init support bar
         getSupportActionBar().setTitle(memberName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        // Populate profile
         final FirebaseDatabase ref = FirebaseDatabase.getInstance();
         final DatabaseReference uRef = ref.getReference().child("users").child(memberName);
-
         ValueEventListener userListener = new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
@@ -198,8 +190,9 @@ public class ProfileActivity extends AppCompatActivity {
                 userMap = currentUserMap;
                 changeFlag = false;
 
-                System.out.println((String)currentUserMap.get("photo_url"));
+                //System.out.println((String)currentUserMap.get("photo_url"));
 
+                // Populate profile selfie
                 CircleImageView selfie = (CircleImageView) findViewById(R.id.profile_image);
                 Picasso.with(ProfileActivity.this)
                         .load((String)currentUserMap.get("photo_url"))
@@ -208,24 +201,29 @@ public class ProfileActivity extends AppCompatActivity {
                         .placeholder(R.drawable.blank)
                         .into(selfie);
 
+                // Populate phone info
                 TextView phone = (TextView) findViewById(R.id.main_profile_number);
                 String formattedNumber = PhoneNumberUtils.formatNumber((String) currentUserMap.get("phone_number"), "US");
                 originalPhoneNumber = formattedNumber;
                 phone.setText(formattedNumber);
 
-
+                // Populate email info
                 TextView email = (TextView) findViewById(R.id.main_profile_email);
                 email.setText((String) currentUserMap.get("email"));
                 originalEmail = (String) currentUserMap.get("email");
 
+                // Populate about me section
                 TextView aboutMe = (TextView) findViewById(R.id.about_me1);
                 aboutMe.setText((String) currentUserMap.get("about_me"));
                 originalbio = aboutMe.getText().toString();
 
+                // Populate allergies section
                 TextView allergies = (TextView) findViewById(R.id.allergies1);
                 allergies.setText((String) currentUserMap.get("allergies"));
                 originalAllergies = allergies.getText().toString();
 
+                // Populate drinking spinner
+                // Tutorial: http://stackoverflow.com/questions/2390102/how-to-set-selected-item-of-spinner-by-value-not-by-position
                 TextView drinking = (TextView) findViewById(R.id.drinking1);
                 if ((boolean)currentUserMap.get("drinking")) {
                     drinkingspinner.setSelection(drinkingadapter.getPosition("I am OK with it"));
@@ -238,6 +236,7 @@ public class ProfileActivity extends AppCompatActivity {
                     drinking.setText("I am NOT ok with it");
                 }
 
+                // Populate smoking spinner
                 TextView smoking = (TextView) findViewById(R.id.smoking1);
                 if ((boolean)currentUserMap.get("smoking")) {
                     smokingspinner.setSelection(adapter.getPosition("I am OK with it"));
@@ -250,6 +249,7 @@ public class ProfileActivity extends AppCompatActivity {
                     smoking.setText("I am NOT ok with it");
                 }
 
+                // Populate pets spinner
                 TextView pets = (TextView) findViewById(R.id.pets1);
                 if ((boolean)currentUserMap.get("pets")) {
                     petspinner.setSelection(petsadapter.getPosition("I am OK with it"));
@@ -262,6 +262,7 @@ public class ProfileActivity extends AppCompatActivity {
                     pets.setText("I am NOT ok with it");
                 }
 
+                // Populate guests spinner
                 TextView guests = (TextView) findViewById(R.id.guests1);
                 if ((boolean)currentUserMap.get("guests")) {
                     guestspinner.setSelection(guestadapter.getPosition("I am OK with it"));
@@ -274,21 +275,21 @@ public class ProfileActivity extends AppCompatActivity {
                     guests.setText("I am NOT ok with it");
                 }
 
+                // Populate pet peeves
                 TextView petpeeves = (TextView) findViewById(R.id.pet_peeves);
                 petpeeves.setText((String) currentUserMap.get("pet_peeves"));
                 originalPetPeeves = petpeeves.getText().toString();
 
+                // Populate emergency contact name
                 TextView e_contact_name = (TextView) findViewById(R.id.e_contact_name);
                 e_contact_name.setText(((String)currentUserMap.get("e_contact_name")));
                 originaleName = e_contact_name.getText().toString();
 
+                // Populate emergency contact phone
                 TextView e_contact_phone_numbers = (TextView) findViewById(R.id.e_contact_phone);
                 String formattedNumber1 = PhoneNumberUtils.formatNumber((String) currentUserMap.get("e_contact_phone_number"), "US");
                 e_contact_phone_numbers.setText(formattedNumber1);
                 originalePhone = e_contact_phone_numbers.getText().toString();
-
-                //TextView e_contact_relationship = (TextView) findViewById(R.id.e_contact_relationship);
-                //e_contact_relationship.setText((String) currentUserMap.get("e_contact_relationship"));
             }
 
             @Override
@@ -299,20 +300,19 @@ public class ProfileActivity extends AppCompatActivity {
         uRef.addListenerForSingleValueEvent(userListener);
         uRef.removeEventListener(userListener);
 
+        // Only set the edit listeners if the profile belongs to the current user
         if(canEdit) {
 
-            //set listener for selfie image
+            // Set listener for profile selfie
             CircleImageView selfie = (CircleImageView) findViewById(R.id.profile_image);
             selfie.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
 
+                    // Check permissions before accessing camera
                     readPermission();
-
                     writePermission();
-
                     cameraPermission();
-
 
                     return false;
                 }
@@ -322,9 +322,7 @@ public class ProfileActivity extends AppCompatActivity {
             final TextView phoneNumber = (TextView) findViewById(R.id.main_profile_number);
             final TextView phoneNumberType = (TextView) findViewById(R.id.phone_type);
             final EditText editphoneNumber = (EditText) findViewById(R.id.phone_edit_text);
-
             originalPhoneNumber = phoneNumber.getText().toString();
-
             phoneNumber.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -379,11 +377,11 @@ public class ProfileActivity extends AppCompatActivity {
             });
 
 
+
             // Set email text view listener
             final TextView email  = (TextView) findViewById(R.id.main_profile_email);
             final TextView emailType = (TextView) findViewById(R.id.email_type);
             final EditText editEmail = (EditText) findViewById(R.id.email_edit);
-
             email.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -442,7 +440,6 @@ public class ProfileActivity extends AppCompatActivity {
             // Set About Me listener
             final TextView bio  = (TextView) findViewById(R.id.about_me1);
             final EditText editbio = (EditText) findViewById(R.id.edit_bio);
-
             bio.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -490,11 +487,9 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
-
             // Set allergies text view listener
             final TextView allergies = (TextView) findViewById(R.id.allergies1);
             final EditText edit_allergies  = (EditText) findViewById(R.id.edit_allergies);
-
             allergies.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -542,10 +537,8 @@ public class ProfileActivity extends AppCompatActivity {
 
 
             // Set Pet Peeves View Listener
-
             final TextView petPeeves  = (TextView) findViewById(R.id.pet_peeves);
             final EditText editPetPeeves = (EditText) findViewById(R.id.edit_petPeeves);
-
             petPeeves.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -590,11 +583,11 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
 
-            // Set E Contact Name Listener
 
+
+            // Set E Contact Name Listener
             final TextView eName  = (TextView) findViewById(R.id.e_contact_name);
             final EditText editeName = (EditText) findViewById(R.id.edit_contact_name);
-
             eName.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -639,11 +632,11 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
 
-            // Set E Contact Phone Listener
 
+
+            // Set E Contact Phone Listener
             final TextView ePhone  = (TextView) findViewById(R.id.e_contact_phone);
             final EditText editePhone = (EditText) findViewById(R.id.edit_contact_phone);
-
             ePhone.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -696,6 +689,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
             // Set Spinner Listeners
+            // Tutorial: https://www.tutorialspoint.com/android/android_spinner_control.htm
             smokingspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -792,7 +786,8 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
     }
-    @Override
+
+    // Use nav drawer to exit profile and prompt user if they want their changes saved
     public boolean onOptionsItemSelected(MenuItem item)
     {
         switch (item.getItemId()) {
@@ -844,9 +839,91 @@ public class ProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Use back button to exit profile and prompt user if they want their changes saved
+    public void onBackPressed() {
+        if (changeFlag == true && canEdit) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Would you like to save changes made?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            uploadData();
+                            if(changedPic == true){
+                                progressDialog = new ProgressDialog(ProfileActivity.this,
+                                        R.style.AppTheme_Dark_Dialog);
+                                progressDialog.setIndeterminate(true);
+                                progressDialog.setMessage("Uploading picture...");
+                                progressDialog.show();
+                                uploadPicAndJump();
+                            }
+                            else{
+                                changeFlag = false;
+                                Intent goBack = new Intent(ProfileActivity.this, NavDrawerActivity.class);
+                                goBack.putExtra("username", (String) extras.get("username"));
+                                startActivity(goBack);
+                                finish();
+                            }
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent goBack = new Intent(ProfileActivity.this, NavDrawerActivity.class);
+                            goBack.putExtra("username", (String) extras.get("username"));
+                            startActivity(goBack);
+                            finish();
+                        }
+                    });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+        } else {
+            Intent goBack = new Intent(this, NavDrawerActivity.class);
+            goBack.putExtra("username", (String) extras.get("username"));
+            startActivity(goBack);
+            finish();
+        }
+    }
+
+    // This is called when the user clicks on the Save Changes button
+    public void onSaveChangesPressed(View v) {
+        System.out.println("In method onSaveChangesPressed.");
+        if(changeFlag == true && canEdit) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Would you like to save changes made?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            uploadData();
+                            changeFlag = false;
+                            if(changedPic == true){
+                                progressDialog = new ProgressDialog(ProfileActivity.this,
+                                        R.style.AppTheme_Dark_Dialog);
+                                progressDialog.setIndeterminate(true);
+                                progressDialog.setMessage("Uploading picture...");
+                                progressDialog.show();
+                                uploadPic();
+                                changedPic = false;
+                            }
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+        else{
+            Toast toast = Toast.makeText(ProfileActivity.this, "No changes have been made.",
+                    Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
+            toast.show();
+        }
+    }
+
+    // Save profile changes to database
     public void uploadData()
     {
-        //uploading...
+        // Uploading...
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference().child("users").child(extras.getString("username"));
 
@@ -888,8 +965,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+    // Save profile picture changes to the database
     public void uploadPic(){
-        //uploading...
+
+        // Uploading...
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference ref = database.getReference().child("users").child(extras.getString("username"));
 
@@ -934,8 +1013,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+    // Save profile picture changes to the database and exit profile
     public void uploadPicAndJump(){
-        //uploading...
+
+        // Uploading...
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference ref = database.getReference().child("users").child(extras.getString("username"));
 
@@ -983,91 +1064,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
-
-    public void onSaveChangesPressed(View v) {
-        System.out.println("In method onSaveChangesPressed.");
-        if(changeFlag == true && canEdit) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Would you like to save changes made?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            uploadData();
-                            changeFlag = false;
-                            if(changedPic == true){
-                                progressDialog = new ProgressDialog(ProfileActivity.this,
-                                        R.style.AppTheme_Dark_Dialog);
-                                progressDialog.setIndeterminate(true);
-                                progressDialog.setMessage("Uploading picture...");
-                                progressDialog.show();
-                                uploadPic();
-                                changedPic = false;
-                            }
-                            //finish();
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            //finish();
-                        }
-                    });
-
-            AlertDialog alert = builder.create();
-            alert.show();
-        }
-        else{
-            Toast toast = Toast.makeText(ProfileActivity.this, "No changes have been made.",
-                    Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
-            toast.show();
-            //finish();
-        }
-
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (changeFlag == true && canEdit) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Would you like to save changes made?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            uploadData();
-                            if(changedPic == true){
-                                progressDialog = new ProgressDialog(ProfileActivity.this,
-                                        R.style.AppTheme_Dark_Dialog);
-                                progressDialog.setIndeterminate(true);
-                                progressDialog.setMessage("Uploading picture...");
-                                progressDialog.show();
-                                uploadPicAndJump();
-                            }
-                            else{
-                                changeFlag = false;
-                                Intent goBack = new Intent(ProfileActivity.this, NavDrawerActivity.class);
-                                goBack.putExtra("username", (String) extras.get("username"));
-                                startActivity(goBack);
-                                finish();
-                            }
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            Intent goBack = new Intent(ProfileActivity.this, NavDrawerActivity.class);
-                            goBack.putExtra("username", (String) extras.get("username"));
-                            startActivity(goBack);
-                            finish();
-                        }
-                    });
-
-            AlertDialog alert = builder.create();
-            alert.show();
-        } else {
-            Intent goBack = new Intent(this, NavDrawerActivity.class);
-            goBack.putExtra("username", (String) extras.get("username"));
-            startActivity(goBack);
-            finish();
-        }
-    }
-
 
     // Picture Taking functionality
     private void dispatchTakePictureIntent() {
