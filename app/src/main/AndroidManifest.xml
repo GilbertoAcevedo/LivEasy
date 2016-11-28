@@ -16,6 +16,7 @@
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
 
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -35,10 +36,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Welcome"
-            android:noHistory="true"
-            android:theme="@style/noActionBar" />
         <activity
             android:name=".LoginActivity"
             android:noHistory="true"
@@ -82,8 +79,7 @@
         <activity
             android:name=".Questionaire"
             android:label="Set Up Profile"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|screenSize|screenLayout">
+            android:screenOrientation="portrait">
         </activity>
 
         <activity
@@ -97,7 +93,16 @@
             android:name=".ShareGroupCode"
             android:label="Group Code"
             android:noHistory="true" />
-        <activity android:name=".GroupChat"></activity>
+        <activity android:name=".GroupChat" />
+        <activity
+            android:name=".RemoveUserFromGroup"
+            android:label="Remove Members from Group"
+            android:noHistory="true">
+        </activity>
+        <activity
+            android:name=".CalendarActivity"
+            android:label="View Calendar" >
+        </activity>
     </application>
 
 </manifest>

@@ -4,13 +4,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -30,35 +26,27 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class NavDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-
+    // Gets a database reference
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference ref = database.getReference();
+
+    // Declares variables to get user info from database
     String username = "";
     final User user = new User();
     final Group group = new Group();
@@ -69,49 +57,61 @@ public class NavDrawerActivity extends AppCompatActivity
     int count = 0;
     int backcount = 0;
 
+    // Declares listeners to be able to remove at the end when going to another activity
     ValueEventListener groupListener;
     ValueEventListener userListener;
 
+    // Declares listenres to set visible upon group status
     MenuItem groupChatItem;
-
-
+    MenuItem removeUserItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_nav_drawer);
+
+        // Get the username
         Bundle extras = getIntent().getExtras();
         username = extras.getString("username");
 
-        System.out.println("Username in NAV Drawer .... "+username);
-
+        // Get the navigation view to get the items inside
         NavigationView navView = (NavigationView)findViewById(R.id.nav_view);
         Menu navMenu = navView.getMenu();
         groupChatItem = navMenu.findItem(R.id.group_chat);
+        removeUserItem = navMenu.findItem(R.id.remove_user);
 
+        // Gets the tool bar object for use
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Gets the Drawer layout object for use
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+        // Set toggle ability for nav drawer
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        // set the listener for the navigation view
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         /***************************/
 
+        // Gets the user reference from database
         DatabaseReference uRef = ref.child("users").child(username);
-
+        // Set up listener
         ValueEventListener listener = new ValueEventListener() {
 
+            /*
+            Look to see if there is changes in the user information in the database
+            */
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                // Get the information and set variables
                 Boolean user_has_group = (Boolean) dataSnapshot.child("group").getValue();
                 String user_group_id = (String) dataSnapshot.child("groupID").getValue();
                 String user_email = (String) dataSnapshot.child("email").getValue();
@@ -126,16 +126,21 @@ public class NavDrawerActivity extends AppCompatActivity
                 user.phone_number = user_phone_number;
                 user.full_name= user_full_name;
 
+                // checks when the user is pending
                 user.isPending = user_isPending;
                 currentPending = user_isPending; // listen for change
 
+                // When a user is requests to join a group, flag is updated to use to update
+                // once they are rejected or accepted
                 if( user.groupID.compareTo("requested") == 0 ) {
                     hasRequestedGroup = true;
                 }
 
+                // updates the group and photo user variables to use in the activity
                 user.group = user_has_group.booleanValue();
                 user.photo_url = photo_url;
 
+                // Sets the user picture in the navdrawer
                 NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
                 View hView =  navigationView.getHeaderView(0);
                 TextView nav_email = (TextView)hView.findViewById(R.id.textView);
@@ -149,28 +154,34 @@ public class NavDrawerActivity extends AppCompatActivity
                         .centerCrop()
                         .into(thumbnail);
 
-
-                //updateGroup();
+                // updates the user for changes
                 updateUser();
 
+                // When the user has a group, then the homepage will be updated accordingly
                 if (user_has_group) {
 
                     //This is the second listener for getting the number of members in the group
                     DatabaseReference gRef = ref.child("groups").child(user_group_id);
                     ValueEventListener listener2 = new ValueEventListener() {
-
+                        /*
+                        Checks for changes in the users group in the database
+                         */
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
+                            // Che
                             if( user.group ) {
+                                // Gets the group information
                                 Map<String, Object> group_content = (Map<String, Object>) dataSnapshot.child("members").getValue();
                                 ArrayList<String> pending = (ArrayList<String>) dataSnapshot.child("pending").getValue();
                                 String gname = (String) dataSnapshot.child("name").getValue();
                                 Long gnum = (Long) dataSnapshot.child("num_users").getValue();
 
+                                // Gets the apartment address
                                 String aptAddy = (String) dataSnapshot.child("address").getValue();
                                 group.address = aptAddy;
 
+                                // Gets the group photo
                                 String group_photo = (String) dataSnapshot.child("group_photo").getValue();
                                 group.photo_url = group_photo;
 
@@ -179,16 +190,21 @@ public class NavDrawerActivity extends AppCompatActivity
                                 group.pending = pending;
                                 group.name = gname;
 
+                                // Gets the number of members in the group
                                 if( gnum != null ) {
                                     group.num_users = gnum.intValue();
                                 }
 
+                                // Sets the title of the home activity to the group name
                                 if (user.group) {
                                     getSupportActionBar().setTitle(group.name);
                                     notificationUp();
                                 }
                             }
 
+                            // Sets the fragment depending on how many users are in the group
+                            // In other words, the number profiles for each user are displayed
+                            // depending on the fragment that is displayed
                             Fragment fragment = null;
                             Long num_users = (Long) dataSnapshot.child("num_users").getValue();
                             System.out.println("Number of Users: " + num_users);
@@ -214,15 +230,14 @@ public class NavDrawerActivity extends AppCompatActivity
                                     break;
                             }
 
+                            // If not fragment is initialized, sanity check
                             if(fragment != null){
-                                //if(!isFinishing()) {
-                                System.out.println("infinite loop");
                                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                                 ft.replace(R.id.content_frame, fragment);
                                 ft.commitAllowingStateLoss();
-                                //}
                             }
 
+                            // Gets the drawer object to close
                             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                             drawer.closeDrawer(GravityCompat.START);
                         }
@@ -230,11 +245,14 @@ public class NavDrawerActivity extends AppCompatActivity
                         public void onCancelled(DatabaseError databaseError) {
                         }
                     };
+                    // Add the group listener to do the above once then delete it
                     gRef.addListenerForSingleValueEvent(listener2);
                     gRef.removeEventListener(listener2);
 
 
-                } else{
+                }
+                // When there is not more than one person in the group, only the main user is displayed
+                else{
                     Fragment fragment = new Home1();
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     ft.replace(R.id.content_frame, fragment);
@@ -246,12 +264,13 @@ public class NavDrawerActivity extends AppCompatActivity
             public void onCancelled(DatabaseError databaseError) {
             }
         };
+        // add user listener to listen once, then remove the listener
         uRef.addListenerForSingleValueEvent(listener);
         uRef.removeEventListener(listener);
 
 
         /***************************/
-
+        // Sets the title of the action bar to the user when they don't have a group
         getSupportActionBar().setTitle(username);
 
     }
@@ -305,8 +324,13 @@ public class NavDrawerActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.go_to_calendar) {
+            Intent goToCalendar = new Intent(this, CalendarActivity.class);
+            goToCalendar.putExtra("username", username);
+            goToCalendar.putExtra("group_id", user.groupID);
+            removeAllListeners();
+            startActivity(goToCalendar);
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
@@ -318,24 +342,6 @@ public class NavDrawerActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-//        if (id == R.id.nav_camera) {
-//            // Handle the camera action
-//            Intent goToCreateGroup = new Intent(this, CreateGroup.class);
-//
-//            Bundle extras = getIntent().getExtras();
-//
-//            if (extras != null) {
-//                String value = extras.getString("username");
-//                goToCreateGroup.putExtra("username", value);
-//            }
-//            removeAllListeners();
-//            startActivity(goToCreateGroup);
-//            finish();
-//        } else if (id == R.id.nav_gallery) {
-//
-//        } else if (id == R.id.nav_slideshow) {
-//
-//        } else
         if(id == R.id.group_chat){
             Intent goToGroupChat = new Intent(this, GroupChat.class);
             goToGroupChat.putExtra("username", username);
@@ -351,6 +357,8 @@ public class NavDrawerActivity extends AppCompatActivity
             removeAllListeners();
             startActivity(goToShareCode);
             finish();
+
+
         } else if (id == R.id.manage_requests){
             Intent goToRequests = new Intent(this, ManageRequests.class);
             goToRequests.putStringArrayListExtra("pending", group.pending);
@@ -359,6 +367,15 @@ public class NavDrawerActivity extends AppCompatActivity
             removeAllListeners();
             startActivity(goToRequests);
             finish();
+        }
+        else if ( id == R.id.remove_user ) {
+            Intent goToRemoveUser = new Intent(this, RemoveUserFromGroup.class);
+            goToRemoveUser.putExtra("username", getIntent().getExtras().getString("username"));
+            goToRemoveUser.putExtra("groupID", user.groupID);
+            removeAllListeners();
+            startActivity(goToRemoveUser);
+            finish();
+
         }
         else if(id == R.id.manage_tasks){
             Intent goToManageTasks = new Intent(this, TaskActivity.class);
@@ -487,6 +504,8 @@ public class NavDrawerActivity extends AppCompatActivity
 
                             groupChatItem.setEnabled(true);
                             groupChatItem.setVisible(true);
+                            removeUserItem.setEnabled(true);
+                            removeUserItem.setVisible(true);
                             getSupportActionBar().setTitle(group.name);
                             notificationUp();
                         }
@@ -502,7 +521,6 @@ public class NavDrawerActivity extends AppCompatActivity
 
         }
     }
-
 
     /***********************************************************/
 
@@ -597,7 +615,6 @@ public class NavDrawerActivity extends AppCompatActivity
         finish();
     }
 
-
     public void notificationUp() {
         System.out.println("in notifications up has group: " + user.groupID);
         if (user.group) {
@@ -644,8 +661,6 @@ public class NavDrawerActivity extends AppCompatActivity
         }
     }
 
-
-
     public void removeUserFromGroup(final String userName){
 
 
@@ -672,6 +687,11 @@ public class NavDrawerActivity extends AppCompatActivity
                 Map<String,Object> members = (HashMap<String,Object>)dataSnapshot.child("members").getValue();
                 members.remove(userName);
 
+                //remove user from tasks
+                Map<String,Object> tasks = (HashMap)group.get("tasks");
+                tasks.remove(userName);
+                group.put("tasks", tasks);
+
                 int currentMembers = ((Long)dataSnapshot.child("num_users").getValue()).intValue();
                 if(currentMembers > 1) {
                     group.put("members", members);
@@ -696,15 +716,14 @@ public class NavDrawerActivity extends AppCompatActivity
     }
 
     public void restartActivity() {
+
         Intent restartActivity = new Intent(NavDrawerActivity.this, NavDrawerActivity.class);
         restartActivity.putExtra("username", username);
-        startActivity(restartActivity);
         removeAllListeners();
+        restartActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(restartActivity);
         finish();
-
     }
-
-
 
     public void updateUser(){
         DatabaseReference uRef = ref.child("users").child(username);
@@ -719,7 +738,6 @@ public class NavDrawerActivity extends AppCompatActivity
                 String user_phone_number = (String) dataSnapshot.child("phone_number").getValue();
                 String user_full_name = (String) dataSnapshot.child("full_name").getValue();
                 Boolean user_isPending = (Boolean) dataSnapshot.child("isPending").getValue();
-                System.out.println("From database user has group "+ user_has_group.booleanValue());
                 user.groupID = user_group_id;
                 user.group = user_has_group.booleanValue();
                 user.email = user_email;
@@ -731,29 +749,63 @@ public class NavDrawerActivity extends AppCompatActivity
                     updateGroup();
                 }
 
-
                 // notify user is they were rejected or accepted
                 if( currentPending != user.isPending ) {
 
 
+                    // user has requested group and now has a group
                     if ( hasRequestedGroup && user.group ) {
-                        Toast toast = Toast.makeText(NavDrawerActivity.this, "You have been accepted into group",
-                                Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
-                        toast.show();
-                        currentPending = user_isPending;
+
+                        // check if this activity is not a background activity
+                        if ( !isFinishing() ) {
+
+                            // update user object
+                            currentPending = user_isPending;
+
+                            View v = findViewById(R.id.content_nav_drawer);
+                            AlertDialog.Builder displayConfirmation = new AlertDialog.Builder(v.getContext());
+                            displayConfirmation.setMessage("Welcome!");
+                            displayConfirmation.setTitle("You have been accepted :D !");
+                            displayConfirmation.setCancelable(false);
+
+                            displayConfirmation.setPositiveButton("Awesome",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            restartActivity();
+                                        }
+                                    });
+                            displayConfirmation.create().show();
+
+//                            // display a message to the user that they have been accepted
+//                            Toast toast = Toast.makeText(NavDrawerActivity.this, "Welcome, You have been ACCEPTED! :D",
+//                                    Toast.LENGTH_SHORT);
+//                            toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
+//                            toast.show();
+                        }
 
                     } else if ( hasRequestedGroup && !user.group ) {
-                        Toast toast = Toast.makeText(NavDrawerActivity.this, "You have been rejected from group\"",
-                                Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
-                        toast.show();
-                        currentPending = user_isPending;
+
+                        // check if this activity is not a background activity
+                        if( !isFinishing() ) {
+                            currentPending = user_isPending;
+                            View v = findViewById(R.id.content_nav_drawer);
+                            AlertDialog.Builder displayConfirmation = new AlertDialog.Builder(v.getContext());
+                            displayConfirmation.setMessage("You have been REJECTED! D:");
+                            displayConfirmation.setTitle("We regret to inform...");
+                            displayConfirmation.setCancelable(false);
+
+                            displayConfirmation.setPositiveButton("Aw Shucks",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            restartActivity();
+                                        }
+                                    });
+                            displayConfirmation.create().show();
+                        }
 
                     }
-
-
-                    restartActivity();
 
                 }
             }

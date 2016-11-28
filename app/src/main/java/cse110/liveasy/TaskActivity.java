@@ -2,10 +2,12 @@ package cse110.liveasy;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.renderscript.Sampler;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -44,6 +47,7 @@ public class TaskActivity extends AppCompatActivity {
     public ValueEventListener refreshListener;
     public Boolean hasRefreshButton = false;
     public Boolean needsRefreshButton = false;
+    public Boolean refreshButtonAdded = false;
 
 
     @Override
@@ -51,43 +55,81 @@ public class TaskActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
 
+        //get initial info
         this.extras = getIntent().getExtras();
         this.groupID = extras.getString("group_id");
         this.members = (HashMap<String, Object>)extras.get("members");
         this.user = extras.getString("username");
-        ref = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID).child("tasks");
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        //only run if user has a group
+        if(!this.groupID.equals("") && !this.groupID.equals("requested")) {
+            ref = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID).child("tasks");
 
-        layout = (LinearLayout)findViewById(R.id.task_layout);
+            //set back button
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        TextView title = new TextView(this);
-        title.setText("Tasks");
-        title.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
-        title.setTextSize(18);
-        title.setPadding(0,15,0,0);
-        title.setTypeface(title.getTypeface(), Typeface.BOLD);
+            layout = (LinearLayout) findViewById(R.id.task_layout);
 
-        layout.addView(title);
+            //"Tasks" as title
+            TextView title = new TextView(this);
+            title.setText("Tasks");
+            title.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+            title.setTextSize(18);
+            title.setPadding(0, 15, 0, 0);
+            title.setTypeface(title.getTypeface(), Typeface.BOLD);
 
+            layout.addView(title);
 
-        populateLayout(layout);
-        startRefreshListener();
+            //fill page with user tasks
+            populateLayout(layout);
+            startRefreshListener();
+        }
+        //display a message when user doesn't have a group
+        else{
+            layout = (LinearLayout) findViewById(R.id.task_layout);
+
+            //set back button
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+            TextView noGroupText = new TextView(this);
+            noGroupText.setText("You are not in a group yet.");
+            noGroupText.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+            noGroupText.setPadding(0, 200, 0, 0);
+            noGroupText.setTextSize(28);
+            layout.addView(noGroupText);
+        }
     }
 
 
-
+    /**
+     * Add all of the tasks in the database from the respective members (in the bundle)
+     * @param l master layout
+     */
     public void populateLayout(LinearLayout l){
+        //create tasks reference
         DatabaseReference tRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID).child("tasks");
         ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 Map<String,Object> tempMembers = members;
+                boolean singleUserFlag = false;
+
+                //for when there is only one person in the gorup
+                if(tempMembers.size() == 1){
+                    singleUserFlag = true;
+                }
+
+                //remove the user logged in so that we can display their tasks first
                 tempMembers.remove(user);
+
+                //iterate over the usernames in the 'members' map
                 Iterator it = tempMembers.entrySet().iterator();
                 boolean notUser = false;
-                while (it.hasNext()) {
+                while (it.hasNext() || singleUserFlag) {
+                    singleUserFlag = false;
                     String currUser;
                     if(notUser) {
                         Map.Entry pair = (Map.Entry) it.next();
@@ -96,16 +138,16 @@ public class TaskActivity extends AppCompatActivity {
                         currUser = user;
                     }
 
-
+                    //create an inner layout to be placed in the master layout
                     final LinearLayout innerLayout = new LinearLayout(TaskActivity.this);
                     innerLayout.setOrientation(LinearLayout.VERTICAL);
                     innerLayout.setPadding(0,50,0,0);
 
+                    //create a layout that will hold the username as subtitle
                     final LinearLayout userView = new LinearLayout(TaskActivity.this);
                     userView.setOrientation(LinearLayout.HORIZONTAL);
                     userView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                                                                             LinearLayout.LayoutParams.WRAP_CONTENT));
-
                     TextView userTitle = new TextView(TaskActivity.this);
                     userTitle.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                                                                             LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
@@ -113,6 +155,8 @@ public class TaskActivity extends AppCompatActivity {
                     userTitle.setTextSize(50);
                     userView.addView(userTitle);
 
+
+                    //Linear layout for popup dialog box
                     LinearLayout lay = new LinearLayout(TaskActivity.this);
                     lay.setPadding(40,100,40,10);
                     final EditText input = new EditText(TaskActivity.this);
@@ -123,6 +167,7 @@ public class TaskActivity extends AppCompatActivity {
                     input.setLayoutParams(lp);
                     lay.addView(input);
 
+                    //create popup dialog box for adding tasks
                     final String tempUsername = currUser;
                     final AlertDialog.Builder builder = new AlertDialog.Builder(TaskActivity.this);
                     input.setText("");
@@ -141,9 +186,14 @@ public class TaskActivity extends AppCompatActivity {
                         }
                     });
                     final AlertDialog alertDialog =  builder.create();
+
+
+                    //create button that will open dialog box
                     Button addButton = new Button(TaskActivity.this);
                     addButton.setText("Add New Task");
-                    addButton.setTextSize(10);
+                    addButton.setBackgroundResource(R.drawable.button_background);
+                    addButton.setTextColor(Color.parseColor("#ffffff"));
+                    addButton.setTextSize(15);
                     addButton.setOnClickListener(new View.OnClickListener(){
                         @Override
                         public void onClick(View v){
@@ -153,10 +203,13 @@ public class TaskActivity extends AppCompatActivity {
                     userView.addView(addButton);
                     innerLayout.addView(userView);
 
+                    //iterate over this user's tasks
                     ArrayList<String> temp = (ArrayList<String>)dataSnapshot.child(currUser).getValue();
                     for(int i = 1; i < temp.size(); ++i){
                         String task = temp.get(i);
                         LinearLayout taskLayout;
+
+                        //Display task with a "done" button for user logged in
                         if(currUser.equals(user)) {
                             taskLayout = new LinearLayout(TaskActivity.this);
                             taskLayout.setGravity(Gravity.FILL);
@@ -168,7 +221,7 @@ public class TaskActivity extends AppCompatActivity {
 
                             TextView taskText = new TextView(TaskActivity.this);
                             taskText.setText(task);
-                            taskText.setTextSize(15);
+                            taskText.setTextSize(20);
                             taskText.setGravity(Gravity.CENTER_VERTICAL | Gravity.FILL_VERTICAL);
 
                             TableLayout.LayoutParams taskTextParam = new TableLayout.LayoutParams(0,
@@ -179,6 +232,9 @@ public class TaskActivity extends AppCompatActivity {
 
                             Button done = new Button(TaskActivity.this);
                             done.setGravity(Gravity.CENTER);
+                            done.setTextColor(Color.parseColor("#ffffff"));
+                            done.setBackgroundResource(R.drawable.btn_accept_background);
+                            done.setTextSize(15);
                             done.setText("Done");
 
                             final String userNameForListener = currUser;
@@ -193,6 +249,7 @@ public class TaskActivity extends AppCompatActivity {
                             });
                             taskLayout.addView(done);
                         }
+                        //display task without a "done" button for other users
                         else{
                             taskLayout = new LinearLayout(TaskActivity.this);
                             taskLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -203,7 +260,7 @@ public class TaskActivity extends AppCompatActivity {
 
                             TextView taskText = new TextView(TaskActivity.this);
                             taskText.setText(task);
-                            taskText.setTextSize(15);
+                            taskText.setTextSize(20);
                             taskText.setGravity(Gravity.CENTER_VERTICAL | Gravity.FILL_VERTICAL);
 
                             LinearLayout.LayoutParams taskTextParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -215,7 +272,10 @@ public class TaskActivity extends AppCompatActivity {
                         innerLayout.addView(taskLayout);
                     }
 
+                    //add the inner layout to the master layout
                     layout.addView(innerLayout);
+
+
                     if(notUser) {
                         it.remove();
                     }
@@ -234,36 +294,62 @@ public class TaskActivity extends AppCompatActivity {
     }
 
 
-
-
-
+    /**
+     * Add a task to the database
+     *
+     * @param username username to add task to in the database
+     * @param task the task itself; cannot be empty, but will diplay an error
+     */
     public void addTask(String username, String task){
-        final DatabaseReference tasksRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID).child("tasks");
-        final String tempUsername = username;
-        final String tempTask = task;
+        //Checks to make sure the task is not empty
+        if(!task.equals("")) {
+            final DatabaseReference tasksRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupID).child("tasks");
+            final String tempUsername = username;
+            final String tempTask = task;
 
-        ValueEventListener listener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<String> tasks = (ArrayList<String>)dataSnapshot.child(tempUsername).getValue();
-                tasks.add(tempTask);
-                Map<String,Object> map = new HashMap<>();
-                map.put(tempUsername, tasks);
-                tasksRef.updateChildren(map);
-                restartActivity();
-            }
+            ValueEventListener listener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    //grab users current tasks
+                    ArrayList<String> tasks = (ArrayList<String>) dataSnapshot.child(tempUsername).getValue();
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                    //add new task
+                    tasks.add(tempTask);
 
-            }
-        };
-        tasksRef.addListenerForSingleValueEvent(listener);
-        tasksRef.removeEventListener(listener);
+                    //upload as a map to the database
+                    Map<String, Object> map = new HashMap<>();
+                    map.put(tempUsername, tasks);
+                    tasksRef.updateChildren(map);
+
+                    //restart activity to refresh page
+                    restartActivity();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            tasksRef.addListenerForSingleValueEvent(listener);
+            tasksRef.removeEventListener(listener);
+        }
+        //If task is empty, will display a toast that says it was unsuccessful
+        else{
+            Toast toast = Toast.makeText(TaskActivity.this, "Cannot create empty task.",
+                    Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER,0,0);
+            toast.show();
+
+        }
     }
 
 
-
+    /**
+     * "Complete" task by removing it from the database
+     *
+     * @param username username for the user completing tasks
+     * @param task task to be marked as done
+     */
     public void completeTask(String username, String task){
         final String tempTask = task;
         final String tempUsername = username;
@@ -298,7 +384,9 @@ public class TaskActivity extends AppCompatActivity {
             case android.R.id.home:
                 Intent goBack = new Intent(this, NavDrawerActivity.class);
                 goBack.putExtra("username", (String)extras.get("username"));
-                stopRefreshListener();
+                if(!this.groupID.equals("") && !this.groupID.equals("requested")) {
+                    stopRefreshListener();
+                }
                 startActivity(goBack);
                 finish();
                 return true;
@@ -307,27 +395,28 @@ public class TaskActivity extends AppCompatActivity {
     }
 
 
-
-
-    @Override
-    public void onBackPressed(){
-        //restartActivity();
-    }
-
-
-
+    /**
+     * Stop listener and recreate
+     */
     public void restartActivity(){
         stopRefreshListener();
         recreate();
     }
 
+
+    /**
+     * Start listener to see if the database has changed
+     */
     public void startRefreshListener(){
         //user ref
         refreshListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(!hasRefreshButton && needsRefreshButton) {
+                    //add button
                     addRefreshButton();
+
+                    //display toast
                     Toast toast = Toast.makeText(TaskActivity.this, "Changes have been made, please tap the refresh button below before continuing",
                             Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER,0,0);
@@ -346,25 +435,37 @@ public class TaskActivity extends AppCompatActivity {
         ref.addValueEventListener(refreshListener);
     }
 
+
+    /**
+     * Stop the listener
+     */
     public void stopRefreshListener(){
         ref.removeEventListener(refreshListener);
     }
 
-    public void addRefreshButton(){
-        LinearLayout buttonLayout = new LinearLayout(this);
-        buttonLayout.setPadding(16,16,16,16);
 
-        Button button = new Button(this);
-        button.setText("Refresh");
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                restartActivity();
-            }
-        });
+    /**
+     * Add refresh button at the bottom of the screen
+     * if it hasn't been added yet
+     */
+    public void addRefreshButton() {
+        if (!refreshButtonAdded) {
+            LinearLayout buttonLayout = new LinearLayout(this);
+            buttonLayout.setPadding(16, 16, 16, 16);
 
-        buttonLayout.addView(button);
+            Button button = new Button(this);
+            button.setText("Refresh");
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    restartActivity();
+                }
+            });
 
-        layout.addView(buttonLayout);
+            buttonLayout.addView(button);
+
+            layout.addView(buttonLayout);
+            refreshButtonAdded = true;
+        }
     }
 }

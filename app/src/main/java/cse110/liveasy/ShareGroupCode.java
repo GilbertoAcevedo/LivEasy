@@ -24,14 +24,19 @@ public class ShareGroupCode extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_group_code);
 
+        //get bundle passed through
         extras = getIntent().getExtras();
         String groupKey = extras.getString("group_id");
 
+        //get textview that should display group code
         TextView groupID = (TextView)findViewById(R.id.group_id);
+
+        //check to see if user is in a group
         if(!groupKey.equals("")) {
             groupID.setText(extras.getString("group_id"));
             groupID.setTextSize(28);
         }
+        //if user is not in a group display message instead
         else{
             groupID.setText("No group code to share.");
             groupID.setTextSize(28);
@@ -39,6 +44,7 @@ public class ShareGroupCode extends AppCompatActivity {
             buttonLayout.setVisibility(LinearLayout.GONE);
         }
 
+        //set back button to go back to homepage
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -59,6 +65,12 @@ public class ShareGroupCode extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    /**
+     * Copy the group ID to clipboard
+     *
+     * @param view context for the activity
+     */
     public void copyToClipboard(View view){
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("Copied", extras.getString("group_id"));
@@ -71,6 +83,6 @@ public class ShareGroupCode extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-
+        //override this method to do nothing when the back button is pressed
     }
 }

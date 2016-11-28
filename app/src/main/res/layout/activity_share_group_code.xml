@@ -37,8 +37,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/clipboard"
-            android:textSize="18dp"
-            android:textAllCaps="false"
-            android:onClick="copyToClipboard"/>
+            android:onClick="copyToClipboard"
+            android:textColor = "@color/white"
+            android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"
+            android:background="@drawable/button_background" />
     </LinearLayout>
 </RelativeLayout>

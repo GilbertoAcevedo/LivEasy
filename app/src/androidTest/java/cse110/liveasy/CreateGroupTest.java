@@ -1,7 +1,6 @@
 package cse110.liveasy;
 
 
-import android.support.design.widget.TextInputLayout;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -13,7 +12,6 @@ import android.view.ViewParent;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,94 +29,100 @@ import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
-/***
- Given I am on the log in page
- AND input the correct information
- AND have an account
- When I click “Login”
- Then I will be taken to the home page containing me and two buttons: Create Group and Join Group
+/**
+ Given I am on the “Create a Group Page”
+ When I type in a group name AND click “Create Group”
+ Then a pop window will be displayed, which includes a shareable group key
+ AND the option to copy it to my clipboard AND an okay button to dismiss the pop up
+ **/
 
- Credential
- username: logintest
- password: password
- email: logintest@example.com
- ***/
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class Login_to_NavDrawerActivity {
+public class CreateGroupTest {
 
     @Rule
     public ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
-    public void login_to_NavDrawerActivity() {
-
+    public void createGroupTest() {
         ViewInteraction appCompatEditText = onView(
                 withId(R.id.input_username));
-        appCompatEditText.perform(scrollTo(), replaceText("logintest"), closeSoftKeyboard());
+        appCompatEditText.perform(scrollTo(), click());
 
         ViewInteraction appCompatEditText2 = onView(
-                withId(R.id.input_password));
-        appCompatEditText2.perform(scrollTo(), replaceText("password"), closeSoftKeyboard());
+                withId(R.id.input_username));
+        appCompatEditText2.perform(scrollTo(), replaceText("creategrouptest"), closeSoftKeyboard());
 
-        ViewInteraction editText = onView(
-                allOf(withId(R.id.input_username), withText("logintest"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(TextInputLayout.class),
-                                        0),
-                                0),
-                        isDisplayed()));
-        editText.check(matches(withText("logintest")));
+        ViewInteraction appCompatEditText3 = onView(
+                withId(R.id.input_password));
+        appCompatEditText3.perform(scrollTo(), replaceText("password"), closeSoftKeyboard());
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.btn_login), withText("Login")));
         appCompatButton.perform(scrollTo(), click());
 
-        ActivityTestRule<NavDrawerActivity> mActivityTestRule = new ActivityTestRule<>(NavDrawerActivity.class);
-
-        ViewInteraction imageView = onView(
-                allOf(withId(R.id.main_profile_image1),
-                        childAtPosition(
-                                allOf(withId(R.id.activity_main),
-                                        childAtPosition(
-                                                withId(R.id.fragment_home1),
-                                                0)),
-                                0),
-                        isDisplayed()));
-        imageView.check(matches(isDisplayed()));
+        ActivityTestRule<NavDrawerActivity> mActivityTestRule2 = new ActivityTestRule<>(NavDrawerActivity.class);
 
         ViewInteraction button = onView(
                 allOf(withId(R.id.button_creategroup),
-                        childAtPosition(
-                                allOf(withId(R.id.activity_main),
-                                        childAtPosition(
-                                                withId(R.id.fragment_home1),
-                                                0)),
-                                1),
                         isDisplayed()));
         button.check(matches(isDisplayed()));
 
+        ViewInteraction appCompatButton2 = onView(
+                allOf(withId(R.id.button_creategroup), withText("Create Group"),
+                        isDisplayed()));
+        appCompatButton2.perform(click());
+
+        ActivityTestRule<CreateGroup> mActivityTestRule3 = new ActivityTestRule<>(CreateGroup.class);
+
+        ViewInteraction appCompatEditText4 = onView(
+                allOf(withId(R.id.editText5),
+                        isDisplayed()));
+        appCompatEditText4.perform(replaceText("Test Group"), closeSoftKeyboard());
+
+        ViewInteraction appCompatButton3 = onView(
+                allOf(withId(R.id.button8), withText("Create"), isDisplayed()));
+        appCompatButton3.perform(click());
+
         ViewInteraction button2 = onView(
-                allOf(withId(R.id.JoinGroup),
-                        childAtPosition(
-                                allOf(withId(R.id.activity_main),
-                                        childAtPosition(
-                                                withId(R.id.fragment_home1),
-                                                0)),
-                                2),
+                allOf(withId(android.R.id.button3),
                         isDisplayed()));
         button2.check(matches(isDisplayed()));
 
-        ViewInteraction appCompatImageButton6 = onView(
-                allOf(withContentDescription("Open navigation drawer"),
-                        withParent(withId(R.id.toolbar)),
+        ViewInteraction button3 = onView(
+                allOf(withId(android.R.id.button1),
                         isDisplayed()));
-        appCompatImageButton6.perform(click());
+        button3.check(matches(isDisplayed()));
 
-        ViewInteraction appCompatCheckedTextView4 = onView(
+        ViewInteraction appCompatButton4 = onView(
+                allOf(withId(android.R.id.button1), withText("Ok"),
+                        isDisplayed()));
+        appCompatButton4.perform(click());
+
+        ActivityTestRule<NavDrawerActivity> mActivityTestRule4 = new ActivityTestRule<>(NavDrawerActivity.class);
+
+        ViewInteraction appCompatImageButton = onView(
+                allOf(withContentDescription("Open navigation drawer"),
+                        isDisplayed()));
+        appCompatImageButton.perform(click());
+
+        ViewInteraction appCompatCheckedTextView = onView(
+                allOf(withId(R.id.design_menu_item_text), withText("Leave Group"), isDisplayed()));
+        appCompatCheckedTextView.perform(click());
+
+        ViewInteraction appCompatButton5 = onView(
+                allOf(withId(android.R.id.button1), withText("Yes"),
+                        isDisplayed()));
+        appCompatButton5.perform(click());
+
+        ViewInteraction appCompatImageButton2 = onView(
+                allOf(withContentDescription("Open navigation drawer"),
+                        isDisplayed()));
+        appCompatImageButton2.perform(click());
+
+        ViewInteraction appCompatCheckedTextView2 = onView(
                 allOf(withId(R.id.design_menu_item_text), withText("Log Out"), isDisplayed()));
-        appCompatCheckedTextView4.perform(click());
+        appCompatCheckedTextView2.perform(click());
 
     }
 
