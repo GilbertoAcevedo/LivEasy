@@ -1,7 +1,6 @@
 package cse110.liveasy;
 
 
-import android.support.design.widget.TextInputLayout;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -13,7 +12,6 @@ import android.view.ViewParent;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,87 +24,63 @@ import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
-/***
- Given I am on the log in page
- AND input the correct information
- AND have an account
- When I click “Login”
- Then I will be taken to the home page containing me and two buttons: Create Group and Join Group
-
- Credential
- username: logintest
- password: password
- email: logintest@example.com
- ***/
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class Login_to_NavDrawerActivity {
+public class CreateGroupPage {
 
     @Rule
     public ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
-    public void login_to_NavDrawerActivity() {
+    public void createGroupPage() {
 
+        //Working up to context
         ViewInteraction appCompatEditText = onView(
                 withId(R.id.input_username));
-        appCompatEditText.perform(scrollTo(), replaceText("logintest"), closeSoftKeyboard());
+        appCompatEditText.perform(scrollTo(), replaceText("CreateGroupPageTest"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText2 = onView(
                 withId(R.id.input_password));
         appCompatEditText2.perform(scrollTo(), replaceText("password"), closeSoftKeyboard());
 
-        ViewInteraction editText = onView(
-                allOf(withId(R.id.input_username), withText("logintest"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(TextInputLayout.class),
-                                        0),
-                                0),
-                        isDisplayed()));
-        editText.check(matches(withText("logintest")));
-
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.btn_login), withText("Login")));
         appCompatButton.perform(scrollTo(), click());
 
-        ActivityTestRule<NavDrawerActivity> mActivityTestRule = new ActivityTestRule<>(NavDrawerActivity.class);
+        ActivityTestRule<NavDrawerActivity> mActivityTestRule2 = new ActivityTestRule<>(NavDrawerActivity.class);
 
-        ViewInteraction imageView = onView(
-                allOf(withId(R.id.main_profile_image1),
+
+        //GIVEN I'm on the homepage
+        ViewInteraction relativeLayout = onView(
+                allOf(withId(R.id.activity_main),
                         childAtPosition(
-                                allOf(withId(R.id.activity_main),
+                                allOf(withId(R.id.fragment_home1),
                                         childAtPosition(
-                                                withId(R.id.fragment_home1),
+                                                withId(R.id.content_frame),
                                                 0)),
                                 0),
                         isDisplayed()));
-        imageView.check(matches(isDisplayed()));
+        relativeLayout.check(matches(isDisplayed()));
 
-        ViewInteraction button = onView(
-                allOf(withId(R.id.button_creategroup),
-                        childAtPosition(
-                                allOf(withId(R.id.activity_main),
-                                        childAtPosition(
-                                                withId(R.id.fragment_home1),
-                                                0)),
-                                1),
+        //WHEN I click the "create group" button
+        ViewInteraction appCompatButton2 = onView(
+                allOf(withId(R.id.button_creategroup), withText("Create Group"),
+                        withParent(allOf(withId(R.id.activity_main),
+                                withParent(withId(R.id.fragment_home1)))),
                         isDisplayed()));
-        button.check(matches(isDisplayed()));
+        appCompatButton2.perform(click());
 
-        ViewInteraction button2 = onView(
-                allOf(withId(R.id.JoinGroup),
-                        childAtPosition(
-                                allOf(withId(R.id.activity_main),
-                                        childAtPosition(
-                                                withId(R.id.fragment_home1),
-                                                0)),
-                                2),
+        ActivityTestRule<CreateGroup> mActivityTestRule3 = new ActivityTestRule<>(CreateGroup.class);
+
+        //THEN I will be taken to the create group page
+        ViewInteraction relativeLayout2 = onView(
+                allOf(withId(R.id.activity_create_group),
                         isDisplayed()));
-        button2.check(matches(isDisplayed()));
+        relativeLayout2.check(matches(isDisplayed()));
 
     }
 

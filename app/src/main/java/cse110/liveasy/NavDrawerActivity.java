@@ -740,7 +740,6 @@ public class NavDrawerActivity extends AppCompatActivity
                 String user_phone_number = (String) dataSnapshot.child("phone_number").getValue();
                 String user_full_name = (String) dataSnapshot.child("full_name").getValue();
                 Boolean user_isPending = (Boolean) dataSnapshot.child("isPending").getValue();
-                System.out.println("From database user has group "+ user_has_group.booleanValue());
                 user.groupID = user_group_id;
                 user.group = user_has_group.booleanValue();
                 user.email = user_email;
