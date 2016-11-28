@@ -36,7 +36,7 @@ import butterknife.Bind;
 
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
-    private FirebaseAuth mAuth;
+    public FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference ref = database.getReference();
