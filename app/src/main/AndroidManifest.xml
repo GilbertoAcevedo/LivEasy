@@ -75,7 +75,7 @@
         <activity
             android:name=".GroupProfileActivity"
             android:label="@string/app_name"
-            android:noHistory="true" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Questionaire"
             android:label="Set Up Profile"
