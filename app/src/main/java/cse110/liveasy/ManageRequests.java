@@ -1,24 +1,15 @@
 package cse110.liveasy;
 
-import android.app.ActionBar;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.net.sip.SipAudioCall;
-import android.renderscript.Sampler;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +21,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ManageRequests extends AppCompatActivity {
@@ -71,16 +61,19 @@ public class ManageRequests extends AppCompatActivity {
         for( int index = 1; index < listItems.size(); index++ ) {
 
             final LinearLayout inner_layout = new LinearLayout(this);
+            inner_layout.setBackgroundResource(R.drawable.in_message);
 
             //text view for pending user
             TextView user = new TextView(this);
             user.setText(listItems.get(index));
-            user.setTextSize(15);
+            user.setTextSize(24);
 
             user.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
 
             LinearLayout.LayoutParams button_param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT, 1.5f);
+
+            button_param.setMargins(0,10,5,10);
 
             LinearLayout.LayoutParams user_param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
@@ -246,6 +239,7 @@ public class ManageRequests extends AppCompatActivity {
                     inner_layout.setVisibility(LinearLayout.GONE);
                 }
             });
+
 
             inner_layout.addView(user, LinearLayout.LayoutParams.WRAP_CONTENT);
             inner_layout.addView(accept);

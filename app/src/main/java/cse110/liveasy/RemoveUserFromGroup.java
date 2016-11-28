@@ -82,6 +82,7 @@ public class RemoveUserFromGroup extends AppCompatActivity {
                 for (int index = 0; index < listItems.size(); index++) {
 
                     final LinearLayout inner_layout = new LinearLayout(RemoveUserFromGroup.this);
+                    inner_layout.setBackgroundResource(R.drawable.in_message);
 
                     TextView user = new TextView(RemoveUserFromGroup.this);
                     user.setText(listItems.get(index));
@@ -91,12 +92,14 @@ public class RemoveUserFromGroup extends AppCompatActivity {
 
                     LinearLayout.LayoutParams button_param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT, 1.5f);
-                    button_param.setMargins(0,0,0,10);
+                    button_param.setMargins(0,10,0,10);
 
                     LinearLayout.LayoutParams user_param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
 
                     user.setLayoutParams(user_param);
+
+
 
                     final String currentUsername = listItems.get(index);
 
@@ -110,8 +113,7 @@ public class RemoveUserFromGroup extends AppCompatActivity {
 
                             Map<String, Object> usersToBeDeletedMap = (Map<String, Object>)
                                     dataSnapshot.child("usersToBeDeleted").getValue();
-//                            Map<String, Object> membersMap = (Map<String, Object>)dataSnapshot
-//                                    .child("members").getValue();
+
                             Long number_users_group = (Long)dataSnapshot.child("num_users").getValue();
 
                             // has the user been flagged to be removed?
@@ -188,6 +190,7 @@ public class RemoveUserFromGroup extends AppCompatActivity {
                                     toast.show();
                                 }
                             }
+
 
                             inner_layout.setVisibility(LinearLayout.GONE);
                         }

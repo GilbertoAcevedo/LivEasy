@@ -143,6 +143,7 @@ public class TaskActivity extends AppCompatActivity {
                     innerLayout.setOrientation(LinearLayout.VERTICAL);
                     innerLayout.setPadding(0,50,0,0);
 
+
                     //create a layout that will hold the username as subtitle
                     final LinearLayout userView = new LinearLayout(TaskActivity.this);
                     userView.setOrientation(LinearLayout.HORIZONTAL);
@@ -213,11 +214,12 @@ public class TaskActivity extends AppCompatActivity {
                         if(currUser.equals(user)) {
                             taskLayout = new LinearLayout(TaskActivity.this);
                             taskLayout.setGravity(Gravity.FILL);
+                            taskLayout.setBackgroundResource(R.drawable.in_message);
                             taskLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                                                                                         LinearLayout.LayoutParams.MATCH_PARENT));
 
                             taskLayout.setOrientation(LinearLayout.HORIZONTAL);
-                            taskLayout.setPadding(10,20,0,20);
+                            taskLayout.setPadding(20,10,0,10);
 
                             TextView taskText = new TextView(TaskActivity.this);
                             taskText.setText(task);
@@ -254,6 +256,7 @@ public class TaskActivity extends AppCompatActivity {
                             taskLayout = new LinearLayout(TaskActivity.this);
                             taskLayout.setOrientation(LinearLayout.HORIZONTAL);
                             taskLayout.setGravity(Gravity.FILL);
+                            taskLayout.setBackgroundResource(R.drawable.in_message);
                             taskLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                                     LinearLayout.LayoutParams.MATCH_PARENT));
                             taskLayout.setPadding(10, 20, 0, 20);
