@@ -220,6 +220,12 @@ public class RemoveUserFromGroup extends AppCompatActivity {
         usersToBeDeletedMap.remove(user_to_be_removed);
         gref.child("usersToBeDeleted").updateChildren(usersToBeDeletedMap);
 
+        //remove users tasks
+        Map<String,Object> tasks = (HashMap)groupMap.get("tasks");
+        tasks.remove(user_to_be_removed);
+        groupMap.put("tasks", tasks);
+
+
         // remove contents of user_to_be_removed from group
         membersMap.remove(user_to_be_removed);
         groupMap.put("members", membersMap);

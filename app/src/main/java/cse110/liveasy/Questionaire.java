@@ -61,7 +61,7 @@ public class Questionaire extends AppCompatActivity {
     public static final int MY_PERMISSIONS_REQUEST_WRITE = 1;
     public static final int MY_PERMISSIONS_REQUEST_READ = 2;
 
-    //Flags to manage custon collapsable views
+    //Flags to manage custom collapsable views
     Boolean contactIsOpen = false;
     Boolean aboutMeIsOpen = false;
     Boolean preferenceIsOpen = false;
