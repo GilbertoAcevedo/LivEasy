@@ -275,6 +275,9 @@ public class NavDrawerActivity extends AppCompatActivity
 
     }
 
+    /*
+    Easter egg on back pressed button from android device in home screen
+     */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -309,6 +312,9 @@ public class NavDrawerActivity extends AppCompatActivity
         }
     }
 
+    /*
+    Adds times to the action bar
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -316,6 +322,9 @@ public class NavDrawerActivity extends AppCompatActivity
         return true;
     }
 
+    /*
+    The method adds the calendar option to the top right of the actionbar
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -336,12 +345,16 @@ public class NavDrawerActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    /*
+    This method handles options from the navigation bar
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        // When the group chat option is slected, where you can talk with your members
         if(id == R.id.group_chat){
             Intent goToGroupChat = new Intent(this, GroupChat.class);
             goToGroupChat.putExtra("username", username);
@@ -350,6 +363,8 @@ public class NavDrawerActivity extends AppCompatActivity
             startActivity(goToGroupChat);
             finish();
         }
+        // When the share code option is selected, where you can get group key to send to other
+        // users
         else if (id == R.id.nav_send) {
             Intent goToShareCode = new Intent(this, ShareGroupCode.class);
             goToShareCode.putExtra("username", username);
@@ -359,7 +374,9 @@ public class NavDrawerActivity extends AppCompatActivity
             finish();
 
 
-        } else if (id == R.id.manage_requests){
+        }
+        // When the manage requests option is selected, where you can accept and reject users
+        else if (id == R.id.manage_requests){
             Intent goToRequests = new Intent(this, ManageRequests.class);
             goToRequests.putStringArrayListExtra("pending", group.pending);
             goToRequests.putExtra("username", getIntent().getExtras().getString("username"));
@@ -368,6 +385,7 @@ public class NavDrawerActivity extends AppCompatActivity
             startActivity(goToRequests);
             finish();
         }
+        // When the remove user option is selected, where you can vote out specific users
         else if ( id == R.id.remove_user ) {
             Intent goToRemoveUser = new Intent(this, RemoveUserFromGroup.class);
             goToRemoveUser.putExtra("username", getIntent().getExtras().getString("username"));
@@ -377,6 +395,7 @@ public class NavDrawerActivity extends AppCompatActivity
             finish();
 
         }
+        // When the manage tasks option is selected, where you can add or finish, tasks
         else if(id == R.id.manage_tasks){
             Intent goToManageTasks = new Intent(this, TaskActivity.class);
             goToManageTasks.putExtra("username", username);
@@ -386,7 +405,9 @@ public class NavDrawerActivity extends AppCompatActivity
             startActivity(goToManageTasks);
             finish();
         }
+        // When the user chooses to leave the group option
         else if ( id == R.id.leave_group ){
+            // Pop up confirmation is display
             View v = findViewById(R.id.content_nav_drawer);
             AlertDialog.Builder displayConfirmation  = new AlertDialog.Builder(v.getContext());
             displayConfirmation.setMessage("Are you sure you want to leave this group?" +
@@ -396,10 +417,13 @@ public class NavDrawerActivity extends AppCompatActivity
             displayConfirmation.setNegativeButton("No", null);
             displayConfirmation.setCancelable(false);
 
+            // When the user selects yes
             displayConfirmation.setPositiveButton("Yes",
                     new DialogInterface.OnClickListener() {
+                       // Listenes for the yes on the pop up comfirmation
                         public void onClick(DialogInterface dialog, int which) {
-
+                            // When the user does ahve a group, they will be rmoved from the group
+                            // and a toast will be display
                             if( user.group ) {
                                 removeUserFromGroup(username);
                                 Toast toast = Toast.makeText(NavDrawerActivity.this, "You have been removed" +
@@ -408,6 +432,7 @@ public class NavDrawerActivity extends AppCompatActivity
                                 toast.setGravity(Gravity.NO_GRAVITY, 0, 0);
                                 toast.show();
                             }
+                            // When the user does not have a group, toast tells him so
                             else {
                                 Toast toast = Toast.makeText(NavDrawerActivity.this, "You do not have a group.",
                                         Toast.LENGTH_SHORT);
@@ -416,6 +441,7 @@ public class NavDrawerActivity extends AppCompatActivity
                             }
                         }
                     });
+            // When the No is selected on the pop up
             displayConfirmation.setNegativeButton("No",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -424,26 +450,35 @@ public class NavDrawerActivity extends AppCompatActivity
                     });
             displayConfirmation.create().show();
         }
+        // When the lougout option is selected on the nav drawer
         else if (id == R.id.logout){
 
+            // The user preferences will be cleared from the device, so user does not log in
+            // autmatically anymore
             SharedPreferences sharedpreferences = getSharedPreferences(LoginActivity.MyPREFERENCES, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedpreferences.edit();
             editor.clear();
             editor.commit();
 
+            // Get firebase instance and log it out
             FirebaseAuth.getInstance().signOut();
 
+            // Goes to the login activity after logout
             Intent goToLogin = new Intent(this, LoginActivity.class);
             removeAllListeners();
             startActivity(goToLogin);
             finish();
         }
+        // Option to close the drawer layout
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
 
+    /*
+    Method that goes to page to create a group
+     */
     public void goToCreateGroup(View view){
         Intent goToCreateGroup = new Intent(this, CreateGroup.class);
 
@@ -460,6 +495,9 @@ public class NavDrawerActivity extends AppCompatActivity
         finish();
     }
 
+    /*
+    Method that goes to page so user can join a group
+     */
     public void goToJoinGroup(View view){
         System.out.println("****************************");
         Bundle extras = this.getIntent().getExtras();
@@ -471,17 +509,28 @@ public class NavDrawerActivity extends AppCompatActivity
 
     }
 
+    /*
+    Method to update the group information to use at this stage of the group
+     */
     public void updateGroup(){
-        System.out.println("USER HAS GROUP "+user.group);
 
+        // Only when the user has a group, will the group be updated
         if(user.group) {
+            // Gets the group reference from the database
             DatabaseReference gRef = ref.child("groups").child(user.groupID);
             groupListener = new ValueEventListener() {
 
+                /*
+                Method to update the group when there is changes in the database
+                 */
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
+                    // Listenes for the group, and checks again if the user has a group, so listener
+                    // only listenes when the user actually has a group
                     if( user.group ) {
+
+                        // Get a map of the group information
                         Map<String, Object> group_content = (Map<String, Object>) dataSnapshot.child("members").getValue();
                         ArrayList<String> pending = (ArrayList<String>) dataSnapshot.child("pending").getValue();
                         String gname = (String) dataSnapshot.child("name").getValue();
@@ -492,21 +541,26 @@ public class NavDrawerActivity extends AppCompatActivity
                         group.pending = pending;
                         group.name = gname;
 
+                        // When the group number is not null
                         if( gnum != null ) {
+                            // If the number of users is not the same, then we will restart
+                            // the activity
                             if ( group.num_users != gnum.intValue() ) {
 
-                                System.out.println("Changing intents when gnum = "+gnum.intValue()+" group.num_users = "+group.num_users);
                                 restartActivity();
                             }
                         }
-
+                        // Again if the user has a group, then some options in the navbar will be
+                        // disabled
                         if (user.group) {
 
                             groupChatItem.setEnabled(true);
                             groupChatItem.setVisible(true);
                             removeUserItem.setEnabled(true);
                             removeUserItem.setVisible(true);
+                            // Sets the title of the action bar to be the group name
                             getSupportActionBar().setTitle(group.name);
+                            // Calls method to see whether to notify user of pending requests or not
                             notificationUp();
                         }
                     }
@@ -517,6 +571,7 @@ public class NavDrawerActivity extends AppCompatActivity
                 public void onCancelled(DatabaseError databaseError) {
                 }
             };
+            // Adds the group listener to the group reference
             gRef.addValueEventListener(groupListener);
 
         }
@@ -524,17 +579,22 @@ public class NavDrawerActivity extends AppCompatActivity
 
     /***********************************************************/
 
+    /*
+    Method handles selecting a profile
+     */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void toProfilePopup(View view, Profile memberContent, final String memberName) {
-        //get info for which photo was clicked on
 
+        // Sets up an alert dialog
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = (this).getLayoutInflater();
 
+        // The diaog view is set and the text view as well
         View dialog_view = inflater.inflate(R.layout.activity_popup_profile, null);
         TextView users_name = (TextView)dialog_view.findViewById(R.id.username);
         users_name.setText(memberName);
 
+        // Gets picture from database using Picasso library, for faster loads and caches
         CircleImageView selfie = (CircleImageView)dialog_view.findViewById(R.id.profile_image_popup);
         Picasso.with(this)
                 .load(memberContent.photo_url)
@@ -544,20 +604,23 @@ public class NavDrawerActivity extends AppCompatActivity
                 .into(selfie);
 
 
+        // Sets the email on the profile
         TextView email = (TextView)dialog_view.findViewById(R.id.email);
         email.setText(memberContent.email);
 
+        // Sets the phone number on the profile
         TextView phoneNum = (TextView)dialog_view.findViewById(R.id.phone_number);
         String formattedNumber = PhoneNumberUtils.formatNumber(memberContent.phoneNum, "US");
         phoneNum.setText(formattedNumber);
 
-
+        // When the user clicks ok on the profile
         builder.setPositiveButton(R.string.go_back, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-
+                // Simply goes back to homepage
             }
         });
 
+        // When the profile button is selected, we go to the users profile
         builder.setNegativeButton(R.string.go_profile, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 Intent goProfile = new Intent(NavDrawerActivity.this, ProfileActivity.class);
@@ -570,42 +633,15 @@ public class NavDrawerActivity extends AppCompatActivity
                 finish();
             }
         });
-
-        //builder.setView(dialog_view2);
+        // the view is set and shown
         builder.setView(dialog_view);
-
         builder.create().show();
 
     }
 
     public void toGroupProfilePopup(View view) {
-        /*final AlertDialog.Builder group_builder = new AlertDialog.Builder(this);
-        LayoutInflater group_inflater = (this).getLayoutInflater();
-        View group_dialog_view = group_inflater.inflate(R.layout.activity_popup_group_profile, null);
 
-        TextView groups_name = (TextView) group_dialog_view.findViewById(R.id.textView2);
-        groups_name.setText(group.name);
-
-        group_builder.setPositiveButton(R.string.go_back, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-
-            }
-        });
-
-        group_builder.setNegativeButton(R.string.go_profile, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                Intent goProfile = new Intent(NavDrawerActivity.this, GroupProfileActivity.class);
-                goProfile.putExtra("username", username);
-                goProfile.putExtra("groupName", group.name);
-                removeAllListeners();
-                startActivity(goProfile);
-                finish();
-            }
-        });
-
-        group_builder.setView(group_dialog_view);
-        group_builder.create().show();*/
-
+        // When the group profile is clicked we go to the group profile acitivity
         Intent goProfile = new Intent(NavDrawerActivity.this, GroupProfileActivity.class);
         goProfile.putExtra("username", username);
         goProfile.putExtra("groupName", group.name);
@@ -615,30 +651,49 @@ public class NavDrawerActivity extends AppCompatActivity
         finish();
     }
 
+    /*
+    When there is pending requests, a user will get an in app notification
+     */
     public void notificationUp() {
-        System.out.println("in notifications up has group: " + user.groupID);
+
+        // Only when the user has a group, will any of this be checked
         if (user.group) {
+            // Gets a reference to the pending requests field in the database from the group
             DatabaseReference pRef = ref.child("groups").child(user.groupID).child("pending");
 
+            // Listenes for changes in the pending requests
             ValueEventListener listener = new ValueEventListener() {
+                /*
+                When there is a change the user will be notified and the nav drawer updated with
+                the information
+                 */
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                     if( user.group ) {
-                        System.out.println(username + " " + (++count));
+                        // Look through the users that are pending
                         ArrayList<String> list = (ArrayList<String>) dataSnapshot.getValue();
                         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
                         Menu menu = navigationView.getMenu();
                         MenuItem requestItem = menu.findItem(R.id.manage_requests);
+
+                        // When there is more than one pending request the number of pending
+                        // requests will appear in the nav drawer
                         if (list.size() > 1) {
                             requestItem.setTitle("Manage Requests (" + (list.size() - 1) + ")");
 
-                        } else {
+                        }
+                        // Else, no info is displayed
+                        else {
                             requestItem.setTitle("Manage Requests");
                         }
+                        // Used to check when the number of pending requests has changed
                         if (list.size() != pendingSize) {
-
+                            // When there is more than one pending request
                             if (list.size() > 1) {
+                                // When the acitivity has not finished yet, then we will give an
+                                // in app notification stating how many pending requests the user
+                                // has
                                 if(!isFinishing()) {
                                     Toast toast = Toast.makeText(NavDrawerActivity.this, "You have " + (list.size() - 1) + " pending request(s)",
                                             Toast.LENGTH_SHORT);
@@ -646,8 +701,8 @@ public class NavDrawerActivity extends AppCompatActivity
                                     toast.show();
                                 }
                             }
+                            // The pending size is reset to new value to check if more changes are available
                             pendingSize = list.size();
-                            System.out.println("after list size: " + list.size() + "\nafter pendingSize: " + pendingSize);
                         }
                     }
                 }
@@ -657,14 +712,18 @@ public class NavDrawerActivity extends AppCompatActivity
 
                 }
             };
+            // Adds listener for single check, when the activity is opened and then removed
             pRef.addListenerForSingleValueEvent(listener);
             pRef.removeEventListener(listener);
         }
     }
 
+    /*
+    Method used to remove the user when they select to leave the group
+     */
     public void removeUserFromGroup(final String userName){
 
-
+        // Gets a group database reference
         final DatabaseReference gRef = ref.child("groups").child(user.groupID);
         gRef.removeEventListener(groupListener);
         user.group = false;
@@ -672,19 +731,25 @@ public class NavDrawerActivity extends AppCompatActivity
 
         groupListener = null;
 
+        // Listenes for group changes in the database
         ValueEventListener listener = new ValueEventListener() {
+            /*
+            When the user leaves the group, the home page will be fixed accordingly
+            */
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                // Gets a user database reference
                 DatabaseReference uRef = ref.child("users").child(username);
                 Map<String,Object> userContents = new HashMap<String,Object>();
                 userContents.put("group", new Boolean(false));
                 userContents.put("groupID", "");
                 uRef.updateChildren(userContents);
 
-
+                // Gets group info
                 Map<String, Object> group = (HashMap<String,Object>)dataSnapshot.getValue();
 
+                // Gets the members information of the group and removes the member to remove
                 Map<String,Object> members = (HashMap<String,Object>)dataSnapshot.child("members").getValue();
                 members.remove(userName);
 
@@ -693,6 +758,8 @@ public class NavDrawerActivity extends AppCompatActivity
                 tasks.remove(userName);
                 group.put("tasks", tasks);
 
+                // Gets new number of users and either wipes out the group if the leaving group
+                // was the last user, or just decreases the number of members in the gruoup
                 int currentMembers = ((Long)dataSnapshot.child("num_users").getValue()).intValue();
                 if(currentMembers > 1) {
                     group.put("members", members);
@@ -711,11 +778,15 @@ public class NavDrawerActivity extends AppCompatActivity
 
             }
         };
+        // Adds and remove listener for single time use when activity starts
         gRef.addListenerForSingleValueEvent(listener);
         gRef.removeEventListener(listener);
 
     }
 
+    /*
+    Restarts the activity when necessary, but only if the activity has not yet been finished
+     */
     public void restartActivity() {
         if(!isFinishing()) {
             Intent restartActivity = new Intent(NavDrawerActivity.this, NavDrawerActivity.class);
@@ -725,10 +796,10 @@ public class NavDrawerActivity extends AppCompatActivity
             startActivity(restartActivity);
             finish();
         }
-
-
     }
-
+    /*
+    Updates the user when there is changes to their information
+     */
     public void updateUser(){
         DatabaseReference uRef = ref.child("users").child(username);
 
@@ -736,6 +807,7 @@ public class NavDrawerActivity extends AppCompatActivity
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                // All the fields are updated
                 Boolean user_has_group = (Boolean) dataSnapshot.child("group").getValue();
                 String user_group_id = (String) dataSnapshot.child("groupID").getValue();
                 String user_email = (String) dataSnapshot.child("email").getValue();
@@ -749,13 +821,13 @@ public class NavDrawerActivity extends AppCompatActivity
                 user.full_name= user_full_name;
                 user.isPending = user_isPending;
 
+                // Only when they have a group, will their group info also be updated
                 if( user.group && groupListener == null) {
                     updateGroup();
                 }
 
                 // notify user is they were rejected or accepted
                 if( currentPending != user.isPending ) {
-
 
                     // user has requested group and now has a group
                     if ( hasRequestedGroup && user.group ) {
@@ -766,6 +838,7 @@ public class NavDrawerActivity extends AppCompatActivity
                             // update user object
                             currentPending = user_isPending;
 
+                            // Give the user a welcome to the group pop up
                             View v = findViewById(R.id.content_nav_drawer);
                             AlertDialog.Builder displayConfirmation = new AlertDialog.Builder(v.getContext());
                             displayConfirmation.setMessage("Welcome!");
@@ -819,9 +892,13 @@ public class NavDrawerActivity extends AppCompatActivity
 
             }
         };
+        // Adds the event listener to keep on listening
         uRef.addValueEventListener(userListener);
     }
 
+    /*
+    Method to remove all the lisnteres
+     */
     public void removeAllListeners() {
 
         DatabaseReference uRef = ref.child("users").child(username);
@@ -833,6 +910,9 @@ public class NavDrawerActivity extends AppCompatActivity
 
     }
 
+    /*
+    Method to get the array of members to use throughout the file
+     */
     public String[] getMembers() {
 
         String[] mems = new String[group.num_users];
