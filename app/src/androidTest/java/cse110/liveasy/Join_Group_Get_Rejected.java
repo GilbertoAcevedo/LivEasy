@@ -39,8 +39,6 @@ public class Join_Group_Get_Rejected {
     @Test
     public void join_Group_Get_Rejected() throws InterruptedException {
 
-        //Thread.sleep(3000);
-
         ViewInteraction appCompatEditText = onView(
                 withId(R.id.input_username));
         appCompatEditText.perform(scrollTo(), click());
