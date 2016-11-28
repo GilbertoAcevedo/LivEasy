@@ -29,7 +29,6 @@ import java.util.Random;
 
 public class CreateGroup extends AppCompatActivity {
 
-    //references to the database
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference ref = database.getReference();
 
@@ -39,21 +38,18 @@ public class CreateGroup extends AppCompatActivity {
         setContentView(R.layout.activity_create_group);
     }
 
-
-    /**
-     * Overide this method so that pressing the back button does nothing
-     */
     @Override
     public void onBackPressed(){
 
     }
 
+    public String generateRandomNumber() {
+        Random randVal = new Random();
+        int number = 100000 + randVal.nextInt(900000);
+        String myString = String.valueOf(number);
+        return myString;
+    }
 
-    /**
-     * Generates the key that will distinguish the group
-     *
-     * @return random key
-     */
     private String generateKey() {
 
         DatabaseReference groupsRef = ref.child("groups");
@@ -62,23 +58,15 @@ public class CreateGroup extends AppCompatActivity {
     }
 
 
-    /**
-     * Creates the group and produces a dialog box
-     *
-     * @param view1 context
-     */
     public void createGroup(View view1) {
 
-        //grab the group name input field
         EditText editText = (EditText) findViewById(R.id.editText5);
         final String groupName = editText.getText().toString();
 
-        //get the current username passed in with the intent
         Bundle extras = getIntent().getExtras();
         final String username = extras.getString("username");
         DatabaseReference uRef = ref.child("users").child(username);
         final View view = view1;
-
 
         ValueEventListener listener = new ValueEventListener() {
 
@@ -88,7 +76,6 @@ public class CreateGroup extends AppCompatActivity {
                 Boolean user_has_group = (Boolean) dataSnapshot.child("group").getValue();
                 System.err.print("\n User contents " + user_has_group);
 
-                //if user already has a group, display error message
                 if (user_has_group) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(CreateGroup.this);
                     builder.setTitle("\"" + groupName + "\"" + " cannot be created.");
@@ -115,9 +102,7 @@ public class CreateGroup extends AppCompatActivity {
 
                     builder.create().show();
 
-                }
-                //creates group is group name is not empty or "Group Name"
-                else {
+                } else {
                     if (!groupName.matches("") && !groupName.matches("Group Name")) {
                         final String groupKey = generateKey();
                         //CHECK TO SEE THAT KEY DOES NOT EXIST
@@ -263,11 +248,6 @@ public class CreateGroup extends AppCompatActivity {
     }
 
 
-    /**
-     * Cancel and go back to the home page
-     *
-     * @param view context
-     */
     public void cancelCreateGroup(View view){
         Intent goBack = new Intent(this, NavDrawerActivity.class);
         Bundle extras = getIntent().getExtras();

@@ -25,7 +25,9 @@ import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
@@ -107,6 +109,16 @@ public class Login_to_NavDrawerActivity {
                                 2),
                         isDisplayed()));
         button2.check(matches(isDisplayed()));
+
+        ViewInteraction appCompatImageButton6 = onView(
+                allOf(withContentDescription("Open navigation drawer"),
+                        withParent(withId(R.id.toolbar)),
+                        isDisplayed()));
+        appCompatImageButton6.perform(click());
+
+        ViewInteraction appCompatCheckedTextView4 = onView(
+                allOf(withId(R.id.design_menu_item_text), withText("Log Out"), isDisplayed()));
+        appCompatCheckedTextView4.perform(click());
 
     }
 
