@@ -34,7 +34,7 @@ import static org.hamcrest.Matchers.allOf;
 public class Create_Group_Leave_Group_Share_Code {
 
     @Rule
-    public ActivityTestRule<Splash> mActivityTestRule = new ActivityTestRule<>(Splash.class);
+    public ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
     public void create_Group_Leave_Group_Share_Code() throws InterruptedException {
@@ -56,12 +56,16 @@ public class Create_Group_Leave_Group_Share_Code {
                 allOf(withId(R.id.btn_login), withText("Login")));
         appCompatButton.perform(scrollTo(), click());
 
+        ActivityTestRule<NavDrawerActivity> mActivityTestRule2 = new ActivityTestRule<>(NavDrawerActivity.class);
+
         ViewInteraction appCompatButton5 = onView(
                 allOf(withId(R.id.button_creategroup), withText("Create Group"),
                         withParent(allOf(withId(R.id.activity_main),
                                 withParent(withId(R.id.fragment_home1)))),
                         isDisplayed()));
         appCompatButton5.perform(click());
+
+        ActivityTestRule<CreateGroup> mActivityTestRule3 = new ActivityTestRule<>(CreateGroup.class);
 
         ViewInteraction appCompatEditText5 = onView(
                 allOf(withId(R.id.editText5),
@@ -81,6 +85,8 @@ public class Create_Group_Leave_Group_Share_Code {
                         isDisplayed()));
         appCompatButton7.perform(click());
 
+        ActivityTestRule<NavDrawerActivity> mActivityTestRule4 = new ActivityTestRule<>(NavDrawerActivity.class);
+
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         withParent(withId(R.id.toolbar)),
@@ -90,6 +96,8 @@ public class Create_Group_Leave_Group_Share_Code {
         ViewInteraction appCompatCheckedTextView = onView(
                 allOf(withId(R.id.design_menu_item_text), withText("Share Group Code"), isDisplayed()));
         appCompatCheckedTextView.perform(click());
+
+        ActivityTestRule<ShareGroupCode> mActivityTestRule5 = new ActivityTestRule<>(ShareGroupCode.class);
 
         ViewInteraction button = onView(
                 allOf(withId(R.id.clipboard),
@@ -108,6 +116,8 @@ public class Create_Group_Leave_Group_Share_Code {
                                 withParent(withId(R.id.action_bar_container)))),
                         isDisplayed()));
         appCompatImageButton2.perform(click());
+
+        ActivityTestRule<NavDrawerActivity> mActivityTestRule6 = new ActivityTestRule<>(NavDrawerActivity.class);
 
         ViewInteraction appCompatImageButton3 = onView(
                 allOf(withContentDescription("Open navigation drawer"),
@@ -136,6 +146,8 @@ public class Create_Group_Leave_Group_Share_Code {
                 allOf(withId(R.id.design_menu_item_text), withText("Share Group Code"), isDisplayed()));
         appCompatCheckedTextView3.perform(click());
 
+        ActivityTestRule<ShareGroupCode> mActivityTestRule7 = new ActivityTestRule<>(ShareGroupCode.class);
+
         ViewInteraction textView = onView(
                 allOf(withId(R.id.group_id), withText("No group code to share."),
                         childAtPosition(
@@ -153,6 +165,8 @@ public class Create_Group_Leave_Group_Share_Code {
                                 withParent(withId(R.id.action_bar_container)))),
                         isDisplayed()));
         appCompatImageButton5.perform(click());
+
+        ActivityTestRule<NavDrawerActivity> mActivityTestRule8 = new ActivityTestRule<>(NavDrawerActivity.class);
 
         ViewInteraction appCompatImageButton6 = onView(
                 allOf(withContentDescription("Open navigation drawer"),

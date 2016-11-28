@@ -34,12 +34,12 @@ import static org.hamcrest.Matchers.allOf;
 public class Join_Group_Get_Rejected {
 
     @Rule
-    public ActivityTestRule<Splash> mActivityTestRule = new ActivityTestRule<>(Splash.class);
+    public ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
     public void join_Group_Get_Rejected() throws InterruptedException {
 
-        Thread.sleep(3000);
+        //Thread.sleep(3000);
 
         ViewInteraction appCompatEditText = onView(
                 withId(R.id.input_username));
@@ -57,12 +57,16 @@ public class Join_Group_Get_Rejected {
                 allOf(withId(R.id.btn_login), withText("Login")));
         appCompatButton.perform(scrollTo(), click());
 
+        ActivityTestRule<NavDrawerActivity> mActivityTestRule2 = new ActivityTestRule<>(NavDrawerActivity.class);
+
         ViewInteraction appCompatButton2 = onView(
                 allOf(withId(R.id.JoinGroup), withText("Join Group"),
                         withParent(allOf(withId(R.id.activity_main),
                                 withParent(withId(R.id.fragment_home1)))),
                         isDisplayed()));
         appCompatButton2.perform(click());
+
+        ActivityTestRule<CreateGroup> mActivityTestRule3 = new ActivityTestRule<>(CreateGroup.class);
 
         ViewInteraction appCompatEditText5 = onView(
                 allOf(withId(R.id.editText6),
@@ -82,6 +86,8 @@ public class Join_Group_Get_Rejected {
                         isDisplayed()));
         appCompatButton4.perform(click());
 
+        ActivityTestRule<NavDrawerActivity> mActivityTestRule4 = new ActivityTestRule<>(NavDrawerActivity.class);
+
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         withParent(withId(R.id.toolbar)),
@@ -91,6 +97,8 @@ public class Join_Group_Get_Rejected {
         ViewInteraction appCompatCheckedTextView = onView(
                 allOf(withId(R.id.design_menu_item_text), withText("Log Out"), isDisplayed()));
         appCompatCheckedTextView.perform(click());
+
+        ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
         ViewInteraction appCompatEditText6 = onView(
                 withId(R.id.input_username));
@@ -108,29 +116,49 @@ public class Join_Group_Get_Rejected {
                 allOf(withId(R.id.btn_login), withText("Login")));
         appCompatButton5.perform(scrollTo(), click());
 
+        ActivityTestRule<NavDrawerActivity> mActivityTestRule5 = new ActivityTestRule<>(NavDrawerActivity.class);
+
         ViewInteraction appCompatImageButton2 = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         withParent(withId(R.id.toolbar)),
                         isDisplayed()));
         appCompatImageButton2.perform(click());
 
+        ViewInteraction appCompatImageButton22 = onView(
+                allOf(withContentDescription("Open navigation drawer"),
+                        withParent(withId(R.id.toolbar)),
+                        isDisplayed()));
+        appCompatImageButton22.perform(click());
+
         ViewInteraction appCompatCheckedTextView2 = onView(
                 allOf(withId(R.id.design_menu_item_text), withText("Manage Requests (1)"), isDisplayed()));
         appCompatCheckedTextView2.perform(click());
+
+        ActivityTestRule<ManageRequests> mActivityTestRule6 = new ActivityTestRule<>(ManageRequests.class);
 
         ViewInteraction button = onView(
                 allOf(withText("Reject"), isDisplayed()));
         button.perform(click());
 
-        ViewInteraction appCompatImageButton3 = onView(
-                allOf(withContentDescription("Open navigation drawer"),
-                        withParent(withId(R.id.toolbar)),
+        ViewInteraction appCompatImageButton24 = onView(
+                allOf(withContentDescription("Navigate up"),
+                        withParent(allOf(withId(R.id.action_bar),
+                                withParent(withId(R.id.action_bar_container)))),
                         isDisplayed()));
-        appCompatImageButton3.perform(click());
+        appCompatImageButton24.perform(click());
+
+        ActivityTestRule<NavDrawerActivity> mActivityTestRule7 = new ActivityTestRule<>(NavDrawerActivity.class);
+
+        ViewInteraction appCompatImageButton21 = onView(
+                allOf(withContentDescription("Open navigation drawer"),
+                        isDisplayed()));
+        appCompatImageButton21.perform(click());
 
         ViewInteraction appCompatCheckedTextView3 = onView(
                 allOf(withId(R.id.design_menu_item_text), withText("Log Out"), isDisplayed()));
         appCompatCheckedTextView3.perform(click());
+
+        ActivityTestRule<LoginActivity> mActivityTestRule8 = new ActivityTestRule<>(LoginActivity.class);
 
         ViewInteraction appCompatEditText9 = onView(
                 withId(R.id.input_username));
@@ -147,6 +175,8 @@ public class Join_Group_Get_Rejected {
         ViewInteraction appCompatButton6 = onView(
                 allOf(withId(R.id.btn_login), withText("Login")));
         appCompatButton6.perform(scrollTo(), click());
+
+        ActivityTestRule<NavDrawerActivity> mActivityTestRule9 = new ActivityTestRule<>(NavDrawerActivity.class);
 
         ViewInteraction button2 = onView(
                 allOf(withId(R.id.button_creategroup),
