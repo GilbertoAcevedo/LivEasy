@@ -29,6 +29,13 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
+/***
+ Given I am on the log in page
+ AND input the correct information
+ AND have an account
+ When I click “Login”
+ Then I will be taken to the home page containing me and two buttons: Create Group and Join Group
+ ***/
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class Login_to_NavDrawerActivity {
@@ -41,21 +48,21 @@ public class Login_to_NavDrawerActivity {
 
         ViewInteraction appCompatEditText = onView(
                 withId(R.id.input_username));
-        appCompatEditText.perform(scrollTo(), replaceText("johndoe"), closeSoftKeyboard());
+        appCompatEditText.perform(scrollTo(), replaceText("logintest"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText2 = onView(
                 withId(R.id.input_password));
         appCompatEditText2.perform(scrollTo(), replaceText("password"), closeSoftKeyboard());
 
         ViewInteraction editText = onView(
-                allOf(withId(R.id.input_username), withText("johndoe"),
+                allOf(withId(R.id.input_username), withText("logintest"),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(TextInputLayout.class),
                                         0),
                                 0),
                         isDisplayed()));
-        editText.check(matches(withText("johndoe")));
+        editText.check(matches(withText("logintest")));
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.btn_login), withText("Login")));
