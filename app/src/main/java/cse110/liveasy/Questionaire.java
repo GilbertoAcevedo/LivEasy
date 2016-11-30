@@ -1,10 +1,6 @@
 package cse110.liveasy;
 
-/*
-This file uses source from stack overflow for orienting the image
-http://stackoverflow.com/questions/20478765/how-to-get-the-correct-orientation-of-the-image-selected-from-the-default-image
- */
-
+import android.*;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -30,8 +27,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import android.content.Intent;
 import android.provider.MediaStore;
+import android.os.Bundle;
 import android.widget.Button;
+import android.view.View;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
@@ -42,6 +42,7 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+import android.view.View.OnClickListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -49,13 +50,19 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *Activity that lets a user fill out a questionnaire to later populate a users profile
+/* SOURCES:
+
+   The following sources were utilized for taking a profile photo:
+
+   http://www.codepool.biz/take-a-photo-from-android-camera-and-upload-it-to-a-remote-php-server.html
+   http://www.codepool.biz/take-a-photo-from-android-camera-and-upload-it-to-a-remote-php-server.html
  */
+
 public class Questionaire extends AppCompatActivity {
 
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 0;

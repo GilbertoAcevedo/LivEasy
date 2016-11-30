@@ -1,19 +1,23 @@
 package cse110.liveasy;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CalendarView;
 import android.widget.CalendarView.OnDateChangeListener;
+import android.app.Activity;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.support.v7.app.AppCompatActivity;
 
-/**
- * Activity that controlls the calendar feature of the application.
+/* SOURCES:
+
+   The following sources were utilized for taking a profile photo:
+
+   https://examples.javacodegeeks.com/android/core/widget/android-calendarview-example/
  */
+
 public class CalendarActivity extends AppCompatActivity {
     CalendarView calendar;
     Bundle extras;
