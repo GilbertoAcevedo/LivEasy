@@ -243,7 +243,9 @@
             android:text="Save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="uploadData" />
+            android:onClick="uploadData"
+            android:background="@drawable/button_background"
+            android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse" />
     </LinearLayout>
 
 </LinearLayout>
