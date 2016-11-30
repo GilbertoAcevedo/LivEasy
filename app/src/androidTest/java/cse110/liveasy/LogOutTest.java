@@ -39,7 +39,10 @@ public class LogOutTest {
     public ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
-    public void logOutTest2() {
+    public void logOutTest2() throws InterruptedException {
+
+        Thread.sleep(4000);
+
         ViewInteraction appCompatEditText = onView(
                 withId(R.id.input_username));
         appCompatEditText.perform(scrollTo(), click());

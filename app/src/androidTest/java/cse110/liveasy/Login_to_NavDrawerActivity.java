@@ -18,6 +18,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.IllegalFormatCodePointException;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -51,7 +53,9 @@ public class Login_to_NavDrawerActivity {
     public ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
-    public void login_to_NavDrawerActivity() {
+    public void login_to_NavDrawerActivity() throws InterruptedException {
+
+        Thread.sleep(4000);
 
         ViewInteraction appCompatEditText = onView(
                 withId(R.id.input_username));

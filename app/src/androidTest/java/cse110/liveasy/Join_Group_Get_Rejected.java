@@ -39,13 +39,15 @@ public class Join_Group_Get_Rejected {
     @Test
     public void join_Group_Get_Rejected() throws InterruptedException {
 
+        Thread.sleep(4000);
+
         ViewInteraction appCompatEditText = onView(
                 withId(R.id.input_username));
         appCompatEditText.perform(scrollTo(), click());
 
         ViewInteraction appCompatEditText3 = onView(
                 withId(R.id.input_username));
-        appCompatEditText3.perform(scrollTo(), replaceText("testduke"), closeSoftKeyboard());
+        appCompatEditText3.perform(scrollTo(), replaceText("kelvinator"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText4 = onView(
                 withId(R.id.input_password));
@@ -57,10 +59,10 @@ public class Join_Group_Get_Rejected {
 
         ActivityTestRule<NavDrawerActivity> mActivityTestRule2 = new ActivityTestRule<>(NavDrawerActivity.class);
 
+        Thread.sleep(3000);
+
         ViewInteraction appCompatButton2 = onView(
                 allOf(withId(R.id.JoinGroup), withText("Join Group"),
-                        withParent(allOf(withId(R.id.activity_main),
-                                withParent(withId(R.id.fragment_home1)))),
                         isDisplayed()));
         appCompatButton2.perform(click());
 
@@ -71,11 +73,13 @@ public class Join_Group_Get_Rejected {
                         withParent(allOf(withId(R.id.activity_create_group),
                                 withParent(withId(android.R.id.content)))),
                         isDisplayed()));
-        appCompatEditText5.perform(replaceText("-KXcpbzQ88ojCQYOgSPM"), closeSoftKeyboard());
+        appCompatEditText5.perform(replaceText("-KXo4tymevUa_WWu5Wr1"), closeSoftKeyboard());
 
         ViewInteraction appCompatButton3 = onView(
                 allOf(withId(R.id.button9), withText("Join"), isDisplayed()));
         appCompatButton3.perform(click());
+
+        Thread.sleep(4000);
 
         ViewInteraction appCompatButton4 = onView(
                 allOf(withId(android.R.id.button1), withText("Ok"),
@@ -85,6 +89,8 @@ public class Join_Group_Get_Rejected {
         appCompatButton4.perform(click());
 
         ActivityTestRule<NavDrawerActivity> mActivityTestRule4 = new ActivityTestRule<>(NavDrawerActivity.class);
+
+        Thread.sleep(4000);
 
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
@@ -116,23 +122,21 @@ public class Join_Group_Get_Rejected {
 
         ActivityTestRule<NavDrawerActivity> mActivityTestRule5 = new ActivityTestRule<>(NavDrawerActivity.class);
 
+        Thread.sleep(4000);
+
         ViewInteraction appCompatImageButton2 = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         withParent(withId(R.id.toolbar)),
                         isDisplayed()));
         appCompatImageButton2.perform(click());
 
-        ViewInteraction appCompatImageButton22 = onView(
-                allOf(withContentDescription("Open navigation drawer"),
-                        withParent(withId(R.id.toolbar)),
-                        isDisplayed()));
-        appCompatImageButton22.perform(click());
-
         ViewInteraction appCompatCheckedTextView2 = onView(
                 allOf(withId(R.id.design_menu_item_text), withText("Manage Requests (1)"), isDisplayed()));
         appCompatCheckedTextView2.perform(click());
 
         ActivityTestRule<ManageRequests> mActivityTestRule6 = new ActivityTestRule<>(ManageRequests.class);
+
+        Thread.sleep(4000);
 
         ViewInteraction button = onView(
                 allOf(withText("Reject"), isDisplayed()));
@@ -146,6 +150,8 @@ public class Join_Group_Get_Rejected {
         appCompatImageButton24.perform(click());
 
         ActivityTestRule<NavDrawerActivity> mActivityTestRule7 = new ActivityTestRule<>(NavDrawerActivity.class);
+
+        Thread.sleep(4000);
 
         ViewInteraction appCompatImageButton21 = onView(
                 allOf(withContentDescription("Open navigation drawer"),
@@ -164,7 +170,7 @@ public class Join_Group_Get_Rejected {
 
         ViewInteraction appCompatEditText10 = onView(
                 withId(R.id.input_username));
-        appCompatEditText10.perform(scrollTo(), replaceText("testduke"), closeSoftKeyboard());
+        appCompatEditText10.perform(scrollTo(), replaceText("kelvinator"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText11 = onView(
                 withId(R.id.input_password));
@@ -175,6 +181,8 @@ public class Join_Group_Get_Rejected {
         appCompatButton6.perform(scrollTo(), click());
 
         ActivityTestRule<NavDrawerActivity> mActivityTestRule9 = new ActivityTestRule<>(NavDrawerActivity.class);
+
+        Thread.sleep(4000);
 
         ViewInteraction button2 = onView(
                 allOf(withId(R.id.button_creategroup),

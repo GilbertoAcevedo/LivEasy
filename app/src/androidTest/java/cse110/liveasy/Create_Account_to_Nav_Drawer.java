@@ -63,7 +63,21 @@ public class Create_Account_to_Nav_Drawer {
     public ActivityTestRule<LoginActivity> initActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
-    public void create_Account_to_Nav_Drawer() {
+    public void create_Account_to_Nav_Drawer() throws InterruptedException {
+
+        /*** Ensure you delete the user's account before test ends ***/
+        /*** delete the user's account if account already exists ***/
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuth.signInWithEmailAndPassword("johndoe@example.com", "password");
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if( user != null && user.getEmail().compareTo("johndoe@example.com") == 0 )
+            user.delete();
+        /********************************************************/
+
+        Thread.sleep(6000);
 
         ViewInteraction appCompatTextView = onView(
                 allOf(withId(R.id.link_signup), withText("No account yet? Create one.")));
@@ -92,8 +106,6 @@ public class Create_Account_to_Nav_Drawer {
                 withId(R.id.input_mobile));
         appCompatEditText5.perform(scrollTo(), replaceText("8580000000"), closeSoftKeyboard());
 
-        pressBack();
-
         ViewInteraction appCompatEditText6 = onView(
                 withId(R.id.input_password));
         appCompatEditText6.perform(scrollTo(), replaceText("password"), closeSoftKeyboard());
@@ -105,17 +117,6 @@ public class Create_Account_to_Nav_Drawer {
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.btn_signup), withText("Create Account")));
         appCompatButton.perform(scrollTo(), click());
-
-        /*** delete the user's account if account already exists ***/
-        mAuth = FirebaseAuth.getInstance();
-
-        mAuth.signInWithEmailAndPassword("johndoe@example.com", "password");
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        if( user != null )
-            user.delete();
-        /********************************************************/
 
         ActivityTestRule<Questionaire> th_ActivityTestRule = new ActivityTestRule<>(Questionaire.class);
 
@@ -187,7 +188,8 @@ public class Create_Account_to_Nav_Drawer {
                 allOf(withId(R.id.allergies_text), withText("- Allergies")));
         appCompatTextView8.perform(scrollTo(), click());
 
-        /*** Ensure you delete the user's account before test ends ***/
+
+        Thread.sleep(4000);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -195,9 +197,8 @@ public class Create_Account_to_Nav_Drawer {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if( user != null )
+        if( user != null && user.getEmail().compareTo("johndoe@example.com") == 0 )
             user.delete();
-        /*** ----------------------------------------------------- ***/
 
         // delete user's contents
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();

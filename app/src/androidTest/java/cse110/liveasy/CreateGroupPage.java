@@ -36,7 +36,9 @@ public class CreateGroupPage {
     public ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
-    public void createGroupPage() {
+    public void createGroupPage() throws InterruptedException {
+
+        Thread.sleep(4000);
 
         //Working up to context
         ViewInteraction appCompatEditText = onView(
@@ -52,6 +54,8 @@ public class CreateGroupPage {
         appCompatButton.perform(scrollTo(), click());
 
         ActivityTestRule<NavDrawerActivity> mActivityTestRule2 = new ActivityTestRule<>(NavDrawerActivity.class);
+
+        Thread.sleep(4000);
 
 
         //GIVEN I'm on the homepage
