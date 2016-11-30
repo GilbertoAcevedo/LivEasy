@@ -1,9 +1,8 @@
 package cse110.liveasy;
 
-import java.util.HashMap;
-
 /**
- * Created by gilbe_000 on 10/22/2016.
+ *User class is the class that represents the main user, which is used to populate the user info
+ *upon signing up or login in
  */
 
 public class User {

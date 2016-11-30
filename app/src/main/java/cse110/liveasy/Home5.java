@@ -1,8 +1,5 @@
 package cse110.liveasy;
 
-import android.content.Context;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,21 +8,19 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import cse110.liveasy.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.Map;
-import java.util.Random;
 
-
+/**
+ * Fragment that presents the logic for when there is more than 4 users in a group, in which case,
+ * all the users will be listed.
+ */
 public class Home5 extends Fragment {
 
     ListView list;
-    // String[] user = {"Duke", "Gil", "Sergio", "Kelvin", "Harambae", "Zoboomafo"};
-    //Integer[] imageID = {R.drawable.woodie, R.drawable.woodie, R.drawable.woodie, R.drawable.woodie, R.drawable.woodie,R.drawable.woodie};
 
     public Home5() {
         // Required empty public constructor

@@ -2,10 +2,6 @@ package cse110.liveasy;
 
 
 import android.app.Activity;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.support.v7.app.AlertDialog;
-import android.telephony.PhoneNumberUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +11,11 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 
 
-//Class used by the list view home page to set up each list item view
+/**
+ * Class used by the list view home page to set up each list item view
+ */
 public class CustomList extends ArrayAdapter<String>{
 
     private final String[] URLs;

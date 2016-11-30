@@ -1,9 +1,6 @@
 package cse110.liveasy;
 
-import android.content.Context;
-import android.content.Intent;
-import android.media.MediaPlayer;
-import android.net.Uri;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,14 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
 
-import java.util.Map;
-import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * Fragment that presents when there is exactly one user in a group, in which case, the profiles
+ * will be aligned in a specific way.
+ */
 
 public class Home1 extends Fragment {
 

@@ -234,7 +234,7 @@ public class NavDrawerActivity extends AppCompatActivity
                             if(fragment != null){
                                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                                 ft.replace(R.id.content_frame, fragment);
-                                ft.commitAllowingStateLoss();
+                                ft.commitNowAllowingStateLoss();
                             }
 
                             // Gets the drawer object to close
@@ -256,7 +256,7 @@ public class NavDrawerActivity extends AppCompatActivity
                     Fragment fragment = new Home1();
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     ft.replace(R.id.content_frame, fragment);
-                    ft.commitAllowingStateLoss();
+                    ft.commitNowAllowingStateLoss();
                 }
             }
 

@@ -24,6 +24,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * Actictivity that controlls the Group Chat feature of the application.
+ */
 public class GroupChat extends AppCompatActivity {
 
     private Button sendMsgBtn;

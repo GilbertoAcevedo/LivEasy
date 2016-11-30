@@ -16,18 +16,13 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -54,6 +49,11 @@ import java.util.Map;
 
 // Source: https://github.com/hdodenhof/CircleImageView
 import de.hdodenhof.circleimageview.CircleImageView;
+
+/**
+ * Acitivity that controlls the group profiles, that lets a user see information about their group
+ * like the address of where they live
+ */
 
 public class GroupProfileActivity extends AppCompatActivity {
 

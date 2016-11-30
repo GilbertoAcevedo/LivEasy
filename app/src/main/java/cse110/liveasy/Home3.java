@@ -1,8 +1,5 @@
 package cse110.liveasy;
 
-import android.content.Context;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,11 +9,13 @@ import android.view.ViewGroup;
 import com.squareup.picasso.Picasso;
 
 import java.util.Map;
-import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-
+/**
+ * Fragment that presents when there is exactly three users in a group, in which case, the profiles
+ * will be aligned in a specific way.
+ */
 public class Home3 extends Fragment {
 
     public Home3() {

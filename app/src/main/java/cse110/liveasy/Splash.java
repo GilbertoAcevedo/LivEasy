@@ -19,6 +19,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+/**
+ * Activity that introduces the application, and logs in a user if they have logged in before
+ */
 public class Splash extends AppCompatActivity {
 
     /** Duration of Splash **/
@@ -40,11 +43,9 @@ public class Splash extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         String username = sharedpreferences.getString("username", "");
-        System.out.println("Username...: " + username);
         // If the contents in sharedpreferences are not empty, then we log in using the user preferences
         if(!username.matches("") ) {
-            System.out.println("Inside splash, username has been retrived");
-            // login with email and password method
+            // login with email and password method, after validating user has previously signed in
             validateUser();
         }
         else{
@@ -60,7 +61,10 @@ public class Splash extends AppCompatActivity {
         }
 
     }
-
+    /*
+    Method validates the user and logs them in upon start of the application if they had
+    previously logged in but not logged out
+     */
     public void validateUser(){
 
         DatabaseReference uRef = ref.child("users");

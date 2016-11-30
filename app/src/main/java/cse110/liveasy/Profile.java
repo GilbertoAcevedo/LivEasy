@@ -1,15 +1,12 @@
 package cse110.liveasy;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
-import android.view.View;
 
 import java.util.Map;
 
 /**
- * Created by Duke Lin on 11/12/2016.
+ * Created by Duke Lin on 10/30/2016.
+ *Profile object class that creates an Profile for each user in the group
+ *
  */
 
 public class Profile {

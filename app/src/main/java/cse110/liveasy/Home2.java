@@ -1,26 +1,22 @@
 package cse110.liveasy;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.media.MediaPlayer;
-import android.net.Uri;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.Map;
-import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * Fragment that presents when there is exactly two users in a group, in which case, the profiles
+ * will be aligned in a specific way.
+ */
 
 public class Home2 extends Fragment {
 

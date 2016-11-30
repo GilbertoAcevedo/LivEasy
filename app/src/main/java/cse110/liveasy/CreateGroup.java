@@ -5,7 +5,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Handler;
+
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,8 +24,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
+/**
+ * Activity to controls creating a group by a user
+ */
 public class CreateGroup extends AppCompatActivity {
 
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -43,13 +44,10 @@ public class CreateGroup extends AppCompatActivity {
 
     }
 
-    public String generateRandomNumber() {
-        Random randVal = new Random();
-        int number = 100000 + randVal.nextInt(900000);
-        String myString = String.valueOf(number);
-        return myString;
-    }
-
+    /*
+    The key for the group becomes the key that is associated with the group in the firebase
+    database
+     */
     private String generateKey() {
 
         DatabaseReference groupsRef = ref.child("groups");
@@ -57,7 +55,9 @@ public class CreateGroup extends AppCompatActivity {
         return groupsRef.push().getKey();
     }
 
-
+    /*
+    Method that controlls creating a group, which is activated through the home page
+     */
     public void createGroup(View view1) {
 
         EditText editText = (EditText) findViewById(R.id.editText5);
@@ -74,7 +74,6 @@ public class CreateGroup extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 Boolean user_has_group = (Boolean) dataSnapshot.child("group").getValue();
-                System.err.print("\n User contents " + user_has_group);
 
                 if (user_has_group) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(CreateGroup.this);

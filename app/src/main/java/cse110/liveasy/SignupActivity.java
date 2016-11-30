@@ -34,6 +34,10 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 
+/**
+ *Signup Activity is the class that controlls the user sign up logic, which uses firebase to authenticate
+ *the user and create an account for the user
+ */
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
     public FirebaseAuth mAuth;
@@ -60,8 +64,6 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        Intent intent = getIntent();
-
         sharedPreferences = getApplicationContext().getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
 
@@ -69,6 +71,7 @@ public class SignupActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        // Listen when the user has been authenticated
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -84,6 +87,7 @@ public class SignupActivity extends AppCompatActivity {
             }
         };
 
+        // When the user clicks sign up
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,6 +95,7 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
+        // When the user clicks the login link, when they already have an account
         _loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,7 +122,9 @@ public class SignupActivity extends AppCompatActivity {
         }
     }
 
-
+    /*
+    Signs up the user with an email and password account
+     */
     public void signup() {
         Log.d(TAG, "Signup");
 
@@ -141,6 +148,7 @@ public class SignupActivity extends AppCompatActivity {
         final String password = _passwordText.getText().toString();
         final String username = _usernameText.getText().toString();
 
+        // Store the preferences on the device so user does not have to login every time
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("username", username);
         editor.putString("email", email);
@@ -180,7 +188,7 @@ public class SignupActivity extends AppCompatActivity {
                                                         // On complete call either onSignupSuccess or onSignupFailed
                                                         // depending on success
                                                         onSignupSuccess();
-                                                        // onSignupFailed();
+
                                                         progressDialog.dismiss();
                                                     }
                                                 }, 3000);
@@ -210,6 +218,10 @@ public class SignupActivity extends AppCompatActivity {
         uref.removeEventListener(listener);
     }
 
+    /*
+    When the user successfully signs up we create a new user in the database and move on to the
+    questionaire
+     */
     public void onSignupSuccess() {
 
         String username = _usernameText.getText().toString();
@@ -232,6 +244,9 @@ public class SignupActivity extends AppCompatActivity {
         finish();
     }
 
+    /*
+    When the user does not sign up correctly we let them try again
+     */
     public void onSignupFailed(String message) {
         Toast toast = Toast.makeText(SignupActivity.this, message,
                 Toast.LENGTH_SHORT);
@@ -241,6 +256,9 @@ public class SignupActivity extends AppCompatActivity {
         _signupButton.setEnabled(true);
     }
 
+    /*
+    Method to validate that all user information is filled correctly
+     */
     public boolean validate() {
         boolean valid = true;
 

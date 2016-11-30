@@ -9,13 +9,16 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+/**
+ *Activity that controls sharing a group code, where the user can copy it to the clipboard and
+ *share it accordingly
+ */
 public class ShareGroupCode extends AppCompatActivity {
     Bundle extras;
 

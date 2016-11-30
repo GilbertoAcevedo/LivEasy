@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Created by gilbe_000 on 10/23/2016.
+ * Group object to represent the group in the application, when a group is created by a specific user
  */
 
 public class Group {

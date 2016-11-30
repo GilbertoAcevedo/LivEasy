@@ -31,11 +31,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
-import java.util.Map;
 
-import cse110.liveasy.R;
-
+/**
+ * Activity that lets a user log into their account using firebase authentication
+ */
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
@@ -156,7 +155,11 @@ public class LoginActivity extends AppCompatActivity {
 
         _loginButton.setEnabled(true);
     }
-
+    /*
+    Method sees that everything a correct username and password has been inputted. The method validates
+    the user through its username and password, by seeing that the username exists and the email that
+    is associated to that user, is associated to the correct password.
+     */
     public void validateUser(){
 
         final String username = _usernameText.getText().toString();
@@ -247,7 +250,9 @@ public class LoginActivity extends AppCompatActivity {
         uRef.removeEventListener(listener);
 
     }
-
+    /*
+    Method to see that all the information has been filled in
+     */
     public boolean validate() {
         boolean valid = true;
         String username = _usernameText.getText().toString();

@@ -1,6 +1,5 @@
 package cse110.liveasy;
 
-import android.*;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,7 +10,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -27,11 +25,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import android.content.Intent;
 import android.provider.MediaStore;
-import android.os.Bundle;
 import android.widget.Button;
-import android.view.View;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
@@ -55,6 +50,9 @@ import org.w3c.dom.Text;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *Activity that lets a user fill out a questionnaire to later populate a users profile
+ */
 public class Questionaire extends AppCompatActivity {
 
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 0;

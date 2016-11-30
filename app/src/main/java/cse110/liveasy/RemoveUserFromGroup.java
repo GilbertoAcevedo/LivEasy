@@ -3,10 +3,7 @@ package cse110.liveasy;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +23,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
+/**
+ * Activity that lets the user vote for removing other users
+ */
 public class RemoveUserFromGroup extends AppCompatActivity {
 
     Bundle extras;
@@ -216,6 +215,9 @@ public class RemoveUserFromGroup extends AppCompatActivity {
 
     }
 
+    /*
+    Method that removes a user from the group called upon when voting user makes the majority
+     */
     public void removeUserFromGroup(String user_to_be_removed, Map<String, Object> usersToBeDeletedMap
         , Map<String, Object> groupMap, int num_users) {
 

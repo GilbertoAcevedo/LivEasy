@@ -23,6 +23,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Acitivity to let a user manage the requests sent to join their group, where they could either
+ * accept or reject users.
+ */
 public class ManageRequests extends AppCompatActivity {
     ArrayList<String> listItems = new ArrayList<String>();
     ArrayAdapter<String> adapter;
@@ -82,7 +86,7 @@ public class ManageRequests extends AppCompatActivity {
 
             final String currentUsername = listItems.get(index);
 
-            //accept button
+            // Button to accept a user
             Button accept = new Button(this);
             accept.setText("Accept");
             accept.setBackgroundResource(R.drawable.btn_accept_background);
@@ -174,6 +178,7 @@ public class ManageRequests extends AppCompatActivity {
                 }
             });
 
+            // Button to rekect a user
             Button reject =  new Button(this);
             reject.setText("Reject");
             reject.setBackgroundResource(R.drawable.btn_reject_background);
