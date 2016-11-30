@@ -1,5 +1,13 @@
 package cse110.liveasy;
 
+/*
+This file uses source code from the tutorial
+http://sourcey.com/beautiful-android-login-and-signup-screens-with-material-design/
+for designing the login
+This file uses the firebase authentication tutorial
+https://firebase.google.com/docs/auth/android/start/
+for implementing login up
+ */
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;

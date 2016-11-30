@@ -1,5 +1,10 @@
 package cse110.liveasy;
 
+/*
+This file uses source from stack overflow for orienting the image
+http://stackoverflow.com/questions/20478765/how-to-get-the-correct-orientation-of-the-image-selected-from-the-default-image
+ */
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -37,7 +42,6 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
-import android.view.View.OnClickListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -45,7 +49,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;

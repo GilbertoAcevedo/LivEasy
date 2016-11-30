@@ -1,5 +1,10 @@
 package cse110.liveasy;
 
+/*
+This file uses source from stack overflow for orienting the image
+http://stackoverflow.com/questions/20478765/how-to-get-the-correct-orientation-of-the-image-selected-from-the-default-image
+ */
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
