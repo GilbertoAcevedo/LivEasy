@@ -6,6 +6,13 @@ http://stackoverflow.com/questions/20478765/how-to-get-the-correct-orientation-o
 This file uses the tutorial source code for camera permission:
 https://developer.android.com/training/permissions/requesting.html
  */
+/* SOURCES:
+
+   The following sources were utilized for taking a profile photo:
+
+   http://www.codepool.biz/take-a-photo-from-android-camera-and-upload-it-to-a-remote-php-server.html
+   http://www.codepool.biz/take-a-photo-from-android-camera-and-upload-it-to-a-remote-php-server.html
+ */
 
 import android.app.Activity;
 import android.app.ProgressDialog;
