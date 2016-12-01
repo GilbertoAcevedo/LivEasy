@@ -33,6 +33,14 @@ import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
+
+/* TEST SCENARIO:
+
+   Given I have the nav drawer open
+   When I click on the logout option
+   Then I will be logged out and sent to the login screen
+ */
+
 public class LogOutTest {
 
     @Rule
