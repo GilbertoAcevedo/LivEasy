@@ -118,9 +118,7 @@ public class NavDrawerActivity extends AppCompatActivity
                 String user_phone_number = (String) dataSnapshot.child("phone_number").getValue();
                 String user_full_name = (String) dataSnapshot.child("full_name").getValue();
                 Boolean user_isPending = (Boolean) dataSnapshot.child("isPending").getValue();
-                System.out.println("From database user has group "+user_has_group.booleanValue());
                 String photo_url = (String) dataSnapshot.child("photo_url").getValue();
-                System.out.println("Nav: "+photo_url);
                 user.groupID = user_group_id;
                 user.email = user_email;
                 user.phone_number = user_phone_number;
@@ -207,7 +205,6 @@ public class NavDrawerActivity extends AppCompatActivity
                             // depending on the fragment that is displayed
                             Fragment fragment = null;
                             Long num_users = (Long) dataSnapshot.child("num_users").getValue();
-                            System.out.println("Number of Users: " + num_users);
                             memberCount = num_users.intValue();
                             switch(num_users.intValue()) {
                                 case 1:
@@ -499,7 +496,6 @@ public class NavDrawerActivity extends AppCompatActivity
     Method that goes to page so user can join a group
      */
     public void goToJoinGroup(View view){
-        System.out.println("****************************");
         Bundle extras = this.getIntent().getExtras();
         Intent goToJoinGroup = new Intent(this, JoinGroup.class);
         goToJoinGroup.putExtra("username", (String)extras.getString("username"));

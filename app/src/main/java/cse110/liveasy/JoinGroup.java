@@ -74,9 +74,7 @@ public class JoinGroup extends AppCompatActivity {
                 if(!groupKey.equals("") && (Boolean)dataSnapshot.hasChild(groupKey)){
 
                     //add to pending in group
-                    System.out.println("in if statement");
                     ArrayList<String> current = (ArrayList<String>) dataSnapshot.child(groupKey).child("pending").getValue();
-                    System.out.println("after getting current: " + current.toString());
                     current.add(username);
 
                     Map<String, Object> user_pending = new HashMap<String, Object>();

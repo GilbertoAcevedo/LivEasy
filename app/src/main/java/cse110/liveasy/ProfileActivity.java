@@ -3,6 +3,8 @@ package cse110.liveasy;
 /*
 This file uses source from stack overflow for orienting the image
 http://stackoverflow.com/questions/20478765/how-to-get-the-correct-orientation-of-the-image-selected-from-the-default-image
+This file uses the tutorial source code for camera permission:
+https://developer.android.com/training/permissions/requesting.html
  */
 
 import android.app.Activity;
@@ -190,7 +192,6 @@ public class ProfileActivity extends AppCompatActivity {
                 userMap = currentUserMap;
                 changeFlag = false;
 
-                //System.out.println((String)currentUserMap.get("photo_url"));
 
                 // Populate profile selfie
                 CircleImageView selfie = (CircleImageView) findViewById(R.id.profile_image);
@@ -885,7 +886,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     // This is called when the user clicks on the Save Changes button
     public void onSaveChangesPressed(View v) {
-        System.out.println("In method onSaveChangesPressed.");
         if(changeFlag == true && canEdit) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Would you like to save changes made?")
@@ -984,7 +984,6 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle unsuccessful uploads
-                System.out.println("Upload unsuccessful");
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -992,7 +991,6 @@ public class ProfileActivity extends AppCompatActivity {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 url = downloadUrl.toString();
-                System.out.println("Profile: "+url);
                 userMap.put("photo_url", url);
                 ref.updateChildren(userMap);
 
@@ -1032,7 +1030,6 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle unsuccessful uploads
-                System.out.println("Upload unsuccessful");
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -1040,7 +1037,6 @@ public class ProfileActivity extends AppCompatActivity {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 url = downloadUrl.toString();
-                System.out.println("Profile: "+url);
                 userMap.put("photo_url", url);
                 ref.updateChildren(userMap);
 
@@ -1080,12 +1076,9 @@ public class ProfileActivity extends AppCompatActivity {
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                System.out.println("photoFile was not null*****");
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                         Uri.fromFile(photoFile));
-                System.out.println("photoFile was not null*****");
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-                System.out.println("photoFile was not null*****");
             }
         }
     }
@@ -1119,10 +1112,8 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        System.out.println("onActivityResult***");
 
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
-            System.out.println("Inside if onActivityResult****");
             bitmap = setPic();
 
         }
@@ -1131,12 +1122,6 @@ public class ProfileActivity extends AppCompatActivity {
     private Bitmap setPic() {
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
-        if(bitmap == null)
-        {
-            System.out.println("bitmap = null...");
-        }
-
-        System.out.println("Inside setPic****");
 
         ExifInterface exif = null;
         try {
@@ -1168,7 +1153,6 @@ public class ProfileActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
-            System.out.println("At cameraPermission***");
 
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -1181,14 +1165,10 @@ public class ProfileActivity extends AppCompatActivity {
                 // Show an expanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
-                System.out.println("Inside if Camera Permission*******");
 
             } else {
 
                 // No explanation needed, we can request the permission.
-                System.out.println("Inside else Camera Permission*******");
-
-
                 ActivityCompat.requestPermissions(this,
                         new String[]{android.Manifest.permission.CAMERA},
                         MY_PERMISSIONS_REQUEST_CAMERA);

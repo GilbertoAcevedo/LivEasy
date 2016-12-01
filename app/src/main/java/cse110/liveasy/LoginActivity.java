@@ -178,25 +178,20 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setMessage("Signing In...");
         progressDialog.show();
 
-        System.out.println("This should print");
 
         ValueEventListener listener = new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                System.out.println("This should print as well " + dataSnapshot.hasChild("/"+ username + "/"));
                 if(!dataSnapshot.hasChild("/"+ username + "/")){
 
                     Log.w(TAG, "signInWithUsername:failed", new Exception("Wrong Username"));
-                    System.out.println("In listener not have child");
 
                     progressDialog.dismiss();
 
                     onLoginFailed();
 
                 } else {
-
-                    System.out.println("In listener ot ot");
 
 
                     String email = (String) dataSnapshot.child(username).child("email").getValue();
@@ -209,7 +204,6 @@ public class LoginActivity extends AppCompatActivity {
                     editor.commit();
 
                     SharedPreferences sharedpreferences = getSharedPreferences(LoginActivity.MyPREFERENCES, Context.MODE_PRIVATE);
-                    System.out.println("In LoginActivity, sharedPreferences... " + sharedpreferences.getString("username", ""));
 
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {

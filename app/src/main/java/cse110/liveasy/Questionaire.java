@@ -3,6 +3,8 @@ package cse110.liveasy;
 /*
 This file uses source from stack overflow for orienting the image
 http://stackoverflow.com/questions/20478765/how-to-get-the-correct-orientation-of-the-image-selected-from-the-default-image
+This file uses the tutorial source code for camera permission:
+https://developer.android.com/training/permissions/requesting.html
  */
 
 import android.Manifest;
@@ -496,7 +498,6 @@ public class Questionaire extends AppCompatActivity {
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                System.out.println("photoFile was not null*****");
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                         Uri.fromFile(photoFile));
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
@@ -555,7 +556,6 @@ public class Questionaire extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     // Handle unsuccessful uploads
-                    System.out.println("Upload unsuccessful");
                 }
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -563,7 +563,6 @@ public class Questionaire extends AppCompatActivity {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
                     url = downloadUrl.toString();
-                    System.out.println("Upload successful");
                 }
             });
 
@@ -590,11 +589,6 @@ public class Questionaire extends AppCompatActivity {
         bmOptions.inSampleSize = scaleFactor << 1;
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        if(bitmap == null)
-        {
-            System.out.println("bitmap = null...");
-        }
-
 
         ExifInterface exif = null;
         try {
@@ -618,7 +612,6 @@ public class Questionaire extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
-            System.out.println("At cameraPermission***");
 
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -631,14 +624,10 @@ public class Questionaire extends AppCompatActivity {
                 // Show an expanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
-                System.out.println("Inside if Camera Permission*******");
 
             } else {
 
                 // No explanation needed, we can request the permission.
-                System.out.println("Inside else Camera Permission*******");
-
-
                 ActivityCompat.requestPermissions(this,
                         new String[]{android.Manifest.permission.CAMERA},
                         MY_PERMISSIONS_REQUEST_CAMERA);
